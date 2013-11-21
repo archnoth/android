@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" 
+	android:background="@drawable/bkgwood">
     
     <EditText android:id="@+id/edit_message"
        
         android:layout_height="wrap_content"
  		android:layout_weight="1"
-        android:layout_width="0dp" 
-		android:editable="false"
-		/>
+        android:layout_width="wrap_content"
+		android:editable="false"/>
 
 	<Button
         android:layout_width="wrap_content"
@@ -19,6 +19,14 @@
         android:text="@string/button_send"
 		android:onClick="sendMessage" 
 		android:id="@+id/button_send"/>
+
+	<Button
+	    android:id="@+id/button1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+		android:onClick="toOtherActivity"
+	    android:text="Button" />
 
 	<EditText
 		android:layout_margin="20dip"

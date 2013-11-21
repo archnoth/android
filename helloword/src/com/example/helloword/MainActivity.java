@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,9 +26,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+
 
 public class MainActivity extends Activity {
 
@@ -65,6 +70,17 @@ public class MainActivity extends Activity {
 		new LongRunningGetIO().execute();
     	
     }
+    public void  toOtherActivity(View view) {
+        // Do something in response to button
+    	Intent intent = new Intent(this, DisplayMessageActivity.class);
+    	EditText editText = (EditText) findViewById(R.id.edit_message);
+    	String message = editText.getText().toString();
+    	intent.putExtra(EXTRA_MESSAGE, message);
+    	startActivity(intent);
+    }
+   
+   
+    
 private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 		
 		protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
@@ -83,12 +99,14 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 		protected String doInBackground(Void... params) {
 			 HttpClient httpClient = new DefaultHttpClient();
 			 HttpContext localContext = new BasicHttpContext();
-             HttpGet httpGet = new HttpGet("http://ibid.jm-ga.com/api/v1/members/");
+             HttpGet httpGet = new HttpGet("http://www.cheesejedi.com/rest_services/get_big_cheese?level=1");
              String text = null;
              try {
                    HttpResponse response = httpClient.execute(httpGet, localContext);
                    HttpEntity entity = response.getEntity();
+                   
                    text = getASCIIContentFromEntity(entity);
+                   
              } catch (Exception e) {
             	 return e.getLocalizedMessage();
              }
@@ -99,29 +117,22 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 			if (results!=null) {
 				EditText et = (EditText)findViewById(R.id.my_edit);
 				EditText et2 = (EditText)findViewById(R.id.edit_message);
+				
+				
+				//Parsea el resultado
+				JSONObject jsonObject;
 				try {
-					JSONObject jObject = new JSONObject(results);
 					et.setText(results);
-					JSONArray jArray = jObject.getJSONArray("ARRAYNAME");
-					for (int i=0; i < jArray.length(); i++)
-					{
-					    try {
-					        JSONObject oneObject = jArray.getJSONObject(i);
-					        // Pulling items from the array
-					        String oneObjectsItem = oneObject.getString("display_name");
-					        String oneObjectsItem2 = oneObject.getString("anotherSTRINGNAMEINtheARRAY");
-					        et2.setText(oneObjectsItem);
-					    } catch (JSONException e) {
-					        // Oops
-					    }
-					}
-					
+					JSONObject obj = new JSONObject("{hola:chau}");
+					et2.setText(obj.getString("hola"));
+	    			
+					//et.setText(quote);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				et.setText(results);
 				
+					
 			}
 			Button b = (Button)findViewById(R.id.button_send);
 			b.setClickable(true);
