@@ -1,16 +1,12 @@
 package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
@@ -75,20 +71,20 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 		protected String doInBackground(Void... params) {
 			 HttpClient httpClient = new DefaultHttpClient();
 			 HttpContext localContext = new BasicHttpContext();
-             HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/login");
+             HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/login/");
            
              // Add your data
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
+             String dataString = "{\"username\":\"" + username.getText().toString() +"\", \"password\":\""+ password.getText().toString() +"\"}";
              
-        	 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-             nameValuePairs.add(new BasicNameValuePair("username", username.toString()));
-             nameValuePairs.add(new BasicNameValuePair("password", password.toString()));
-            
              // Execute HTTP Post Request
              String text = null;
              try {
-            	 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            	 StringEntity se = new StringEntity(dataString);
+            	 se.setContentEncoding("UTF-8");
+            	 se.setContentType("application/json");
+            	 httpPost.setEntity(se);
             	 HttpResponse response = httpClient.execute(httpPost, localContext);
             	 HttpEntity entity = response.getEntity();
                    
