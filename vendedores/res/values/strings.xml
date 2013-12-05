@@ -5,5 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_listado_clientes">ListadoClientes</string>
-
+    <string name="title_activity_login">Registro de usuario</string>
+    <string name="text_btn_ingresar">Ingresar</string>
+    
 </resources>

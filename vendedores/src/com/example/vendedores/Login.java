@@ -21,13 +21,11 @@ import com.example.dominio.Usuario;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class Login extends Activity {
 
@@ -107,9 +105,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 				JSONObject jsonObject;
 				try {
 					jsonObject = new JSONObject(results);
-					
-					Context context = getApplicationContext();
-					int duration = Toast.LENGTH_SHORT;
+										
 					String api_key = jsonObject.getString("api_key");
 					//String user_id=jsonObject.getString("user_id");
 					String username=jsonObject.getString("username");
@@ -124,9 +120,6 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"));
 						usuario.getListaClientes().add(cli);
 					}
-					
-					Toast toast = Toast.makeText(context, usuario.toString(), duration);
-					toast.show();
 					
 					if(usuario!=null)
 					{
