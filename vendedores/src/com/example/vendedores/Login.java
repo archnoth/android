@@ -1,16 +1,22 @@
 package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.example.dominio.Cliente;
 import com.example.dominio.Usuario;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,11 +50,7 @@ public class Login extends Activity {
     	Button b = (Button)findViewById(R.id.btn_ingresar);
 		b.setClickable(false);
 		new LongRunningGetIO().execute();
-		if(usuario!=null)
-		{
-			Intent intent = new Intent(this, ListadoClientes.class);	
-			startActivity(intent);
-		}
+		
     	
     }
 	
@@ -111,15 +113,36 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 					String api_key = jsonObject.getString("api_key");
 					//String user_id=jsonObject.getString("user_id");
 					String username=jsonObject.getString("username");
-					
+					String jsonClientes=jsonObject.getString("user_clients");
+					JSONArray jarray=new JSONArray(jsonClientes);
+
 					usuario = new Usuario("", "", username, "", "", api_key);
+					
+					for(int i=0;i<jarray.length();i++)
+					{
+						JSONObject dic_cliente= jarray.getJSONObject(i);
+						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"));
+						usuario.getListaClientes().add(cli);
+					}
 					
 					Toast toast = Toast.makeText(context, usuario.toString(), duration);
 					toast.show();
 					
+					if(usuario!=null)
+					{
+						Intent intent = new Intent();
+						/*Bundle band = new Bundle();
+						band.putParcelable("usuario",usuario);
+						intent.putExtras(band);*/
+						//intent.setClass(this, ListadoClientes.class);
+						startActivity(intent);
+						
+					}
+					
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.out.println(e.getCause());
 				}
 					
 					
@@ -130,6 +153,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
     }
     
 	
-	
+			
+
 	
 }
