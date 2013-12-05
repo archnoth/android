@@ -130,13 +130,11 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 					
 					if(usuario!=null)
 					{
-						Intent intent = new Intent();
-						/*Bundle band = new Bundle();
-						band.putParcelable("usuario",usuario);
-						intent.putExtras(band);*/
-						//intent.setClass(this, ListadoClientes.class);
-						startActivity(intent);
-						
+						//Intent intent = new Intent(this, ListadoClientes.class);
+						//startActivity(intent);
+						Intent loc = new Intent(getApplicationContext(),ListadoClientes.class); 
+				        loc.putExtra("usuario",usuario);  
+				        startActivity(loc);
 					}
 					
 				} catch (JSONException e) {
