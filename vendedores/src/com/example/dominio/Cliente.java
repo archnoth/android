@@ -41,8 +41,31 @@ public class Cliente implements Parcelable{
 	}
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
-		
+		dest.writeString(nombre);
+		dest.writeString(direccion);
+		dest.writeString(rut);
+	}
+	public static final Parcelable.Creator<Cliente> CREATOR
+    = new Parcelable.Creator<Cliente>() {
+		 
+	 public Cliente createFromParcel(Parcel in) {
+	     return new Cliente(in);
+	 }
+	
+	 public Cliente[] newArray(int size) {
+	     return new Cliente[size];
+	 }
+	};
+
+	private Cliente(Parcel in) {
+		nombre = in.readString();
+		direccion = in.readString();
+		rut = in.readString();
+	}
+	
+	@Override
+	public String toString(){
+		return this.nombre + "  -  " + this.rut; 
 	}
 }
 				

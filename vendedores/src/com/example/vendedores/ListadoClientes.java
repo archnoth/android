@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class ListadoClientes extends Activity {
@@ -17,10 +18,8 @@ public class ListadoClientes extends Activity {
 		setContentView(R.layout.activity_listado_clientes);
 		ListView listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
 		Usuario usuario=getIntent().getExtras().getParcelable("usuario");
-		
-		listaClientes.setAdapter(new ArrayAdapter<Cliente>(this, R.id.ViewListaVendedores, usuario.getListaClientes()));
-		  
-	     
+		ListAdapter adaptador_lista = new ArrayAdapter<Cliente>(this.getApplicationContext(), R.layout.lista_text_view, usuario.getListaClientes());
+		listaClientes.setAdapter(adaptador_lista);
 	}
 
 	@Override

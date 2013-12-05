@@ -80,28 +80,35 @@ public class Usuario implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
-		
+		dest.writeString(nombre);
+		dest.writeString(apellido);
+		dest.writeString(nombreUsuario);
+		dest.writeString(password);
+		dest.writeString(email);
+		dest.writeString(key);
+		dest.writeTypedList(listaClientes);
 	}
-	 public static final Parcelable.Creator<Usuario> CREATOR
+	
+	public static final Parcelable.Creator<Usuario> CREATOR
      = new Parcelable.Creator<Usuario>() {
 		 
- public Usuario createFromParcel(Parcel in) {
-     return new Usuario(in);
- }
-
- public Usuario[] newArray(int size) {
-     return new Usuario[size];
- }
-};
-
+	 public Usuario createFromParcel(Parcel in) {
+	     return new Usuario(in);
+	 }
+	
+	 public Usuario[] newArray(int size) {
+	     return new Usuario[size];
+	 }
+	};
+	
 private Usuario(Parcel in) {
 	nombre = in.readString();
-	apellido=in.readString();
-	nombreUsuario=in.readString();
-	password=in.readString();
-	email=in.readString();
-	key=in.readString();
+	apellido = in.readString();
+	nombreUsuario = in.readString();
+	password = in.readString();
+	email = in.readString();
+	key = in.readString();
+	listaClientes = in.createTypedArrayList(Cliente.CREATOR);
 }
 	
 
