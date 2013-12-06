@@ -7,5 +7,6 @@
     <string name="title_activity_listado_clientes">ListadoClientes</string>
     <string name="title_activity_login">Registro de usuario</string>
     <string name="text_btn_ingresar">Ingresar</string>
-    
+    <string name="title_activity_detalle_cliente">DetalleCliente</string>
+
 </resources>

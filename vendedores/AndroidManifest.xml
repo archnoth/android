@@ -28,6 +28,10 @@
             android:name="com.example.vendedores.ListadoClientes"
             android:label="@string/title_activity_listado_clientes" >
         </activity>
+        <activity
+            android:name="com.example.vendedores.DetalleCliente"
+            android:label="@string/title_activity_detalle_cliente" >
+        </activity>
     </application>
 
 </manifest>

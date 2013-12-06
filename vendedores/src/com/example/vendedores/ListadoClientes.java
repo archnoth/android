@@ -5,13 +5,14 @@ import com.example.dominio.Usuario;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
 
 public class ListadoClientes extends Activity {
 	
@@ -28,7 +29,10 @@ public class ListadoClientes extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 					Cliente seleccionado = (Cliente)parent.getItemAtPosition(position);
-					Toast.makeText(getApplicationContext(),"RUT : " + seleccionado.getRut() , Toast.LENGTH_LONG).show();
+					Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
+			        loc.putExtra("cliente",seleccionado);  
+			        startActivity(loc);
+					//Toast.makeText(getApplicationContext(),"RUT : " + seleccionado.getRut() , Toast.LENGTH_LONG).show();
 			  }
 		});
 	}
