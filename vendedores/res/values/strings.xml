@@ -8,5 +8,8 @@
     <string name="title_activity_login">Registro de usuario</string>
     <string name="text_btn_ingresar">Ingresar</string>
     <string name="title_activity_detalle_cliente">DetalleCliente</string>
+    <string name="title_activity_factura">Factura</string>
+    <string name="autocomplete_producto">Producto</string>
+    <string name="btn_text_registrar_venta">Registrar Venta</string>
 
 </resources>

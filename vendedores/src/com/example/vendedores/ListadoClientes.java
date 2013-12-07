@@ -16,11 +16,12 @@ import android.widget.ListView;
 
 public class ListadoClientes extends Activity {
 	
+	private Usuario usuario;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_listado_clientes);
-		Usuario usuario=getIntent().getExtras().getParcelable("usuario");
+		usuario=getIntent().getExtras().getParcelable("usuario");
 		ListView listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
 		ArrayAdapter<Cliente> adaptador_lista = new ArrayAdapter<Cliente>(this.getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
 		listaClientes.setAdapter(adaptador_lista);
@@ -30,7 +31,8 @@ public class ListadoClientes extends Activity {
 					int position, long id) {
 					Cliente seleccionado = (Cliente)parent.getItemAtPosition(position);
 					Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
-			        loc.putExtra("cliente",seleccionado);  
+			        loc.putExtra("cliente",seleccionado);
+			        loc.putExtra("usuario",usuario);
 			        startActivity(loc);
 					//Toast.makeText(getApplicationContext(),"RUT : " + seleccionado.getRut() , Toast.LENGTH_LONG).show();
 			  }
