@@ -52,6 +52,13 @@ public class Login extends Activity {
     	
     }
 	
+	@Override
+	public void onDestroy() {
+	    super.onDestroy();  // Always call the superclass
+	    
+	    // Stop method tracing that the activity started during onCreate()
+	    
+	}
 	
 private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 		
