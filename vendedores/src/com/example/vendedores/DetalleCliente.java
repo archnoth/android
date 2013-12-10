@@ -42,5 +42,12 @@ public class DetalleCliente extends Activity {
 		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));  
 	    startActivity(fac_intent);
 	}
+	
+public void to_historico_activity(View view){
+		
+		Intent hist_intent = new Intent(getApplicationContext(),Historico.class); 
+		hist_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));  
+	    startActivity(hist_intent);
+	}
 
 }

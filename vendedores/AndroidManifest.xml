@@ -36,6 +36,14 @@
             android:name="com.example.vendedores.Factura"
             android:label="@string/title_activity_factura" >
         </activity>
+        <activity
+            android:name="com.example.vendedores.Historico"
+            android:label="@string/title_activity_ventas_historico"
+            android:parentActivityName="com.example.vendedores.DetalleCliente" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.vendedores.DetalleCliente" />
+        </activity>
     </application>
 
 </manifest>
