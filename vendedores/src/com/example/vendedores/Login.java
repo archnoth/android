@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 public class Login extends Activity {
 
@@ -46,12 +47,10 @@ public class Login extends Activity {
 	}
 
 	public void post(View view) {
-	       
     	Button b = (Button)findViewById(R.id.btn_ingresar);
 		b.setClickable(false);
+		((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.VISIBLE);
 		new LongRunningGetIO().execute();
-		
-    	
     }
 	
 	@Override
@@ -62,7 +61,13 @@ public class Login extends Activity {
 	    
 	}
 	
-private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
+	@Override
+	protected void onResume(){
+		super.onResume();
+		((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.INVISIBLE);
+	}
+	
+	private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 		
 		protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
 	       InputStream in = entity.getContent();
@@ -109,10 +114,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
 	}	
 		
 		protected void onPostExecute(String results) {
-			
-			if (results!=null) {
-				
-				
+			if (results!=null) {			
 				JSONObject jsonObject;
 				try {
 					jsonObject = new JSONObject(results);
