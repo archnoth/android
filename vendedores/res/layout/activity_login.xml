@@ -13,7 +13,6 @@
         android:id="@+id/frameLayout1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
@@ -62,6 +61,20 @@
             android:textColor="#ffffff" 
             android:textSize="30sp"/>
 
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp" >
+
+        <ProgressBar
+            android:id="@+id/LoginProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
     </FrameLayout>
 
 </RelativeLayout>

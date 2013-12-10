@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 
 public class ListadoClientes extends Activity {
@@ -29,6 +30,7 @@ public class ListadoClientes extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+					((ProgressBar)findViewById(R.id.ListadoClientesprogressBar)).setVisibility(View.VISIBLE);
 					Cliente seleccionado = (Cliente)parent.getItemAtPosition(position);
 					Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
 			        loc.putExtra("cliente",seleccionado);
@@ -44,5 +46,11 @@ public class ListadoClientes extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.listado_clientes, menu);
 		return true;
+	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		((ProgressBar)findViewById(R.id.ListadoClientesprogressBar)).setVisibility(View.INVISIBLE);
 	}
 }
