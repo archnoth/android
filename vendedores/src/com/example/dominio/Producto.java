@@ -43,7 +43,7 @@ public class Producto {
 
 	@Override
 	public String toString(){
-		return this.nombre + "  -  " + this.codigo; 
+		return this.nombre + "  -  " + this.codigo+ "  -  $" + this.precio; 
 	}
 
 }

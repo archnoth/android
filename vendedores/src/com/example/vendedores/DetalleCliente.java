@@ -39,7 +39,8 @@ public class DetalleCliente extends Activity {
 	public void to_factura_activity(View view){
 		
 		Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));  
+		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));  
 	    startActivity(fac_intent);
 	}
 

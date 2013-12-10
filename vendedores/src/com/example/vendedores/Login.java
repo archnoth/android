@@ -83,7 +83,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
              // Add your data
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
-             String dataString = "{\"username\":\"" + username.getText().toString() +"\", \"password\":\""+ password.getText().toString() +"\"}";
+             String dataString = "{\"nombreUsuario\":\"" + username.getText().toString() +"\", \"password\":\""+ password.getText().toString() +"\"}";
              
              // Execute HTTP Post Request
              String text = null;
