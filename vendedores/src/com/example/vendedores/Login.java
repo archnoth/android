@@ -18,6 +18,8 @@ import org.json.JSONObject;
 
 import com.example.dominio.Cliente;
 import com.example.dominio.Usuario;
+import com.google.gson.Gson;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -83,8 +85,10 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
              // Add your data
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
-             String dataString = "{\"nombreUsuario\":\"" + username.getText().toString() +"\", \"password\":\""+ password.getText().toString() +"\"}";
-             
+
+             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","");
+        	 Gson gson = new Gson();
+             String dataString = gson.toJson(usuario_login, usuario_login.getClass()).toString();
              // Execute HTTP Post Request
              String text = null;
              try {

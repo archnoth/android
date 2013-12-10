@@ -11,41 +11,71 @@
     tools:context=".Factura" >
 
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
         android:id="@+id/scroll"
-        >
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
-        <LinearLayout
-            android:id="@+id/layout_scroll"
-            android:layout_width="wrap_content"
+    
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:baselineAligned="false"
+            android:gravity="bottom" >
 
             <AutoCompleteTextView
                 android:id="@+id/autocompleteproducto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:text="@+id/autocompleteproducto" />
+
+            <EditText
+                android:id="@+id/cantText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:ems="10"
-                android:text="@+id/autocompleteproducto" >
+                
+                android:inputType="number" >
 
                 <requestFocus />
-            </AutoCompleteTextView>
-        </LinearLayout>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/Facturar"
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:onClick="Facturar"
-        android:text="Generar Factura" />
-
-    <ListView
-        android:id="@+id/listView1"
+            </EditText>
+        </TableRow>
+    </TableLayout>
+</ScrollView>
+    
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
+        android:layout_height="wrap_content"
+        android:id="@+id/tablaProductos" >
+
+         <TableRow
+            android:id="@+id/tableRowButtons"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:gravity="bottom" >
+	        <Button
+	            android:id="@+id/Facturar"
+	            android:layout_width="88dp"
+	            android:layout_height="wrap_content"
+	            android:onClick="Facturar"
+	            android:text="@string/btn_text_registrar_venta" />
+	
+	        <Button
+	            android:id="@+id/btn_add"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/text_btn_add" />
+
+	        <Button
+	            android:id="@+id/btn_rem"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/text_btn_rem" />
+
+       </TableRow>
+    </TableLayout>
 
 </LinearLayout>
