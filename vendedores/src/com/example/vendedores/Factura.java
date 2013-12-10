@@ -51,6 +51,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -74,7 +75,7 @@ public class Factura extends Activity {
 		setContentView(R.layout.activity_factura);
 		cant_productos=cant_productos+1;
 		
-		 
+		((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
 		
     }
 
@@ -82,6 +83,7 @@ public class Factura extends Activity {
 	protected void onResume()
 	{
 		 super.onResume();
+		 
 		 LongRunningGetIO thred=new LongRunningGetIO();//llamo un proceso en backgroud para cargar los productos de la empresa
 		 AsyncTask<Void, Void, List<Producto>> async=thred.execute();
 		 ArrayList<Producto> list;
@@ -99,8 +101,7 @@ public class Factura extends Activity {
 		auto = (AutoCompleteTextView)findViewById(R.id.autocompleteproducto);
 		auto.setAdapter(adapter);
 		cant_view=(EditText)findViewById(R.id.cantText);
-		
-		 auto.setOnItemClickListener(new OnItemClickListener() {
+		auto.setOnItemClickListener(new OnItemClickListener() {
 
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1,
@@ -112,7 +113,6 @@ public class Factura extends Activity {
 					
 				}
 		    });  
-		 
 		 
 		 Button btn_add=(Button)findViewById(R.id.btn_add);
 			
@@ -131,7 +131,7 @@ public class Factura extends Activity {
 				             ViewGroup.LayoutParams.WRAP_CONTENT,
 				             ViewGroup.LayoutParams.WRAP_CONTENT));
 					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-					tbl.addView(tbr,tbl.getChildCount()-1);
+					tbl.addView(tbr,tbl.getChildCount());
 					
 					
 				}
@@ -176,7 +176,8 @@ public class Factura extends Activity {
 	
 
 	public void Facturar(View view) {
-		       
+		
+		((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.VISIBLE);
 		Button b = (Button)findViewById(R.id.Facturar);
 		b.setClickable(false);
 	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
@@ -202,7 +203,8 @@ public class Factura extends Activity {
 		    		String codigo="";
 		    		try{
 		    			codigo=auto.getText().toString().split("\\s - \\s")[1];
-		    			Toast.makeText(Factura.this,codigo, Toast.LENGTH_LONG).show();
+		    			
+		    			
 		    			}catch (Exception e) {
 		    				// TODO: handle exception
 		    			}
@@ -223,20 +225,22 @@ public class Factura extends Activity {
 		Gson gson = new Gson();
         String dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString();
         PostNuevaVenta thred=new PostNuevaVenta();//llamo un proceso en backgroud para cargar los productos de la empresa
+        
         AsyncTask<String, Void, String> async=thred.execute(dataString);
 		
      
 		try {
 			String respuesta= (String)async.get();
-			
 			Toast.makeText(Factura.this,respuesta, Toast.LENGTH_LONG).show();
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 		
          
@@ -299,9 +303,8 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
  						JSONObject dic_producto = jarray.getJSONObject(i);
  						Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
  						lista_productos.add(prod);
- 						return lista_productos; 
  					}
- 					 
+ 					
  					
  				} catch (JSONException e) {
  					// TODO Auto-generated catch block
@@ -310,7 +313,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
  					
  					
  			}
-			return null;
+			return lista_productos;
 	}
 
 
@@ -356,8 +359,10 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
  			
 			return null;
 	}
-
-		
+		@Override
+		protected void onPostExecute(String results) {
+			((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
+		}
 
 	}
 }

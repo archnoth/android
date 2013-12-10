@@ -64,7 +64,7 @@ public class Login extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.INVISIBLE);
+		//((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.INVISIBLE);
 	}
 	
 	private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
@@ -151,6 +151,7 @@ public class Login extends Activity {
 					
 					
 			}
+			((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.INVISIBLE);
 			Button b = (Button)findViewById(R.id.btn_ingresar);
 			b.setClickable(true);
 		}
