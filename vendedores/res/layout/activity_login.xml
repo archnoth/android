@@ -70,6 +70,23 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp" >
 
+        <SeekBar
+            android:id="@+id/LoginSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/LoginConectado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/LoginConectado"
+            android:inputType="none"
+            android:textColor="@android:color/white" 
+			android:visibility="invisible" >
+            <requestFocus />
+        </EditText>
+
         <ProgressBar
             android:id="@+id/LoginProgressBar"
             android:layout_width="wrap_content"

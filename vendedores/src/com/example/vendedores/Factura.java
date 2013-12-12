@@ -27,7 +27,6 @@ import com.example.dominio.Producto;
 import com.example.dominio.ProductoVenta;
 import com.example.dominio.Usuario;
 import com.example.dominio.Venta;
-import com.example.vendedores.R.id;
 import com.google.gson.Gson;
 
 
@@ -37,7 +36,6 @@ import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
-
 
 import android.view.Menu;
 import android.view.View;
@@ -49,10 +47,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -63,20 +58,11 @@ import android.widget.Toast;
 public class Factura extends Activity {
 
 	private static List<Producto> lista_productos;
-	private AutoCompleteTextView auto;
-	private EditText cant_view;
-	private ArrayAdapter<Producto> adapter ;
-	private Integer cant_productos=0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.activity_factura);
-		cant_productos=cant_productos+1;
-		
-		((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
-		
     }
 
 	@Override
@@ -86,10 +72,8 @@ public class Factura extends Activity {
 		 
 		 LongRunningGetIO thred=new LongRunningGetIO();//llamo un proceso en backgroud para cargar los productos de la empresa
 		 AsyncTask<Void, Void, List<Producto>> async=thred.execute();
-		 ArrayList<Producto> list;
 		try {
-			list = (ArrayList<Producto>)async.get();
-			 adapter= new ArrayAdapter<Producto>(this, android.R.layout.simple_list_item_1, list);
+			lista_productos = (ArrayList<Producto>)async.get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -97,22 +81,6 @@ public class Factura extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 
-		auto = (AutoCompleteTextView)findViewById(R.id.autocompleteproducto);
-		auto.setAdapter(adapter);
-		cant_view=(EditText)findViewById(R.id.cantText);
-		auto.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long larg3) {
-					// TODO Auto-generated method stub 
-					
-					arg1.setNextFocusRightId(cant_view.getId());
-					arg1.requestFocus(View.FOCUS_RIGHT);
-					
-				}
-		    });  
 		 
 		 Button btn_add=(Button)findViewById(R.id.btn_add);
 			
@@ -123,17 +91,21 @@ public class Factura extends Activity {
 					
 					AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
 					EditText text_cant =Factura.this.generarEditText();
-					
 					TableRow tbr= new TableRow(getApplicationContext());
 					tbr.addView(autocomplete);
-					tbr.addView(text_cant);
+					EditText divider = Factura.this.generarEditText(); 
+					divider.setBackgroundColor(Color.BLACK);
+					divider.setWidth(2);
+					divider.setInputType(android.text.InputType.TYPE_NULL);
+					tbr.addView(divider);
+					tbr.addView(text_cant, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 					tbr.setLayoutParams(new ViewGroup.LayoutParams(
 				             ViewGroup.LayoutParams.WRAP_CONTENT,
 				             ViewGroup.LayoutParams.WRAP_CONTENT));
+					tbr.setBackgroundColor(Color.LTGRAY);
+					tbr.setPadding(2, 1, 2, 1);
 					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-					tbl.addView(tbr,tbl.getChildCount());
-					
-					
+					tbl.addView(tbr,tbl.getChildCount());	
 				}
 			});
 			
@@ -144,10 +116,12 @@ public class Factura extends Activity {
 				@Override
 				public void onClick(View v) {
 					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-					tbl.removeViewAt(tbl.getChildCount()-2);
-					
+					if (tbl.getChildCount() > 0) {
+						tbl.removeViewAt(tbl.getChildCount()-1);
+					}
 				}
 			});
+		((Button)findViewById(R.id.btn_add)).callOnClick();
 		 
 	}
 	
@@ -158,7 +132,8 @@ public class Factura extends Activity {
 	{
 		EditText editText=new EditText(getApplicationContext());
 		editText.setTextColor(Color.BLACK);
-		editText.setEms(2);
+		editText.setBackgroundColor(Color.WHITE);
+		editText.setMinEms(1);
 		return editText;
 
 	}
@@ -167,10 +142,19 @@ public class Factura extends Activity {
 	 {
 				// Toast.makeText(Factura.this," selected", Toast.LENGTH_LONG).show();
 				 AutoCompleteTextView auto_gen = new AutoCompleteTextView(getApplicationContext());
-				 auto_gen.setAdapter(adapter);
-				 auto_gen.setEms(10);
+				 auto_gen.setAdapter(new ArrayAdapter<Producto>(this, android.R.layout.simple_list_item_1, lista_productos));
+				 auto_gen.setEms(12);
 				 auto_gen.setTextColor(Color.BLACK);
-				 auto_gen.setOnItemClickListener(auto.getOnItemClickListener());
+				 auto_gen.setBackgroundColor(Color.WHITE);
+				 auto_gen.setOnItemClickListener(new OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> arg0, View arg1,
+								int arg2, long larg3) {
+							// TODO Auto-generated method stub 
+							
+						}
+				    });  
 				 return auto_gen;
 	 }
 	
@@ -208,12 +192,12 @@ public class Factura extends Activity {
 		    			}catch (Exception e) {
 		    				// TODO: handle exception
 		    			}
-		    			for(int j=0;j<adapter.getCount();j++){
+		    			for(int j=0;j<auto.getAdapter().getCount();j++){
 		    	
-		    				if(((Producto)adapter.getItem(j)).getCodigo().equals(codigo))
+		    				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
 		    				{
-		    					monto=monto+((Producto)adapter.getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
-		    					nueva_venta.getProductos().add(new ProductoVenta((Producto)adapter.getItem(j),Integer.parseInt(cant.getText().toString())));
+		    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
+		    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
 		    				}
 		    			}
 		    		
@@ -271,7 +255,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 		
 		@Override
 		protected  List<Producto> doInBackground(Void... params) {
-			 
+			ArrayList<Producto> lista = null;
 			HttpClient httpClient = new DefaultHttpClient();
 			 HttpContext localContext = new BasicHttpContext();
              HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/productos/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
@@ -297,12 +281,12 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
  					jsonObject = new JSONObject(text);
  										
  					JSONArray jarray =(JSONArray)jsonObject.get("objects");
- 					lista_productos= new ArrayList<Producto>();
+ 					lista= new ArrayList<Producto>();
  					for(int i=0;i<jarray.length();i++)
  					{
  						JSONObject dic_producto = jarray.getJSONObject(i);
  						Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
- 						lista_productos.add(prod);
+ 						lista.add(prod);
  					}
  					
  					
@@ -313,7 +297,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
  					
  					
  			}
-			return lista_productos;
+			return lista;
 	}
 
 
