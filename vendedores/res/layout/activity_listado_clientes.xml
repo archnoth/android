@@ -12,22 +12,15 @@
     <ListView
         android:id="@+id/ViewListaVendedores"
         android:layout_width="wrap_content"
-        android:layout_height="431dp" >
+        android:layout_height="wrap_content" >
     </ListView>
 
-    <FrameLayout
+    <ProgressBar
+        android:id="@+id/ListadoClientesprogressBar"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
-
-        <ProgressBar
-            android:id="@+id/ListadoClientesprogressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
-
-    </FrameLayout>
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
 
 </RelativeLayout>

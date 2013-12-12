@@ -9,7 +9,7 @@
     tools:context=".Historico" >
 
     <ScrollView
-        android:id="@+id/scrollView1"
+        android:id="@+id/realtiveBig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

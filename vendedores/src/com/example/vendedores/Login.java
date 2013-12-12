@@ -28,7 +28,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 public class Login extends Activity {
@@ -135,7 +134,7 @@ public class Login extends Activity {
 					for(int i=0;i<jarray.length();i++)
 					{
 						JSONObject dic_cliente= jarray.getJSONObject(i);
-						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"));
+						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"),dic_cliente.getString("logo"));
 						usuario.getListaClientes().add(cli);
 						((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);
 					}

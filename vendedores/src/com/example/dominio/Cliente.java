@@ -8,13 +8,16 @@ public class Cliente implements Parcelable{
 	private String nombre;
 	private String direccion;
 	private String rut;
+	private String url_imagen;
 	
 	
-	public Cliente(String nombre,String direccion,String rut)
+	public Cliente(String nombre,String direccion,String rut,String url_imagen)
 	{
 		this.nombre=nombre;
 		this.direccion=direccion;
 		this.rut=rut;
+		this.setUrl_imagen(url_imagen);
+		
 	}
 	public String getNombre() {
 		return nombre;
@@ -44,6 +47,7 @@ public class Cliente implements Parcelable{
 		dest.writeString(nombre);
 		dest.writeString(direccion);
 		dest.writeString(rut);
+		dest.writeString(url_imagen);
 	}
 	public static final Parcelable.Creator<Cliente> CREATOR
     = new Parcelable.Creator<Cliente>() {
@@ -61,11 +65,18 @@ public class Cliente implements Parcelable{
 		nombre = in.readString();
 		direccion = in.readString();
 		rut = in.readString();
+		url_imagen=in.readString();
 	}
 	
 	@Override
 	public String toString(){
 		return this.nombre + "  -  " + this.rut; 
+	}
+	public String getUrl_imagen() {
+		return url_imagen;
+	}
+	public void setUrl_imagen(String url_imagen) {
+		this.url_imagen = url_imagen;
 	}
 }
 				
