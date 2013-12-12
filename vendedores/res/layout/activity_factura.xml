@@ -13,16 +13,18 @@
             android:layout_width="match_parent"
             android:layout_height="380dp" >
 
+
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
+
                 <TableLayout
                     android:id="@+id/tablaProductos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" 
-                    android:background="@android:color/background_light"
+                    android:background="@android:color/black"
                     android:padding="2dp">
                 </TableLayout>
 
@@ -67,6 +69,7 @@
                 android:layout_toLeftOf="@+id/Facturar"
                 android:text="@string/text_btn_rem" />
 
+
             <Button
                 android:id="@+id/btn_add"
                 android:layout_width="wrap_content"
@@ -77,6 +80,7 @@
                 android:layout_toLeftOf="@+id/btn_rem"
                 android:text="@string/text_btn_add" />
 
-        </RelativeLayout>
 
+        </RelativeLayout>
+        
 </RelativeLayout>

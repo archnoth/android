@@ -36,16 +36,11 @@ import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
-
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnHoverListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -53,11 +48,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 import android.widget.Toast;
 
@@ -66,21 +58,14 @@ import android.widget.Toast;
 public class Factura extends Activity {
 
 	private static List<Producto> lista_productos;
+
 	private EditText last_text_cantidad;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_factura);
-
-    }
-
-	@Override
-	protected void onResume()
-	{
-		 super.onResume();
-		 
-		 LongRunningGetIO thred=new LongRunningGetIO();//llamo un proceso en backgroud para cargar los productos de la empresa
+		LongRunningGetIO thred=new LongRunningGetIO();//llamo un proceso en backgroud para cargar los productos de la empresa
 		 AsyncTask<Void, Void, List<Producto>> async=thred.execute();
 		try {
 			lista_productos = (ArrayList<Producto>)async.get();
@@ -98,7 +83,7 @@ public class Factura extends Activity {
 				
 				@Override
 				public void onClick(View v) {
-					
+				
 					addRowToTableProductos();
 				}
 			});
@@ -116,119 +101,132 @@ public class Factura extends Activity {
 				}
 			});
 		((Button)findViewById(R.id.btn_add)).callOnClick();
-		 
-	}
 	
-	
-	
-	
-	
-	private EditText generarEditText() 
-	{
-		EditText editText=new EditText(getApplicationContext());
-		editText.setTextColor(Color.BLACK);
-		editText.setBackgroundColor(Color.WHITE);
-		editText.setMinEms(1);
-		
-		editText.addTextChangedListener(new TextWatcher(){ 
-		   
-			boolean agregar=true;
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,int count) {
-				// TODO Auto-generated method stub
-				
-			}
 
-			@Override
-			public void afterTextChanged(Editable s) {
-				TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-				if(tbl.getChildCount()> 0)
-				{
-					if(last_text_cantidad.getParent()==tbl.getChildAt(tbl.getChildCount()-1))
-					{
-						if(agregar)
-						{
-							addRowToTableProductos();
-							agregar=false;
-						}
-							
-					};
-				}
-				
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				
-				
-			}
-	});
-	
-	/*editText.setOnTouchListener(new OnTouchListener() {
 		
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
+		private EditText generarEditText() 
+		{
+			EditText editText=new EditText(getApplicationContext());
+			editText.setTextColor(Color.BLACK);
+			editText.setBackgroundColor(Color.WHITE);
+			editText.setMinEms(1);
+
 			
-			if(((EditText)v).length() > 0 ){
-				addRowToTableProductos();
-				
-			}
-			return false;
+			editText.addTextChangedListener(new TextWatcher(){ 
+			   
+				boolean agregar=true;
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,int count) {
+					// TODO Auto-generated method stub
+					
+				}
+
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
+					if(tbl.getChildCount()> 0)
+					{
+						if(last_text_cantidad.getParent()==tbl.getChildAt(tbl.getChildCount()-1))
+						{
+							if(agregar)
+							{
+								addRowToTableProductos();
+								agregar=false;
+							}
+								
+						};
+					}
+					
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+					
+					
+				}
+		});
+		
+
+		last_text_cantidad=editText;
+		return editText;
 		}
-	});*/
-	last_text_cantidad=editText;
-	return editText;
-	}
-	
-	
-	private void addRowToTableProductos()
+		
+		
+		private void addRowToTableProductos()
+		{
+			AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
+			   EditText text_cant =Factura.this.generarEditText();
+			     TableRow tbr= new TableRow(getApplicationContext());
+			     EditText divider = Factura.this.generarEditText(); 
+			     divider.setBackgroundColor(Color.BLACK);
+			     divider.setWidth(2);
+			     divider.setInputType(android.text.InputType.TYPE_NULL);
+			     Button cruz = Factura.this.generarCruz();
+			     tbr.addView(text_cant, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+			     tbr.addView(divider);
+			     tbr.addView(autocomplete);
+			     tbr.addView(cruz);
+			     tbr.setLayoutParams(new ViewGroup.LayoutParams(
+			                 ViewGroup.LayoutParams.WRAP_CONTENT,
+			                 ViewGroup.LayoutParams.WRAP_CONTENT));
+			     tbr.setBackgroundColor(Color.LTGRAY);
+			     tbr.setPadding(2, 1, 2, 1);
+			     TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
+			     tbl.addView(tbr,tbl.getChildCount());	
+		}
+		
+		
+		private AutoCompleteTextView generarAutocomplete()
+		 {
+			  // Toast.makeText(Factura.this," selected", Toast.LENGTH_LONG).show();
+		     AutoCompleteTextView auto_gen = new AutoCompleteTextView(getApplicationContext());
+		     auto_gen.setAdapter(new ArrayAdapter<Producto>(this, android.R.layout.simple_list_item_1, lista_productos));
+		     auto_gen.setEms(9);
+		     auto_gen.setMaxLines(1);
+		     auto_gen.setHighlightColor(Color.BLUE);
+		     auto_gen.setHorizontallyScrolling(true);
+		     auto_gen.setCursorVisible(true);
+		     auto_gen.setTextColor(Color.BLACK);
+		     auto_gen.setBackgroundColor(Color.WHITE);
+		     return auto_gen;
+
+		 }
+		
+
+		private Button generarCruz()
+		 {
+		  Button cruz = new Button(getApplicationContext());
+		  cruz.setText("X");
+		  cruz.setOnClickListener(new OnClickListener() {
+		   
+		   @Override
+		   public void onClick(View v) {
+		    TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
+		    tbl.removeView((View)v.getParent());
+		   }
+		  });
+		  return cruz;
+		 }
+
+    }
+
+	@Override
+	protected void onResume()
 	{
-		AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
-		EditText text_cant =Factura.this.generarEditText();
-		TableRow tbr= new TableRow(getApplicationContext());
-		tbr.addView(autocomplete);
-		EditText divider = Factura.this.generarEditText(); 
-		divider.setBackgroundColor(Color.BLACK);
-		divider.setWidth(2);
-		divider.setInputType(android.text.InputType.TYPE_NULL);
-		tbr.addView(divider);
-		tbr.addView(text_cant, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-		tbr.setLayoutParams(new ViewGroup.LayoutParams(
-	    ViewGroup.LayoutParams.WRAP_CONTENT,
-	    ViewGroup.LayoutParams.WRAP_CONTENT));
-		tbr.setBackgroundColor(Color.LTGRAY);
-		tbr.setPadding(2, 1, 2, 1);
-		TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-		tbl.addView(tbr,tbl.getChildCount());
-
+		 super.onResume();
+		 
+		 	 
 	}
 	
 	
-	private AutoCompleteTextView generarAutocomplete()
-	 {
-				// Toast.makeText(Factura.this," selected", Toast.LENGTH_LONG).show();
-				 AutoCompleteTextView auto_gen = new AutoCompleteTextView(getApplicationContext());
-				 auto_gen.setAdapter(new ArrayAdapter<Producto>(this, android.R.layout.simple_list_item_1, lista_productos));
-				 auto_gen.setEms(12);
-				 auto_gen.setTextColor(Color.BLACK);
-				 auto_gen.setBackgroundColor(Color.WHITE);
-				 auto_gen.setOnItemClickListener(new OnItemClickListener() {
-
-						@Override
-						public void onItemClick(AdapterView<?> arg0, View arg1,
-								int arg2, long larg3) {
-							// TODO Auto-generated method stub 
-							
-						}
-				    });  
-				 return auto_gen;
-	 }
 	
-
+	
+	
+		
 	public void Facturar(View view) throws JSONException {
 		
-		//((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.VISIBLE);
 		Button b = (Button)findViewById(R.id.Facturar);
 		b.setClickable(false);
 	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
@@ -237,38 +235,31 @@ public class Factura extends Activity {
 	    Double monto=0.0;
 	    TableLayout tbl=(TableLayout)this.findViewById(R.id.tablaProductos);
 	    
-	    
 	    Venta nueva_venta=new Venta(vendedor, cliente, fecha,0.0);
 	    
-	    
 	    for(int i=0;i<tbl.getChildCount();)
-	    {
-	    	
+	    {  	
 	    	TableRow tr=(TableRow)tbl.getChildAt(i);
-	    	
-		    	if (tr.getChildCount()==2)
-		    	{
-		    		AutoCompleteTextView auto=(AutoCompleteTextView)tr.getChildAt(0);
-		    		EditText cant=(EditText)tr.getChildAt(1);
-		    	
-		    		String codigo="";
-		    		try{
-		    			codigo=auto.getText().toString().split("\\s - \\s")[1];
-		    			
-		    			
-		    			}catch (Exception e) {
-		    				// TODO: handle exception
-		    			}
-		    			for(int j=0;j<auto.getAdapter().getCount();j++){
-		    	
-		    				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
-		    				{
-		    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
-		    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
-		    				}
-		    			}
-		    		
-		    	}
+    		AutoCompleteTextView auto=(AutoCompleteTextView)tr.getChildAt(2);
+    		EditText cant=(EditText)tr.getChildAt(0);
+    	
+    		String codigo="";
+    		try{
+    			codigo=auto.getText().toString().split("\\s - \\s")[1];
+    			
+    			
+    			}catch (Exception e) {
+    				// TODO: handle exception
+    			}
+    			for(int j=0;j<auto.getAdapter().getCount();j++){
+    	
+    				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
+    				{
+    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
+    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
+    				}
+    			}
+
 	    	i=i+1;
 	    }
 	     
