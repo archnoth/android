@@ -78,5 +78,6 @@ public class Cliente implements Parcelable{
 	public void setUrl_imagen(String url_imagen) {
 		this.url_imagen = url_imagen;
 	}
+	
 }
 				

@@ -16,8 +16,8 @@
     <string name="text_btn_generar_factura">Generar Factura</string>
     <string name="text_btn_add">Mas </string>
     <string name="text_btn_rem">Menos </string>
+
     <string name="todo">TODO</string>
     <string name="LoginConectado">¡Conectado!</string>
-
 
 </resources>

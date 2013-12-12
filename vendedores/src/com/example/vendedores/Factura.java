@@ -38,12 +38,11 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.InputFilter;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -63,8 +62,10 @@ public class Factura extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_factura);
+
 		LongRunningGetIO thred=new LongRunningGetIO();//llamo un proceso en backgroud para cargar los productos de la empresa
 		 AsyncTask<Void, Void, List<Producto>> async=thred.execute();
 		try {
@@ -77,31 +78,8 @@ public class Factura extends Activity {
 			e.printStackTrace();
 		}
 		 
-		 Button btn_add=(Button)findViewById(R.id.btn_add);
-			
-			btn_add.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-				
-					addRowToTableProductos();
-				}
-			});
-			
-		Button btn_rem=(Button)findViewById(R.id.btn_rem);
-		
-			btn_rem.setOnClickListener(new OnClickListener() {
-			
-				@Override
-				public void onClick(View v) {
-					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-					if (tbl.getChildCount() > 0) {
-						tbl.removeViewAt(tbl.getChildCount()-1);
-					}
-				}
-			});
-		((Button)findViewById(R.id.btn_add)).callOnClick();
-	
+		addRowToTableProductos();
+	}
 
 		
 		private EditText generarEditText() 
@@ -109,7 +87,8 @@ public class Factura extends Activity {
 			EditText editText=new EditText(getApplicationContext());
 			editText.setTextColor(Color.BLACK);
 			editText.setBackgroundColor(Color.WHITE);
-			editText.setMinEms(1);
+			editText.setMaxLines(1);
+			editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
 
 			
 			editText.addTextChangedListener(new TextWatcher(){ 
@@ -133,11 +112,9 @@ public class Factura extends Activity {
 							{
 								addRowToTableProductos();
 								agregar=false;
-							}
-								
+							}	
 						};
 					}
-					
 				}
 
 				@Override
@@ -157,24 +134,24 @@ public class Factura extends Activity {
 		private void addRowToTableProductos()
 		{
 			AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
-			   EditText text_cant =Factura.this.generarEditText();
-			     TableRow tbr= new TableRow(getApplicationContext());
-			     EditText divider = Factura.this.generarEditText(); 
-			     divider.setBackgroundColor(Color.BLACK);
-			     divider.setWidth(2);
-			     divider.setInputType(android.text.InputType.TYPE_NULL);
-			     Button cruz = Factura.this.generarCruz();
-			     tbr.addView(text_cant, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			     tbr.addView(divider);
-			     tbr.addView(autocomplete);
-			     tbr.addView(cruz);
-			     tbr.setLayoutParams(new ViewGroup.LayoutParams(
-			                 ViewGroup.LayoutParams.WRAP_CONTENT,
-			                 ViewGroup.LayoutParams.WRAP_CONTENT));
-			     tbr.setBackgroundColor(Color.LTGRAY);
-			     tbr.setPadding(2, 1, 2, 1);
-			     TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-			     tbl.addView(tbr,tbl.getChildCount());	
+		    EditText text_cant =Factura.this.generarEditText();
+		     TableRow tbr= new TableRow(getApplicationContext());
+		     EditText divider = Factura.this.generarEditText(); 
+		     divider.setBackgroundColor(Color.BLACK);
+		     divider.setWidth(2);
+		     divider.setInputType(android.text.InputType.TYPE_NULL);
+		     Button cruz = Factura.this.generarCruz();
+		     tbr.addView(text_cant, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		     tbr.addView(divider);
+		     tbr.addView(autocomplete);
+		     tbr.addView(cruz);
+		     tbr.setLayoutParams(new ViewGroup.LayoutParams(
+		                 ViewGroup.LayoutParams.WRAP_CONTENT,
+		                 ViewGroup.LayoutParams.WRAP_CONTENT));
+		     tbr.setBackgroundColor(Color.LTGRAY);
+		     tbr.setPadding(2, 1, 2, 1);
+		     TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
+		     tbl.addView(tbr,tbl.getChildCount());	
 		}
 		
 		
@@ -210,7 +187,7 @@ public class Factura extends Activity {
 		  return cruz;
 		 }
 
-    }
+    
 
 	@Override
 	protected void onResume()
@@ -219,11 +196,6 @@ public class Factura extends Activity {
 		 
 		 	 
 	}
-	
-	
-	
-	
-	
 		
 	public void Facturar(View view) throws JSONException {
 		
@@ -288,8 +260,7 @@ public class Factura extends Activity {
 		}
 		
          
-        	    	
-	    }
+}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

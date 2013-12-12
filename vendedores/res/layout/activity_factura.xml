@@ -7,80 +7,43 @@
     android:scrollbars="horizontal|vertical"
     tools:context=".Factura" >
 
-
-        <ScrollView
-            android:id="@+id/scrollView1"
-            android:layout_width="match_parent"
-            android:layout_height="380dp" >
-
-
-            <HorizontalScrollView
-                android:id="@+id/horizontalScrollView1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-
-                <TableLayout
-                    android:id="@+id/tablaProductos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" 
-                    android:background="@android:color/black"
-                    android:padding="2dp">
-                </TableLayout>
-
-            </HorizontalScrollView>
-
-        </ScrollView>
-
-        <ProgressBar
-            android:id="@+id/progressBarFactura"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible" />
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
         <RelativeLayout
-            android:id="@+id/ButtonsLayoutFactura"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/scrollView1"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical" >
+            android:id="@+id/wrap_table_btn_facturar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
             <Button
                 android:id="@+id/Facturar"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/btn_add"
+                android:layout_below="@+id/tablaProductos"
+                android:layout_centerHorizontal="true"
                 android:onClick="Facturar"
                 android:text="@string/btn_text_registrar_venta" />
 
-            <Button
-                android:id="@+id/btn_rem"
+            <TableLayout
+                android:id="@+id/tablaProductos"
                 android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignTop="@+id/Facturar"
-                android:layout_toLeftOf="@+id/Facturar"
-                android:text="@string/text_btn_rem" />
-
-
-            <Button
-                android:id="@+id/btn_add"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/btn_rem"
-                android:text="@string/text_btn_add" />
-
+                android:layout_height="wrap_content"
+                android:background="@android:color/black"
+                android:padding="2dp" >
+            </TableLayout>
 
         </RelativeLayout>
-        
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBarFactura"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
 </RelativeLayout>
