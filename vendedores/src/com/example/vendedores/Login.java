@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 public class Login extends Activity {
 
@@ -49,7 +50,7 @@ public class Login extends Activity {
 	public void post(View view) {
     	Button b = (Button)findViewById(R.id.btn_ingresar);
 		b.setClickable(false);
-		((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.VISIBLE);
+		findViewById(R.id.LoginSeekBar).setVisibility(View.VISIBLE);
 		new LongRunningGetIO().execute();
     }
 	
@@ -64,7 +65,7 @@ public class Login extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		//((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.INVISIBLE);
+		findViewById(R.id.LoginConectado).setVisibility(View.INVISIBLE);
 	}
 	
 	private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
@@ -86,7 +87,7 @@ public class Login extends Activity {
 			 HttpClient httpClient = new DefaultHttpClient();
 			 HttpContext localContext = new BasicHttpContext();
              HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/login/");
-           
+             
              // Add your data
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
@@ -94,6 +95,7 @@ public class Login extends Activity {
              Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","");
         	 Gson gson = new Gson();
              String dataString = gson.toJson(usuario_login, usuario_login.getClass()).toString();
+             
              // Execute HTTP Post Request
              String text = null;
              try {
@@ -101,7 +103,9 @@ public class Login extends Activity {
             	 se.setContentEncoding("UTF-8");
             	 se.setContentType("application/json");
             	 httpPost.setEntity(se);
+            	 ((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(10);
             	 HttpResponse response = httpClient.execute(httpPost, localContext);
+            	 ((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(40);
             	 HttpEntity entity = response.getEntity();
                    
                    text = getASCIIContentFromEntity(entity);
@@ -126,12 +130,14 @@ public class Login extends Activity {
 					JSONArray jarray=new JSONArray(jsonClientes);
 
 					usuario = new Usuario("", "", username, "", "", api_key);
-					
+					((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(10);
+					int porcentaje_progreso = 60 + (40/jarray.length());
 					for(int i=0;i<jarray.length();i++)
 					{
 						JSONObject dic_cliente= jarray.getJSONObject(i);
 						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"),dic_cliente.getString("logo"));
 						usuario.getListaClientes().add(cli);
+						((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);
 					}
 					
 					if(usuario!=null)
@@ -151,7 +157,8 @@ public class Login extends Activity {
 					
 					
 			}
-			((ProgressBar)findViewById(R.id.LoginProgressBar)).setVisibility(View.INVISIBLE);
+			findViewById(R.id.LoginSeekBar).setVisibility(View.INVISIBLE);
+			findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
 			Button b = (Button)findViewById(R.id.btn_ingresar);
 			b.setClickable(true);
 		}

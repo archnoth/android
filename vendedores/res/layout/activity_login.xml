@@ -9,6 +9,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Login" >
 
+<ScrollView
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
     <FrameLayout
         android:id="@+id/frameLayout1"
         android:layout_width="fill_parent"
@@ -19,15 +24,6 @@
         android:background="@drawable/dnb_land_ocean_ice" >
 
         <EditText
-            android:id="@+id/editText1"
-            android:layout_width="fill_parent"
-            android:layout_height="38dp"
-            android:layout_marginTop="90dp"
-            android:background="#ffffff"
-            android:ems="10"
-            android:inputType="textPersonName" />
-
-        <EditText
             android:id="@+id/editTextPassword"
             android:layout_width="fill_parent"
             android:layout_height="41dp"
@@ -36,6 +32,26 @@
             android:background="#ffffff"
             android:ems="10"
             android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
+           
+            android:text="@string/title_activity_login"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffffff" 
+            android:textSize="30sp"/>
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="fill_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="90dp"
+            android:background="#ffffff"
+            android:ems="10"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/btn_ingresar"
@@ -50,25 +66,31 @@
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="20dp"
-           
-            android:text="@string/title_activity_login"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ffffff" 
-            android:textSize="30sp"/>
-
     </FrameLayout>
-
+  </ScrollView>
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp" >
+
+        <SeekBar
+            android:id="@+id/LoginSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/LoginConectado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/LoginConectado"
+            android:inputType="none"
+            android:textColor="@android:color/white" 
+			android:visibility="invisible" >
+            <requestFocus />
+        </EditText>
 
         <ProgressBar
             android:id="@+id/LoginProgressBar"

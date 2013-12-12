@@ -24,9 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.os.Build;
 
