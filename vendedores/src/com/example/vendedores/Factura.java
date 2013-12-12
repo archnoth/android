@@ -75,7 +75,7 @@ public class Factura extends Activity {
 		setContentView(R.layout.activity_factura);
 		cant_productos=cant_productos+1;
 		
-		((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
+		//((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
 		
     }
 
@@ -131,7 +131,7 @@ public class Factura extends Activity {
 				             ViewGroup.LayoutParams.WRAP_CONTENT,
 				             ViewGroup.LayoutParams.WRAP_CONTENT));
 					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-					tbl.addView(tbr,tbl.getChildCount());
+					tbl.addView(tbr,tbl.getChildCount()-1);
 					
 					
 				}
@@ -175,9 +175,9 @@ public class Factura extends Activity {
 	 }
 	
 
-	public void Facturar(View view) {
+	public void Facturar(View view) throws JSONException {
 		
-		((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.VISIBLE);
+		//((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.VISIBLE);
 		Button b = (Button)findViewById(R.id.Facturar);
 		b.setClickable(false);
 	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
@@ -231,6 +231,8 @@ public class Factura extends Activity {
      
 		try {
 			String respuesta= (String)async.get();
+			JSONObject json=new JSONObject(respuesta);
+			respuesta=json.getString("response").toString()+" Para el cliente "+ json.getString("cliente") + "  Con un monto de: "+json.getString("monto").toString();
 			Toast.makeText(Factura.this,respuesta, Toast.LENGTH_LONG).show();
 			
 		} catch (InterruptedException e) {
@@ -361,7 +363,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 	}
 		@Override
 		protected void onPostExecute(String results) {
-			((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
+			//((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
 		}
 
 	}

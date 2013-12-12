@@ -1,14 +1,24 @@
 package com.example.vendedores;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.example.dominio.Cliente;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.view.View;
 
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class DetalleCliente extends Activity {
@@ -24,6 +34,14 @@ public class DetalleCliente extends Activity {
 		nombre.setText(cliente.getNombre());
 		rut.setText(cliente.getRut());
 		direccion.setText(cliente.getDireccion());
+		
+		ImageView mainImageView = (ImageView) findViewById(R.id.imageView);
+		ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+		String imageurl = "http://ventas.jm-ga.com/source/media/"+cliente.getUrl_imagen();
+		  
+		ImageDownloadMessageHandler imageDownloadMessageHandler1= new ImageDownloadMessageHandler(progressBar, mainImageView);
+		ImageDownlaodThread imageDownlaodThread = new ImageDownlaodThread(imageDownloadMessageHandler1,imageurl);
+		imageDownlaodThread.start();
 		
 		
 	}
@@ -51,4 +69,55 @@ public void to_historico_activity(View view){
 	    startActivity(hist_intent);
 	}
 
+
+class ImageDownlaodThread extends Thread {
+	  ImageDownloadMessageHandler imageDownloadMessageHandler;
+	  String imageUrl;
+
+	  public ImageDownlaodThread(ImageDownloadMessageHandler imageDownloadMessageHandler, String imageUrl) {
+	   this.imageDownloadMessageHandler = imageDownloadMessageHandler;
+	   this.imageUrl = imageUrl;
+	  }
+
+	  @Override
+	  public void run() {
+	   Drawable drawable = LoadImageFromWebOperations(imageUrl);
+	   Message message = imageDownloadMessageHandler.obtainMessage(1, drawable);
+	   imageDownloadMessageHandler.sendMessage(message);
+	   System.out.println("Message sent");
+	  }
+
+	 }
+
+	 class ImageDownloadMessageHandler extends Handler {
+	  ProgressBar progressBar;
+	  View imageTextView;
+
+	  public  ImageDownloadMessageHandler(ProgressBar progressBar, View imageTextView) {
+	   this.progressBar = progressBar;
+	   this.imageTextView = imageTextView;
+	  }
+
+	  @Override
+	  public void handleMessage(Message message) {
+	   progressBar.setVisibility(View.GONE);
+	   imageTextView.setBackgroundDrawable(((Drawable) message.obj));
+	   imageTextView.setVisibility(View.VISIBLE);
+	  }
+
+	 }
+
+	 Drawable LoadImageFromWebOperations(String url) {
+	  Drawable d = null;
+	  InputStream is = null;
+	  try {
+	   is = (InputStream) new URL(url).getContent();
+	   d = Drawable.createFromStream(is, "src name");
+	  } catch (MalformedURLException e) {
+	   e.printStackTrace();
+	  } catch (IOException e) {
+	   e.printStackTrace();
+	  }
+	  return d;
+	 }
 }

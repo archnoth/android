@@ -130,7 +130,7 @@ public class Login extends Activity {
 					for(int i=0;i<jarray.length();i++)
 					{
 						JSONObject dic_cliente= jarray.getJSONObject(i);
-						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"));
+						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"),dic_cliente.getString("logo"));
 						usuario.getListaClientes().add(cli);
 					}
 					
