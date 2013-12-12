@@ -4,53 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbars="horizontal|vertical"
     tools:context=".Factura" >
 
-    <ScrollView
-        android:id="@+id/scroll"
-        android:layout_width="fill_parent"
-        android:layout_alignParentTop="true" 
-        android:layout_height="347dp">
-
-        <TableLayout
-            android:id="@+id/tablaProductos"
+        <ScrollView
+            android:id="@+id/scrollView1"
             android:layout_width="match_parent"
-            android:layout_height="347dp" >
+            android:layout_height="380dp" >
 
-            <TableRow
-                android:id="@+id/tableRow1"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:gravity="bottom" >
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
-                <AutoCompleteTextView
-                    android:id="@+id/autocompleteproducto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:text="@+id/autocompleteproducto" />
-
-                <EditText
-                    android:id="@+id/cantText"
+                <TableLayout
+                    android:id="@+id/tablaProductos"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" >
+                    android:layout_height="wrap_content" 
+                    android:background="@android:color/"
+                    android:padding="2dp">
+                </TableLayout>
 
-                    <requestFocus />
-                </EditText>
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
+            </HorizontalScrollView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/scroll" >
+        </ScrollView>
 
         <ProgressBar
             android:id="@+id/progressBarFactura"
@@ -58,38 +35,47 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:visibility="invisible" />
 
-        <Button
-            android:id="@+id/btn_add"
+        <RelativeLayout
+            android:id="@+id/ButtonsLayoutFactura"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/btn_rem"
-            android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/Facturar"
-            android:layout_marginLeft="18dp"
-            android:text="@string/text_btn_add" />
-
-        <Button
-            android:id="@+id/Facturar"
-            android:layout_width="88dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="18dp"
-            android:layout_toRightOf="@+id/btn_rem"
-            android:onClick="Facturar"
-            android:text="@string/btn_text_registrar_venta" />
+            android:layout_below="@+id/scrollView1"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/btn_rem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/Facturar"
-            android:layout_alignTop="@+id/Facturar"
-            android:layout_toRightOf="@+id/btn_add"
-            android:text="@string/text_btn_rem" />
+            <Button
+                android:id="@+id/Facturar"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/btn_add"
+                android:onClick="Facturar"
+                android:text="@string/btn_text_registrar_venta" />
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/btn_rem"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignTop="@+id/Facturar"
+                android:layout_toLeftOf="@+id/Facturar"
+                android:text="@string/text_btn_rem" />
 
+            <Button
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/btn_rem"
+                android:text="@string/text_btn_add" />
+
+        </RelativeLayout>
+        
 </RelativeLayout>

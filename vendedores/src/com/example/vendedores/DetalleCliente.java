@@ -19,7 +19,7 @@ public class DetalleCliente extends Activity {
 		setContentView(R.layout.activity_detalle_cliente);
 		Cliente cliente=getIntent().getExtras().getParcelable("cliente");
 		TextView nombre=(TextView)findViewById(R.id.editText1);
-		TextView rut=(TextView)findViewById(R.id.editText2);
+		TextView rut=(TextView)findViewById(R.id.LoginConectado);
 		TextView direccion=(TextView)findViewById(R.id.editText3);
 		nombre.setText(cliente.getNombre());
 		rut.setText(cliente.getRut());
