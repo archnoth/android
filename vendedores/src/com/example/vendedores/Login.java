@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 public class Login extends Activity {
 
@@ -130,14 +131,19 @@ public class Login extends Activity {
 
 					usuario = new Usuario("", "", username, "", "", api_key);
 					((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(10);
-					int porcentaje_progreso = 60 + (40/jarray.length());
-					for(int i=0;i<jarray.length();i++)
+					int porcentaje_progreso=0;
+					if(jarray.length()>0)
 					{
-						JSONObject dic_cliente= jarray.getJSONObject(i);
-						Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"),dic_cliente.getString("logo"));
-						usuario.getListaClientes().add(cli);
-						((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);
-					}
+						porcentaje_progreso = 60 + (40/jarray.length());
+						for(int i=0;i<jarray.length();i++)
+						{
+							JSONObject dic_cliente= jarray.getJSONObject(i);
+							Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"),dic_cliente.getString("logo"));
+							usuario.getListaClientes().add(cli);
+							((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);
+						}
+						
+					}else ((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(100);
 					
 					if(usuario!=null)
 					{
@@ -149,6 +155,7 @@ public class Login extends Activity {
 					}
 					
 				} catch (JSONException e) {
+					Toast.makeText(Login.this,results, Toast.LENGTH_LONG).show();
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					System.out.println(e.getCause());
