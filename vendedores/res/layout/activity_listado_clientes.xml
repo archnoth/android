@@ -9,11 +9,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ListadoClientes" >
 
-    <ListView
-        android:id="@+id/ViewListaVendedores"
+    <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
-    </ListView>
+
+	    <ListView
+	        android:id="@+id/ViewListaVendedores"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	    </ListView>
+	</HorizontalScrollView>
 
     <ProgressBar
         android:id="@+id/ListadoClientesprogressBar"
