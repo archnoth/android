@@ -1,6 +1,11 @@
 package com.example.dominio;
 
-public class Producto {
+import java.util.Calendar;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Producto implements Parcelable{
 	
 	private String nombre;
 	private Double precio;
@@ -45,5 +50,46 @@ public class Producto {
 	public String toString(){
 		return this.nombre + "  -  " + this.codigo+ "  -  $" + this.precio; 
 	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	
+	private Producto(Parcel in) {
+		
+		
+		nombre=in.readString();
+		precio=in.readDouble();
+		codigo=in.readString();
+		descripcion=in.readString();
+		
+	}
+
+	
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		dest.writeString(nombre);
+		dest.writeDouble(precio);
+		dest.writeString(codigo);
+		dest.writeString(descripcion);
+
+	}
+	
+	
+	public static final Parcelable.Creator<Producto> CREATOR
+    = new Parcelable.Creator<Producto>() {
+		 
+	 public Producto createFromParcel(Parcel in) {
+	     return new Producto(in);
+	 }
+	
+	 public Producto[] newArray(int size) {
+	     return new Producto[size];
+	 }
+	};
 
 }
