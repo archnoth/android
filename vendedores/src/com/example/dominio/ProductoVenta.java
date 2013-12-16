@@ -1,6 +1,11 @@
 package com.example.dominio;
 
-public class ProductoVenta {
+import java.util.Calendar;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ProductoVenta  implements Parcelable{
 	
 	private Producto producto;
 	private Integer cantidad;
@@ -25,4 +30,45 @@ public class ProductoVenta {
 		this.cantidad = cantidad;
 	}
 
+	public String toString()
+	{
+		return this.producto.getNombre()+"\n-Codigo :"+this.producto.getCodigo()+"\n-Cantidad :"+this.getCantidad();
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+
+		dest.writeParcelable(producto,flags);
+		dest.writeInt(cantidad);
+		
+	}
+	
+
+	public static final Parcelable.Creator<ProductoVenta> CREATOR
+    = new Parcelable.Creator<ProductoVenta>() {
+		 
+	 public ProductoVenta createFromParcel(Parcel in) {
+	     return new ProductoVenta(in);
+	 }
+	
+	 public ProductoVenta[] newArray(int size) {
+	     return new ProductoVenta[size];
+	 }
+	};
+	
+	private ProductoVenta(Parcel in) {
+		
+		producto=in.readParcelable(Producto.class.getClassLoader());
+		this.cantidad=in.readInt();
+		
+		
+	}
+	
 }
