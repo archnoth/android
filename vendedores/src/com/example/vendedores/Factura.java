@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -45,6 +44,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -60,6 +61,8 @@ public class Factura extends Activity {
 
 	private static List<Producto> lista_productos;
 	private static HashMap<String, Producto> diccionarioProductos;
+	private Double monto_factura;
+	private ArrayList<ProductoVenta> productos_factura;
 
 	private EditText last_text_cantidad;
 	
@@ -87,6 +90,9 @@ public class Factura extends Activity {
 		}
 		 
 		addRowToTableProductos();
+		this.monto_factura = 0.0;
+		EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
+	    monto_value.setText(this.monto_factura.toString());
 	}
 
 		
@@ -96,9 +102,8 @@ public class Factura extends Activity {
 			editText.setTextColor(Color.BLACK);
 			editText.setBackgroundColor(Color.WHITE);
 			editText.setMaxLines(1);
+			editText.setEms(3);
 			editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
-
-			
 			editText.addTextChangedListener(new TextWatcher(){ 
 			   
 				boolean agregar=true;
@@ -108,12 +113,12 @@ public class Factura extends Activity {
 					
 				}
 
-
 				@Override
 				public void afterTextChanged(Editable s) {
 					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
 					if(tbl.getChildCount()> 0)
 					{
+						ActualizarFilaFactura((TableRow)last_text_cantidad.getParent());
 						if(last_text_cantidad.getParent()==tbl.getChildAt(tbl.getChildCount()-1))
 						{
 							if(agregar)
@@ -141,8 +146,8 @@ public class Factura extends Activity {
 		
 		private void addRowToTableProductos()
 		{
-			AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
-		    EditText text_cant =Factura.this.generarEditText();
+			 AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
+		     EditText text_cant =Factura.this.generarEditText();
 		     TableRow tbr= new TableRow(getApplicationContext());
 		     EditText divider = Factura.this.generarEditText(); 
 		     divider.setBackgroundColor(Color.BLACK);
@@ -175,6 +180,14 @@ public class Factura extends Activity {
 		     auto_gen.setCursorVisible(true);
 		     auto_gen.setTextColor(Color.BLACK);
 		     auto_gen.setBackgroundColor(Color.WHITE);
+		     auto_gen.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					//ActualizarFilaFactura((TableRow)arg1.getParent());
+				}
+			});
 		     return auto_gen;
 
 		 }
@@ -189,7 +202,9 @@ public class Factura extends Activity {
 		   @Override
 		   public void onClick(View v) {
 		    TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-		    tbl.removeView((View)v.getParent());
+		    if (tbl.getChildCount() > 1){
+		    	tbl.removeView((View)v.getParent());
+		    }
 		   }
 		  });
 		  return cruz;
@@ -205,6 +220,26 @@ public class Factura extends Activity {
 		 	 
 	}
 		
+	private void ActualizarFilaFactura(TableRow row) {
+		try{
+			AutoCompleteTextView auto=(AutoCompleteTextView)row.getChildAt(2);
+			EditText cant=(EditText)row.getChildAt(0);
+			String codigo="";
+			codigo=auto.getText().toString().split("\\s - \\s")[1];	
+			for(int j=0;j<auto.getAdapter().getCount();j++){
+				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
+				{
+					this.monto_factura=this.monto_factura+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
+					if (this.productos_factura.indexOf((Producto)auto.getAdapter().getItem(j)) != -1) {
+						this.productos_factura.add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
+					}
+					EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
+				    monto_value.setText(this.monto_factura.toString());
+				}
+			}
+		}catch (Exception e) {}
+	}
+	
 	public void Facturar(View view) throws JSONException {
 		
 		Button b = (Button)findViewById(R.id.Facturar);
@@ -212,36 +247,9 @@ public class Factura extends Activity {
 	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
 	    Cliente cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
 	    Calendar fecha=Calendar.getInstance();
-	    Double monto=0.0;
-	    TableLayout tbl=(TableLayout)this.findViewById(R.id.tablaProductos);
-	    
-	    Venta nueva_venta=new Venta(vendedor, cliente, fecha,monto);
-	    
-	    for(int i=0;i<tbl.getChildCount();)
-	    {  	
-	    	TableRow tr=(TableRow)tbl.getChildAt(i);
-    		AutoCompleteTextView auto=(AutoCompleteTextView)tr.getChildAt(2);
-    		EditText cant=(EditText)tr.getChildAt(0);
-    		String codigo="";
-    		
-    		try{
-    			codigo=auto.getText().toString().split("\\s - \\s")[1];	
-    			}catch (Exception e) {
-    			}
-    			for(int j=0;j<auto.getAdapter().getCount();j++){
-    	
-    				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
-    				{
-    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
-    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
-    				}
-    			}
-
-	    	i=i+1;
-	    }
-	     
+	    Venta nueva_venta=new Venta(vendedor, cliente, fecha, this.monto_factura);
+	    nueva_venta.setProductos(this.productos_factura);
 		JSONObject json=new JSONObject();
-		nueva_venta.setMonto(monto);
 	    Gson gson = new Gson();
         	
         do
@@ -255,69 +263,72 @@ public class Factura extends Activity {
 				//obtengo la respuesta asincrona
 				String respuesta= (String)async.get();
 				json=new JSONObject(respuesta);
-				
-				//si se creo la venta 
-				if(json.getString("response").toString().equalsIgnoreCase("Venta creada"))
-				{
-					Calendar fecha_venta_registrada=Calendar.getInstance();
-					fecha_venta_registrada.set(Calendar.YEAR,Integer.parseInt(((JSONObject)json.get("fecha")).getString("year")));
-					fecha_venta_registrada.set(Calendar.MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("month")));
-					fecha_venta_registrada.set(Calendar.DAY_OF_MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("dayOfMonth")));
-					fecha_venta_registrada.set(Calendar.HOUR_OF_DAY,Integer.parseInt(((JSONObject)json.get("fecha")).getString("hourOfDay")));
-					fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)json.get("fecha")).getString("minute")));
-					fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)json.get("fecha")).getString("second")));
+
+				if (json.getString("response").toString().equalsIgnoreCase("Error en la venta")) {
 					
+				}else{
 					
-					//JSONObject cliente_venta_creada=((JSONObject)(json.get("cliente")));
-					
-					// la venta es igual a la que envie originalmente, entonces proceso completo!!!! corto el loop
-					if(nueva_venta.getMonto()==Double.parseDouble(json.getString("monto").toString())&&
-							nueva_venta.getCliente().getRut().equalsIgnoreCase(json.getString("rut_cliente"))&&
-							nueva_venta.getCliente().getNombre().equalsIgnoreCase(json.getString("nombre_cliente"))&&
-							nueva_venta.getFecha().equals(fecha_venta_registrada)){
-						
-						String mensaje="Venta exitosa!"+" Para el cliente "+ nueva_venta.getCliente().getNombre() + "  Con un monto de: "+nueva_venta.getMonto().toString();
-						Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
-						//break;
-					}
-					else
+					//si se creo la venta 
+					if(json.getString("response").toString().equalsIgnoreCase("Venta creada"))
 					{
-						//llamo a crear venta tentativa con nueva_venta
-						dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString();
+						Calendar fecha_venta_registrada=Calendar.getInstance();
+						fecha_venta_registrada.set(Calendar.YEAR,Integer.parseInt(((JSONObject)json.get("fecha")).getString("year")));
+						fecha_venta_registrada.set(Calendar.MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("month")));
+						fecha_venta_registrada.set(Calendar.DAY_OF_MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("dayOfMonth")));
+						fecha_venta_registrada.set(Calendar.HOUR_OF_DAY,Integer.parseInt(((JSONObject)json.get("fecha")).getString("hourOfDay")));
+						fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)json.get("fecha")).getString("minute")));
+						fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)json.get("fecha")).getString("second")));
 						
-						JSONObject aux = new JSONObject(dataString); //venta tentativa espera confirmacion
-						aux.put("venta_id", json.getString("venta_id"));
-						aux.put("monto",json.getString("monto"));
-        				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
-        	
-        				//inicia el proceso de vender
-	        			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
-						String mensaje=(String)th_async_tentativa.get();;
-						Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
-						//break;
+						
+						//JSONObject cliente_venta_creada=((JSONObject)(json.get("cliente")));
+						
+						// la venta es igual a la que envie originalmente, entonces proceso completo!!!! corto el loop
+						if(nueva_venta.getMonto()==Double.parseDouble(json.getString("monto").toString())&&
+								nueva_venta.getCliente().getRut().equalsIgnoreCase(json.getString("rut_cliente"))&&
+								nueva_venta.getCliente().getNombre().equalsIgnoreCase(json.getString("nombre_cliente"))&&
+								nueva_venta.getFecha().equals(fecha_venta_registrada)){
+							
+							String mensaje="Venta exitosa!"+" Para el cliente "+ nueva_venta.getCliente().getNombre() + "  Con un monto de: "+nueva_venta.getMonto().toString();
+							Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
+							//break;
+						}
+						else
+						{
+							//llamo a crear venta tentativa con nueva_venta
+							dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString();
+							
+							JSONObject aux = new JSONObject(dataString); //venta tentativa espera confirmacion
+							aux.put("venta_id", json.getString("venta_id"));
+							aux.put("monto",json.getString("monto"));
+	        				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
+	        	
+	        				//inicia el proceso de vender
+		        			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
+							String mensaje=(String)th_async_tentativa.get();
+							Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
+							//break;
+						}
+						
+					}
+					JSONObject ventaObj=((JSONObject)json.get("venta"));
+					Double mnt=Double.parseDouble(ventaObj.get("monto").toString());
+					//sino llamo nuevamente al proceso de vender con nueva_venta arreglada
+					nueva_venta.setMonto(mnt);
+					ArrayList<ProductoVenta> nuevaListaProductos=new ArrayList<ProductoVenta>();
+					JSONArray productos_nueva_venta=(JSONArray)ventaObj.get("productos");				
+					for(int i=0;i<productos_nueva_venta.length();i++)
+					{
+						String codigo =((String)((JSONObject)productos_nueva_venta.get(i)).get("producto")).split(":")[2];
+						Producto p = diccionarioProductos.get(codigo);	
+						int cant=Integer.parseInt(((JSONObject)productos_nueva_venta.get(i)).get("cantidad").toString());
+						ProductoVenta pv=new ProductoVenta(p,cant);
+						nuevaListaProductos.add(pv);
 					}
 					
+					nueva_venta.setProductos(nuevaListaProductos);
 				}
-				JSONObject ventaObj=((JSONObject)json.get("venta"));
-				Double mnt=Double.parseDouble(ventaObj.get("monto").toString());
-				//sino llamo nuevamente al proceso de vender con nueva_venta arreglada
-				nueva_venta.setMonto(mnt);
-				ArrayList<ProductoVenta> nuevaListaProductos=new ArrayList<ProductoVenta>();
-				JSONArray productos_nueva_venta=(JSONArray)ventaObj.get("productos");				
-				for(int i=0;i<productos_nueva_venta.length();i++)
-				{
-					String codigo =((String)((JSONObject)productos_nueva_venta.get(i)).get("producto")).split(":")[2];
-					Producto p = diccionarioProductos.get(codigo);	
-					int cant=Integer.parseInt(((JSONObject)productos_nueva_venta.get(i)).get("cantidad").toString());
-					ProductoVenta pv=new ProductoVenta(p,cant);
-					nuevaListaProductos.add(pv);
-				}
-				
-				nueva_venta.setProductos(nuevaListaProductos);
-			}catch(Exception e)
-			{
-				
-			}
+			}catch(Exception e)	{}
+			
         }while(json.getString("response").toString().equalsIgnoreCase("Stock insuficiente"));
 					
 				

@@ -19,5 +19,7 @@
 
     <string name="todo">TODO</string>
     <string name="LoginConectado">¡Conectado!</string>
+    <string name="buscar">Buscar</string>
+    <string name="monto_tag">Monto: </string>
 
 </resources>
