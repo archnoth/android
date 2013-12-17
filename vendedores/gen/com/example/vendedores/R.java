@@ -25,49 +25,63 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int Facturar=0x7f08000f;
-        public static final int FrameLayout1=0x7f080012;
-        public static final int ViewListaVendedores=0x7f080013;
-        public static final int action_settings=0x7f080019;
-        public static final int autocompleteproducto=0x7f08000b;
-        public static final int btn_add=0x7f080010;
-        public static final int btn_historico=0x7f080008;
-        public static final int btn_ingresar=0x7f080016;
-        public static final int btn_nueva_venta=0x7f080007;
-        public static final int btn_rem=0x7f080011;
-        public static final int cantText=0x7f08000c;
-        public static final int editText1=0x7f080001;
-        public static final int editText2=0x7f080003;
-        public static final int editText3=0x7f080005;
-        public static final int editTextPassword=0x7f080015;
-        public static final int factura_layout=0x7f080009;
-        public static final int frameLayout1=0x7f080014;
-        public static final int scroll=0x7f08000a;
-        public static final int scrollView1=0x7f080018;
-        public static final int tablaProductos=0x7f08000d;
-        public static final int tableRow1=0x7f080000;
-        public static final int tableRow2=0x7f080002;
-        public static final int tableRow3=0x7f080004;
-        public static final int tableRow4=0x7f080006;
-        public static final int tableRowButtons=0x7f08000e;
-        public static final int textView1=0x7f080017;
+        public static final int Facturar=0x7f080011;
+        public static final int ListadoClientesprogressBar=0x7f080016;
+        public static final int LoginConectado=0x7f08001c;
+        public static final int LoginProgressBar=0x7f08001d;
+        public static final int LoginSeekBar=0x7f08001b;
+        public static final int RelativeLayout1=0x7f080014;
+        public static final int ViewListaVendedores=0x7f080015;
+        public static final int action_settings=0x7f080023;
+        public static final int btn_historico=0x7f08000d;
+        public static final int btn_ingresar=0x7f08001a;
+        public static final int btn_nueva_venta=0x7f08000c;
+        public static final int btn_registrar_nota=0x7f080022;
+        public static final int btn_tiempo_entrega_desde=0x7f08001e;
+        public static final int btn_tiempo_entrega_hasta=0x7f080020;
+        public static final int buttonSelectDate=0x7f08001f;
+        public static final int editText1=0x7f080006;
+        public static final int editText2=0x7f080008;
+        public static final int editText3=0x7f08000a;
+        public static final int editTextPassword=0x7f080018;
+        public static final int editTextRedaccionNota=0x7f080021;
+        public static final int factura_layout=0x7f08000e;
+        public static final int frameLayout1=0x7f080017;
+        public static final int imageView=0x7f080004;
+        public static final int progressBar=0x7f080000;
+        public static final int progressBarFactura=0x7f080013;
+        public static final int realtiveBig=0x7f080001;
+        public static final int scrollView1=0x7f08000f;
+        public static final int tablaProductos=0x7f080012;
+        public static final int tableLayout1=0x7f080002;
+        public static final int tableRow1=0x7f080005;
+        public static final int tableRow2=0x7f080007;
+        public static final int tableRow3=0x7f080009;
+        public static final int tableRow4=0x7f08000b;
+        public static final int tableRowImage=0x7f080003;
+        public static final int textView1=0x7f080019;
+        public static final int wrap_table_btn_facturar=0x7f080010;
     }
     public static final class layout {
         public static final int activity_detalle_cliente=0x7f030000;
         public static final int activity_factura=0x7f030001;
         public static final int activity_listado_clientes=0x7f030002;
         public static final int activity_login=0x7f030003;
-        public static final int activity_ventas_historico=0x7f030004;
-        public static final int lista_text_view=0x7f030005;
+        public static final int activity_nota=0x7f030004;
+        public static final int activity_ventas_historico=0x7f030005;
+        public static final int lista_productos_venta=0x7f030006;
+        public static final int lista_text_view=0x7f030007;
     }
     public static final class menu {
         public static final int detalle_cliente=0x7f070000;
         public static final int factura=0x7f070001;
         public static final int listado_clientes=0x7f070002;
         public static final int login=0x7f070003;
-        public static final int ventas_historico=0x7f070004;
+        public static final int nota=0x7f070004;
+        public static final int ventas_historico=0x7f070005;
     }
     public static final class string {
+        public static final int LoginConectado=0x7f050013;
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int autocomplete_producto=0x7f050008;
@@ -78,11 +92,16 @@ public final class R {
         public static final int text_btn_historico=0x7f05000b;
         public static final int text_btn_ingresar=0x7f050005;
         public static final int text_btn_rem=0x7f05000e;
+        public static final int text_dialog_no=0x7f050010;
+        public static final int text_dialog_si=0x7f05000f;
+        public static final int text_dialog_text=0x7f050011;
         public static final int title_activity_detalle_cliente=0x7f050006;
         public static final int title_activity_factura=0x7f050007;
         public static final int title_activity_listado_clientes=0x7f050003;
         public static final int title_activity_login=0x7f050004;
+        public static final int title_activity_nota=0x7f050014;
         public static final int title_activity_ventas_historico=0x7f05000a;
+        public static final int todo=0x7f050012;
     }
     public static final class style {
         /** 

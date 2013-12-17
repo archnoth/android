@@ -472,7 +472,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 					builder.setMessage("Su pedido se proceso correctamente.\n+" +
 							"Para el cliente :"+ nueva_venta.getCliente().getNombre() + 
 							"\n  Con un monto de :"+nueva_venta.getMonto().toString()+
-							"\n¿Desea agregar notas sobre este Pedido?");
+							"\n ¿Desea agregar notas sobre este Pedido?");
 					builder.setTitle(mensaje)
 					        .setCancelable(false)
 					        .setNegativeButton("Cancelar",
