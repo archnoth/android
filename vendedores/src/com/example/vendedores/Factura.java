@@ -44,8 +44,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -62,7 +60,7 @@ public class Factura extends Activity {
 	private static List<Producto> lista_productos;
 	private static HashMap<String, Producto> diccionarioProductos;
 	private Double monto_factura;
-	private ArrayList<ProductoVenta> productos_factura;
+	private ArrayList<ProductoVenta> productos_factura = new ArrayList<ProductoVenta>();
 
 	private EditText last_text_cantidad;
 	
@@ -110,15 +108,16 @@ public class Factura extends Activity {
 				@Override
 				public void onTextChanged(CharSequence s, int start, int before,int count) {
 					// TODO Auto-generated method stub
-					
 				}
 
 				@Override
 				public void afterTextChanged(Editable s) {
+					try {
+						ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
+					} catch (Exception e) {}
 					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
 					if(tbl.getChildCount()> 0)
 					{
-						ActualizarFilaFactura((TableRow)last_text_cantidad.getParent());
 						if(last_text_cantidad.getParent()==tbl.getChildAt(tbl.getChildCount()-1))
 						{
 							if(agregar)
@@ -133,14 +132,13 @@ public class Factura extends Activity {
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count,
 						int after) {
-					
-					
+					try {
+						ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), false);
+					} catch (Exception e) {}
 				}
-		});
-		
-
-		last_text_cantidad=editText;
-		return editText;
+			});
+			last_text_cantidad=editText;
+			return editText;
 		}
 		
 		
@@ -180,14 +178,27 @@ public class Factura extends Activity {
 		     auto_gen.setCursorVisible(true);
 		     auto_gen.setTextColor(Color.BLACK);
 		     auto_gen.setBackgroundColor(Color.WHITE);
-		     auto_gen.setOnItemClickListener(new OnItemClickListener() {
+		     auto_gen.addTextChangedListener(new TextWatcher(){ 
+				   
+					@Override
+					public void onTextChanged(CharSequence s, int start, int before,int count) {
+					}
 
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-					//ActualizarFilaFactura((TableRow)arg1.getParent());
-				}
-			});
+					@Override
+					public void afterTextChanged(Editable s) {
+						try {
+							ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
+						} catch (Exception e) {}
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start, int count,
+							int after) {
+						try {
+							ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), false);
+						} catch (Exception e) {}
+					}
+				});
 		     return auto_gen;
 
 		 }
@@ -220,23 +231,19 @@ public class Factura extends Activity {
 		 	 
 	}
 		
-	private void ActualizarFilaFactura(TableRow row) {
+	private void ActualizarFilaFactura(TableRow row, Boolean sumar) {
 		try{
 			AutoCompleteTextView auto=(AutoCompleteTextView)row.getChildAt(2);
 			EditText cant=(EditText)row.getChildAt(0);
 			String codigo="";
 			codigo=auto.getText().toString().split("\\s - \\s")[1];	
-			for(int j=0;j<auto.getAdapter().getCount();j++){
-				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
-				{
-					this.monto_factura=this.monto_factura+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
-					if (this.productos_factura.indexOf((Producto)auto.getAdapter().getItem(j)) != -1) {
-						this.productos_factura.add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
-					}
-					EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
-				    monto_value.setText(this.monto_factura.toString());
-				}
+			if(sumar) {
+				this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString());
+			}else {
+				this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString());
 			}
+			EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
+		    monto_value.setText(this.monto_factura.toString());
 		}catch (Exception e) {}
 	}
 	
@@ -247,6 +254,18 @@ public class Factura extends Activity {
 	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
 	    Cliente cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
 	    Calendar fecha=Calendar.getInstance();
+	    TableLayout tabla = (TableLayout)findViewById(R.id.tablaProductos);
+	    for (int i=0; i < tabla.getChildCount();i++) {
+	    	try{
+	    		TableRow row = ((TableRow)tabla.getChildAt(i));
+				AutoCompleteTextView auto=(AutoCompleteTextView)row.getChildAt(2);
+				EditText cant=(EditText)row.getChildAt(0);
+				String codigo="";
+				codigo=auto.getText().toString().split("\\s - \\s")[1];	
+				ProductoVenta nueva_linea =new ProductoVenta(diccionarioProductos.get(codigo),Integer.parseInt(cant.getText().toString())); 
+				this.productos_factura.add(nueva_linea);
+			}catch (Exception e) {}
+	    }
 	    Venta nueva_venta=new Venta(vendedor, cliente, fecha, this.monto_factura);
 	    nueva_venta.setProductos(this.productos_factura);
 		JSONObject json=new JSONObject();
