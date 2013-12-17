@@ -16,8 +16,11 @@
     <string name="text_btn_generar_factura">Generar Factura</string>
     <string name="text_btn_add">Mas </string>
     <string name="text_btn_rem">Menos </string>
-
+    <string name="text_dialog_si">Si </string>
+    <string name="text_dialog_no">No </string>
+    <string name="text_dialog_text">Algo </string>
     <string name="todo">TODO</string>
     <string name="LoginConectado">¡Conectado!</string>
+    <string name="title_activity_nota">NotaActivity</string>
 
 </resources>

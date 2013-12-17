@@ -491,7 +491,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 					                    	Intent loc = new Intent(getApplicationContext(),NotaActivity.class); 
 					                    	loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 					                    	loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente")); 
-					 				        loc.putExtra("venta",nueva_venta);
+					 				        loc.putExtra("venta_id", json.getString("venta_id"));
 					 				        startActivity(loc);
 					                     }catch(Exception e){}
 					                    }
@@ -512,7 +512,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
     				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
     				//inicia el proceso de vender
         			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
-					String mensaje=(String)th_async_tentativa.get();;
+					String mensaje=(String)th_async_tentativa.get();
 					Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
 					
 				}
