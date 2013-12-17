@@ -38,13 +38,9 @@ import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.InputFilter;
@@ -56,7 +52,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -69,8 +64,6 @@ public class Factura extends Activity {
 	private static List<Producto> lista_productos;
 	private static HashMap<String, Producto> diccionarioProductos;
 	private Double monto_factura;
-	private ArrayList<ProductoVenta> productos_factura = new ArrayList<ProductoVenta>();
-	private boolean salir=false;
 	private Venta nueva_venta;
 	private EditText last_text_cantidad;
 	private JSONObject json;
@@ -522,7 +515,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 					                    	Intent loc = new Intent(getApplicationContext(),NotaActivity.class); 
 					                    	loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 					                    	loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente")); 
-					 				        loc.putExtra("venta",nueva_venta);
+					 				        loc.putExtra("venta_id", json.getString("venta_id"));
 					 				        startActivity(loc);
 					                     }catch(Exception e){}
 					                    }
@@ -543,7 +536,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
     				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
     				//inicia el proceso de vender
         			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
-					String mensaje=(String)th_async_tentativa.get();;
+					String mensaje=(String)th_async_tentativa.get();
 					Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
 					
 				}

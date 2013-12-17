@@ -17,10 +17,8 @@
     <FrameLayout
         android:id="@+id/frameLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        
         android:background="@drawable/dnb_land_ocean_ice" >
 
         <EditText

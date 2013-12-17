@@ -1,0 +1,75 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="446dp"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/btn_tiempo_entrega_desde"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/buttonSelectDate"
+        android:text="Seleccione hora de entrega Inicial"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/btn_tiempo_entrega_hasta"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btn_tiempo_entrega_desde"
+        android:text="Seleccione hora de entrega final"
+        android:textSize="25dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Ingrese notas del pedidio"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/buttonSelectDate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="15dp"
+        android:text="Seleccione fecha de entrega"
+        android:textSize="25dp" />
+
+    <EditText
+        android:id="@+id/editTextRedaccionNota"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btn_tiempo_entrega_hasta"
+        android:ems="10"
+        android:inputType="textMultiLine" >
+
+        <requestFocus />
+       
+    </EditText>
+
+    <Button
+        android:id="@+id/btn_registrar_nota"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Registrar Nota"
+        android:textSize="25dp" />
+
+</RelativeLayout>
+        
+</ScrollView>
+
