@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -36,7 +37,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.InputFilter;
@@ -48,6 +56,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -61,9 +70,11 @@ public class Factura extends Activity {
 	private static HashMap<String, Producto> diccionarioProductos;
 	private Double monto_factura;
 	private ArrayList<ProductoVenta> productos_factura = new ArrayList<ProductoVenta>();
-
+	private boolean salir=false;
+	private Venta nueva_venta;
 	private EditText last_text_cantidad;
-	
+	private JSONObject json;
+	private Gson gson;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -254,105 +265,40 @@ public class Factura extends Activity {
 	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
 	    Cliente cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
 	    Calendar fecha=Calendar.getInstance();
-	    TableLayout tabla = (TableLayout)findViewById(R.id.tablaProductos);
-	    for (int i=0; i < tabla.getChildCount();i++) {
-	    	try{
-	    		TableRow row = ((TableRow)tabla.getChildAt(i));
-				AutoCompleteTextView auto=(AutoCompleteTextView)row.getChildAt(2);
-				EditText cant=(EditText)row.getChildAt(0);
-				String codigo="";
-				codigo=auto.getText().toString().split("\\s - \\s")[1];	
-				ProductoVenta nueva_linea =new ProductoVenta(diccionarioProductos.get(codigo),Integer.parseInt(cant.getText().toString())); 
-				this.productos_factura.add(nueva_linea);
-			}catch (Exception e) {}
-	    }
-	    Venta nueva_venta=new Venta(vendedor, cliente, fecha, this.monto_factura);
-	    nueva_venta.setProductos(this.productos_factura);
-		JSONObject json=new JSONObject();
-	    Gson gson = new Gson();
-        	
-        do
-        {
-			String dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString(); //venta tentativa espera confirmacion
-        	PostNuevaVenta thred=new PostNuevaVenta();//llamo un proceso en backgroud para realizar la venta
-        	
-        	//inicia el proceso de vender
-	        AsyncTask<String, Void, String> async=thred.execute(dataString);	     
-			try {				
-				//obtengo la respuesta asincrona
-				String respuesta= (String)async.get();
-				json=new JSONObject(respuesta);
+	    Double monto=0.0;
+	    TableLayout tbl=(TableLayout)this.findViewById(R.id.tablaProductos);
+	    nueva_venta=new Venta(vendedor, cliente, fecha,monto);
+	    
+	    for(int i=0;i<tbl.getChildCount();)
+	    {  	
+	    	TableRow tr=(TableRow)tbl.getChildAt(i);
+    		AutoCompleteTextView auto=(AutoCompleteTextView)tr.getChildAt(2);
+    		EditText cant=(EditText)tr.getChildAt(0);
+    		String codigo="";
+    		
+    		try{
+    			codigo=auto.getText().toString().split("\\s - \\s")[1];	
+    			}catch (Exception e) {
+    			}
+    			for(int j=0;j<auto.getAdapter().getCount();j++){
+    	
+    				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
+    				{
+    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
+    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
+    				}
+    			}
 
-				if (json.getString("response").toString().equalsIgnoreCase("Error en la venta")) {
-					
-				}else{
-					
-					//si se creo la venta 
-					if(json.getString("response").toString().equalsIgnoreCase("Venta creada"))
-					{
-						Calendar fecha_venta_registrada=Calendar.getInstance();
-						fecha_venta_registrada.set(Calendar.YEAR,Integer.parseInt(((JSONObject)json.get("fecha")).getString("year")));
-						fecha_venta_registrada.set(Calendar.MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("month")));
-						fecha_venta_registrada.set(Calendar.DAY_OF_MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("dayOfMonth")));
-						fecha_venta_registrada.set(Calendar.HOUR_OF_DAY,Integer.parseInt(((JSONObject)json.get("fecha")).getString("hourOfDay")));
-						fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)json.get("fecha")).getString("minute")));
-						fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)json.get("fecha")).getString("second")));
-						
-						
-						//JSONObject cliente_venta_creada=((JSONObject)(json.get("cliente")));
-						
-						// la venta es igual a la que envie originalmente, entonces proceso completo!!!! corto el loop
-						if(nueva_venta.getMonto()==Double.parseDouble(json.getString("monto").toString())&&
-								nueva_venta.getCliente().getRut().equalsIgnoreCase(json.getString("rut_cliente"))&&
-								nueva_venta.getCliente().getNombre().equalsIgnoreCase(json.getString("nombre_cliente"))&&
-								nueva_venta.getFecha().equals(fecha_venta_registrada)){
-							
-							String mensaje="Venta exitosa!"+" Para el cliente "+ nueva_venta.getCliente().getNombre() + "  Con un monto de: "+nueva_venta.getMonto().toString();
-							Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
-							//break;
-						}
-						else
-						{
-							//llamo a crear venta tentativa con nueva_venta
-							dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString();
-							
-							JSONObject aux = new JSONObject(dataString); //venta tentativa espera confirmacion
-							aux.put("venta_id", json.getString("venta_id"));
-							aux.put("monto",json.getString("monto"));
-	        				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
-	        	
-	        				//inicia el proceso de vender
-		        			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
-							String mensaje=(String)th_async_tentativa.get();
-							Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
-							//break;
-						}
-						
-					}
-					JSONObject ventaObj=((JSONObject)json.get("venta"));
-					Double mnt=Double.parseDouble(ventaObj.get("monto").toString());
-					//sino llamo nuevamente al proceso de vender con nueva_venta arreglada
-					nueva_venta.setMonto(mnt);
-					ArrayList<ProductoVenta> nuevaListaProductos=new ArrayList<ProductoVenta>();
-					JSONArray productos_nueva_venta=(JSONArray)ventaObj.get("productos");				
-					for(int i=0;i<productos_nueva_venta.length();i++)
-					{
-						String codigo =((String)((JSONObject)productos_nueva_venta.get(i)).get("producto")).split(":")[2];
-						Producto p = diccionarioProductos.get(codigo);	
-						int cant=Integer.parseInt(((JSONObject)productos_nueva_venta.get(i)).get("cantidad").toString());
-						ProductoVenta pv=new ProductoVenta(p,cant);
-						nuevaListaProductos.add(pv);
-					}
-					
-					nueva_venta.setProductos(nuevaListaProductos);
-				}
-			}catch(Exception e)	{}
-			
-        }while(json.getString("response").toString().equalsIgnoreCase("Stock insuficiente"));
-					
-				
-         
-}
+	    	i=i+1;
+	    }
+	     
+		json=new JSONObject();
+		nueva_venta.setMonto(monto);
+	    gson = new Gson();
+        VentaRecursiva();
+        
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -364,66 +310,64 @@ public class Factura extends Activity {
 private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 		
 		 
-		protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-	       InputStream in = entity.getContent();
-	         StringBuffer out = new StringBuffer();
-	         int n = 1;
-	         while (n>0) {
-	             byte[] b = new byte[4096];
-	             n =  in.read(b);
-	             if (n>0) out.append(new String(b, 0, n));
-	         }
-	         return out.toString();
-	    }
-		
-		@Override
-		protected  List<Producto> doInBackground(Void... params) {
-			ArrayList<Producto> lista = null;
-			HttpClient httpClient = new DefaultHttpClient();
-			 HttpContext localContext = new BasicHttpContext();
-             HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/productos/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
+	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
+       InputStream in = entity.getContent();
+         StringBuffer out = new StringBuffer();
+         int n = 1;
+         while (n>0) {
+             byte[] b = new byte[4096];
+             n =  in.read(b);
+             if (n>0) out.append(new String(b, 0, n));
+         }
+         return out.toString();
+    }
+	
+	@Override
+	protected  List<Producto> doInBackground(Void... params) {
+		ArrayList<Producto> lista = null;
+		HttpClient httpClient = new DefaultHttpClient();
+		 HttpContext localContext = new BasicHttpContext();
+         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/productos/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
            
   
              // Execute HTTP Post Request
-             String text = null;
-             try {
-            	 HttpResponse response = httpClient.execute(httpGet, localContext);
-            	 HttpEntity entity = response.getEntity();
-                   
-                 text = getASCIIContentFromEntity(entity);
-                   
-             } catch (Exception e) {
-            	 
-             }
-             //return text; 
-             if (text!=null) {
- 				
- 				
- 				JSONObject jsonObject;
- 				try {
- 					jsonObject = new JSONObject(text);
- 										
- 					JSONArray jarray =(JSONArray)jsonObject.get("objects");
- 					lista= new ArrayList<Producto>();
- 					for(int i=0;i<jarray.length();i++)
- 					{
- 						JSONObject dic_producto = jarray.getJSONObject(i);
- 						Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
- 						lista.add(prod);
- 					}
- 					
- 					
- 				} catch (JSONException e) {
- 					e.printStackTrace();
- 				}
- 					
- 					
- 			}
-			return lista;
+         String text = null;
+         try {
+        	 HttpResponse response = httpClient.execute(httpGet, localContext);
+        	 HttpEntity entity = response.getEntity();
+               
+             text = getASCIIContentFromEntity(entity);
+               
+         } catch (Exception e) {
+        	 
+         }
+         //return text; 
+         if (text!=null) {
+						
+			JSONObject jsonObject;
+			try {
+				jsonObject = new JSONObject(text);
+									
+				JSONArray jarray =(JSONArray)jsonObject.get("objects");
+				lista= new ArrayList<Producto>();
+				for(int i=0;i<jarray.length();i++)
+				{
+					JSONObject dic_producto = jarray.getJSONObject(i);
+					Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
+					lista.add(prod);
+				}
+				
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+				
+		}
+		return lista;
 	}
 
 
-	}	
+}	
     
 private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 		
@@ -461,8 +405,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
                    
              } catch (Exception e) {}
              //return text; 
-             
- 			
+             		
 			return null;
 	}
 		@Override
@@ -471,8 +414,6 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 		}
 
 	}
-	
-	
 	
 	private class PostNuevaVentaTentativa extends AsyncTask <String, Void, String > {
 		
@@ -510,8 +451,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
                    
              } catch (Exception e) {}
              //return text; 
-             
- 			
+              			
 			return null;
 	}
 		@Override
@@ -520,5 +460,155 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 		}
 
 	}
+	
+	public void VentaRecursiva()
+	{
+		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString(); //venta tentativa espera confirmacion
+    	PostNuevaVenta thred=new PostNuevaVenta();//llamo un proceso en backgroud para realizar la venta
+    	
+    	//inicia el proceso de vender
+        AsyncTask<String, Void, String> async=thred.execute(dataString);	     
+		try {				
+			//obtengo la respuesta asincrona
+			String respuesta= (String)async.get();
+			json=new JSONObject(respuesta);
+			
+			//si se creo la venta 
+			if(json.getString("response").toString().equalsIgnoreCase("Venta creada"))
+			{
+				Calendar fecha_venta_registrada=Calendar.getInstance();
+				fecha_venta_registrada.set(Calendar.YEAR,Integer.parseInt(((JSONObject)json.get("fecha")).getString("year")));
+				fecha_venta_registrada.set(Calendar.MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("month")));
+				fecha_venta_registrada.set(Calendar.DAY_OF_MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("dayOfMonth")));
+				fecha_venta_registrada.set(Calendar.HOUR_OF_DAY,Integer.parseInt(((JSONObject)json.get("fecha")).getString("hourOfDay")));
+				fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)json.get("fecha")).getString("minute")));
+				fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)json.get("fecha")).getString("second")));
+				
+				
+				//JSONObject cliente_venta_creada=((JSONObject)(json.get("cliente")));
+				
+				// la venta es igual a la que envie originalmente, entonces proceso completo!!!! corto el loop
+				if(nueva_venta.getMonto()==Double.parseDouble(json.getString("monto").toString())&&
+						nueva_venta.getCliente().getRut().equalsIgnoreCase(json.getString("rut_cliente"))&&
+						nueva_venta.getCliente().getNombre().equalsIgnoreCase(json.getString("nombre_cliente"))&&
+						nueva_venta.getFecha().get(Calendar.YEAR)==fecha_venta_registrada.get(Calendar.YEAR)&&
+						nueva_venta.getFecha().get(Calendar.MONTH)==fecha_venta_registrada.get(Calendar.MONTH)&&
+						nueva_venta.getFecha().get(Calendar.DAY_OF_MONTH)==fecha_venta_registrada.get(Calendar.DAY_OF_MONTH)&&
+						nueva_venta.getFecha().get(Calendar.HOUR_OF_DAY)==fecha_venta_registrada.get(Calendar.HOUR_OF_DAY)&&
+						nueva_venta.getFecha().get(Calendar.MINUTE)==fecha_venta_registrada.get(Calendar.MINUTE)&&
+						nueva_venta.getFecha().get(Calendar.SECOND)==fecha_venta_registrada.get(Calendar.SECOND)){
+					
+					String mensaje="Venta exitosa!";
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setMessage("Su pedido se proceso correctamente.\n+" +
+							"Para el cliente :"+ nueva_venta.getCliente().getNombre() + 
+							"\n  Con un monto de :"+nueva_venta.getMonto().toString()+
+							"\n¿Desea agregar notas sobre este Pedido?");
+					builder.setTitle(mensaje)
+					        .setCancelable(false)
+					        .setNegativeButton("Cancelar",
+					                new DialogInterface.OnClickListener() {
+					                    public void onClick(DialogInterface dialog, int id) {
+					                        dialog.cancel();
+					                        
+					                    }
+					                })
+					        .setPositiveButton("Aceptar",
+					                new DialogInterface.OnClickListener() {
+					                    public void onClick(DialogInterface dialog, int id) {
+					                     try{
+					                    	
+					                    	 //Toast.makeText(Factura.this,"Aca tengo que generar una nueva actividad donde el vendedor agrega notas de la venta", Toast.LENGTH_LONG).show();
+					                    	Intent loc = new Intent(getApplicationContext(),NotaActivity.class); 
+					                    	loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+					                    	loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente")); 
+					 				        loc.putExtra("venta",nueva_venta);
+					 				        startActivity(loc);
+					                     }catch(Exception e){}
+					                    }
+					                });
+					AlertDialog alert = builder.create();
+					alert.show();
+				
+
+				}
+				else
+				{
+					
+					//llamo a crear venta tentativa con nueva_venta
+					dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString();
+					JSONObject aux = new JSONObject(dataString); //venta tentativa espera confirmacion
+					aux.put("venta_id", json.getString("venta_id"));
+					aux.put("monto",json.getString("monto"));
+    				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
+    				//inicia el proceso de vender
+        			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
+					String mensaje=(String)th_async_tentativa.get();;
+					Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
+					
+				}
+				
+			}
+			if(json.getString("response").toString().equalsIgnoreCase("Stock insuficiente"))
+			{
+				
+				String prod_a_mostrar="";
+				
+				JSONObject ventaObj=((JSONObject)json.get("venta"));
+				Double mnt=0.0;
+				//sino llamo nuevamente al proceso de vender con nueva_venta arreglada
+				
+				ArrayList<ProductoVenta> nuevaListaProductos=new ArrayList<ProductoVenta>();
+				JSONArray productos_nueva_venta=(JSONArray)ventaObj.get("productos");				
+				for(int i=0;i<productos_nueva_venta.length();i++)
+				{
+					String codigo =((String)((JSONObject)productos_nueva_venta.get(i)).get("producto")).split(":")[2];
+					Producto p = diccionarioProductos.get(codigo);	
+					int cant=Integer.parseInt(((JSONObject)productos_nueva_venta.get(i)).get("cantidad").toString());
+					ProductoVenta pv=new ProductoVenta(p,cant);
+					mnt=mnt+p.getPrecio()*cant;
+					nuevaListaProductos.add(pv);
+					prod_a_mostrar="Producto :"+prod_a_mostrar+pv.getProducto().getNombre()+"\nCodigo :"+pv.getProducto().getCodigo()+"\nCantidad :"+pv.getCantidad().toString()+"\n";
+				}
+				
+				nueva_venta.setProductos(nuevaListaProductos);
+				nueva_venta.setMonto(mnt);
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(this.getApplicationContext(), R.layout.lista_productos_venta, nueva_venta.getProductos());
+				builder.setAdapter(adaptador_venta_modificada,null);
+				builder.setTitle("Desea Realizar la siguiente venta por un total de :"+nueva_venta.getMonto()+"?")
+				        .setCancelable(false)
+				        .setNegativeButton("Cancelar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                        dialog.cancel();
+				                        
+				                    }
+				                })
+				        .setPositiveButton("Aceptar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                     try{
+				                    	
+				                    	VentaRecursiva();
+				                     }catch(Exception e){}
+				                    }
+				                });
+				AlertDialog alert = builder.create();
+				alert.show();
+				
+			}
+			
+			
+			
+		}catch(Exception e)
+		{
+			
+		}
+	
+		
+	}
+ 
 	
 }
