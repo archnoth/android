@@ -52,10 +52,14 @@ public class DetalleCliente extends Activity {
 		return true;
 	}
 	
-	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.INVISIBLE);
+	}
 	
 	public void to_factura_activity(View view){
-		
+		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
 		Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));  

@@ -11,7 +11,8 @@
 
     <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buscador_vendedores" >
 
 	    <ListView
 	        android:id="@+id/ViewListaVendedores"
@@ -27,5 +28,16 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="invisible" />
+
+    <AutoCompleteTextView
+        android:id="@+id/buscador_vendedores"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:text="@string/buscar"
+        android:maxLines="1" 
+        android:textSize="30sp"/>
 
 </RelativeLayout>

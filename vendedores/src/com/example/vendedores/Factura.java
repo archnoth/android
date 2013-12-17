@@ -38,13 +38,9 @@ import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.InputFilter;
@@ -56,7 +52,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -68,7 +63,7 @@ public class Factura extends Activity {
 
 	private static List<Producto> lista_productos;
 	private static HashMap<String, Producto> diccionarioProductos;
-	private boolean salir=false;
+	private Double monto_factura;
 	private Venta nueva_venta;
 	private EditText last_text_cantidad;
 	private JSONObject json;
@@ -97,6 +92,9 @@ public class Factura extends Activity {
 		}
 		 
 		addRowToTableProductos();
+		this.monto_factura = 0.0;
+		EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
+	    monto_value.setText(this.monto_factura.toString());
 	}
 
 		
@@ -106,21 +104,21 @@ public class Factura extends Activity {
 			editText.setTextColor(Color.BLACK);
 			editText.setBackgroundColor(Color.WHITE);
 			editText.setMaxLines(1);
+			editText.setEms(3);
 			editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
-
-			
 			editText.addTextChangedListener(new TextWatcher(){ 
 			   
 				boolean agregar=true;
 				@Override
 				public void onTextChanged(CharSequence s, int start, int before,int count) {
 					// TODO Auto-generated method stub
-					
 				}
-
 
 				@Override
 				public void afterTextChanged(Editable s) {
+					try {
+						ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
+					} catch (Exception e) {}
 					TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
 					if(tbl.getChildCount()> 0)
 					{
@@ -138,21 +136,20 @@ public class Factura extends Activity {
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count,
 						int after) {
-					
-					
+					try {
+						ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), false);
+					} catch (Exception e) {}
 				}
-		});
-		
-
-		last_text_cantidad=editText;
-		return editText;
+			});
+			last_text_cantidad=editText;
+			return editText;
 		}
 		
 		
 		private void addRowToTableProductos()
 		{
-			AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
-		    EditText text_cant =Factura.this.generarEditText();
+			 AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
+		     EditText text_cant =Factura.this.generarEditText();
 		     TableRow tbr= new TableRow(getApplicationContext());
 		     EditText divider = Factura.this.generarEditText(); 
 		     divider.setBackgroundColor(Color.BLACK);
@@ -185,6 +182,27 @@ public class Factura extends Activity {
 		     auto_gen.setCursorVisible(true);
 		     auto_gen.setTextColor(Color.BLACK);
 		     auto_gen.setBackgroundColor(Color.WHITE);
+		     auto_gen.addTextChangedListener(new TextWatcher(){ 
+				   
+					@Override
+					public void onTextChanged(CharSequence s, int start, int before,int count) {
+					}
+
+					@Override
+					public void afterTextChanged(Editable s) {
+						try {
+							ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
+						} catch (Exception e) {}
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start, int count,
+							int after) {
+						try {
+							ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), false);
+						} catch (Exception e) {}
+					}
+				});
 		     return auto_gen;
 
 		 }
@@ -199,7 +217,9 @@ public class Factura extends Activity {
 		   @Override
 		   public void onClick(View v) {
 		    TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-		    tbl.removeView((View)v.getParent());
+		    if (tbl.getChildCount() > 1){
+		    	tbl.removeView((View)v.getParent());
+		    }
 		   }
 		  });
 		  return cruz;
@@ -215,8 +235,23 @@ public class Factura extends Activity {
 		 	 
 	}
 		
+	private void ActualizarFilaFactura(TableRow row, Boolean sumar) {
+		try{
+			AutoCompleteTextView auto=(AutoCompleteTextView)row.getChildAt(2);
+			EditText cant=(EditText)row.getChildAt(0);
+			String codigo="";
+			codigo=auto.getText().toString().split("\\s - \\s")[1];	
+			if(sumar) {
+				this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString());
+			}else {
+				this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString());
+			}
+			EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
+		    monto_value.setText(this.monto_factura.toString());
+		}catch (Exception e) {}
+	}
+	
 	public void Facturar(View view) throws JSONException {
-		
 		
 		Button b = (Button)findViewById(R.id.Facturar);
 		b.setClickable(false);
@@ -225,7 +260,6 @@ public class Factura extends Activity {
 	    Calendar fecha=Calendar.getInstance();
 	    Double monto=0.0;
 	    TableLayout tbl=(TableLayout)this.findViewById(R.id.tablaProductos);
-	    
 	    nueva_venta=new Venta(vendedor, cliente, fecha,monto);
 	    
 	    for(int i=0;i<tbl.getChildCount();)
@@ -256,10 +290,8 @@ public class Factura extends Activity {
 	    gson = new Gson();
         VentaRecursiva();
         
-					
-				
-         
-}
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -271,66 +303,64 @@ public class Factura extends Activity {
 private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 		
 		 
-		protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-	       InputStream in = entity.getContent();
-	         StringBuffer out = new StringBuffer();
-	         int n = 1;
-	         while (n>0) {
-	             byte[] b = new byte[4096];
-	             n =  in.read(b);
-	             if (n>0) out.append(new String(b, 0, n));
-	         }
-	         return out.toString();
-	    }
-		
-		@Override
-		protected  List<Producto> doInBackground(Void... params) {
-			ArrayList<Producto> lista = null;
-			HttpClient httpClient = new DefaultHttpClient();
-			 HttpContext localContext = new BasicHttpContext();
-             HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/productos/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
+	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
+       InputStream in = entity.getContent();
+         StringBuffer out = new StringBuffer();
+         int n = 1;
+         while (n>0) {
+             byte[] b = new byte[4096];
+             n =  in.read(b);
+             if (n>0) out.append(new String(b, 0, n));
+         }
+         return out.toString();
+    }
+	
+	@Override
+	protected  List<Producto> doInBackground(Void... params) {
+		ArrayList<Producto> lista = null;
+		HttpClient httpClient = new DefaultHttpClient();
+		 HttpContext localContext = new BasicHttpContext();
+         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/productos/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
            
   
              // Execute HTTP Post Request
-             String text = null;
-             try {
-            	 HttpResponse response = httpClient.execute(httpGet, localContext);
-            	 HttpEntity entity = response.getEntity();
-                   
-                 text = getASCIIContentFromEntity(entity);
-                   
-             } catch (Exception e) {
-            	 
-             }
-             //return text; 
-             if (text!=null) {
- 				
- 				
- 				JSONObject jsonObject;
- 				try {
- 					jsonObject = new JSONObject(text);
- 										
- 					JSONArray jarray =(JSONArray)jsonObject.get("objects");
- 					lista= new ArrayList<Producto>();
- 					for(int i=0;i<jarray.length();i++)
- 					{
- 						JSONObject dic_producto = jarray.getJSONObject(i);
- 						Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
- 						lista.add(prod);
- 					}
- 					
- 					
- 				} catch (JSONException e) {
- 					e.printStackTrace();
- 				}
- 					
- 					
- 			}
-			return lista;
+         String text = null;
+         try {
+        	 HttpResponse response = httpClient.execute(httpGet, localContext);
+        	 HttpEntity entity = response.getEntity();
+               
+             text = getASCIIContentFromEntity(entity);
+               
+         } catch (Exception e) {
+        	 
+         }
+         //return text; 
+         if (text!=null) {
+						
+			JSONObject jsonObject;
+			try {
+				jsonObject = new JSONObject(text);
+									
+				JSONArray jarray =(JSONArray)jsonObject.get("objects");
+				lista= new ArrayList<Producto>();
+				for(int i=0;i<jarray.length();i++)
+				{
+					JSONObject dic_producto = jarray.getJSONObject(i);
+					Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
+					lista.add(prod);
+				}
+				
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+				
+		}
+		return lista;
 	}
 
 
-	}	
+}	
     
 private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 		
@@ -368,8 +398,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
                    
              } catch (Exception e) {}
              //return text; 
-             
- 			
+             		
 			return null;
 	}
 		@Override
@@ -378,8 +407,6 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 		}
 
 	}
-	
-	
 	
 	private class PostNuevaVentaTentativa extends AsyncTask <String, Void, String > {
 		
@@ -417,8 +444,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
                    
              } catch (Exception e) {}
              //return text; 
-             
- 			
+              			
 			return null;
 	}
 		@Override
@@ -427,8 +453,6 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 		}
 
 	}
-	
-	
 	
 	public void VentaRecursiva()
 	{

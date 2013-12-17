@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">vendedores</string>
@@ -21,6 +21,8 @@
     <string name="text_dialog_text">Algo </string>
     <string name="todo">TODO</string>
     <string name="LoginConectado">¡Conectado!</string>
+    <string name="buscar">Buscar</string>
+    <string name="monto_tag">Monto: </string>
     <string name="title_activity_nota">NotaActivity</string>
 
 </resources>
