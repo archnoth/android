@@ -17,9 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.dominio.Nota;
-import com.example.dominio.Usuario;
-import com.example.dominio.Venta;
-
 import com.google.gson.Gson;
 
 import android.os.AsyncTask;
@@ -33,7 +30,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TableLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -44,6 +40,10 @@ public class NotaActivity extends Activity {
      static final int DATE_DIALOG_ID = 0;
      static final int TIME_INIT_DIALOG_ID = 1;
      static final int TIME_END_DIALOG_ID = 2;
+     private boolean datePicked = false;
+     private boolean initTime= false;
+     private boolean endTime= false;
+     
      // variables to save user selected date and time
      public  int year,month,day,hourInit,hourEnd,minuteInit,minuteEnd;  
      // declare  the variables to Show/Set the date and time when Time and  Date Picker Dialog first appears
@@ -116,6 +116,15 @@ public class NotaActivity extends Activity {
 				cal_date.set(year, month, day, hourEnd, minuteEnd);
 				
 				Nota n = new Nota(txt.getText().toString(), cal_time_ini,cal_time_end, cal_date);
+				if(!datePicked) {
+					n.setFecha_de_entrega(null);
+				}
+				if(!initTime) {
+					n.setHora_de_entrega_desde(null);
+				}
+				if(!endTime) {
+					n.setHora_de_entrega_hasta(null);
+				}
 				
 				Gson gson=new Gson();
 				String dataString = gson.toJson(n, n.getClass()).toString();
@@ -162,6 +171,7 @@ public class NotaActivity extends Activity {
                                   day = dayOfMonth;
                                   // Set the Selected Date in Select date Button
                                   btnSelectDate.setText("Fecha elejida : "+day+"-"+month+"-"+year);
+                                  datePicked = true;
                                }
                            };
 
@@ -173,6 +183,7 @@ public class NotaActivity extends Activity {
                                        minuteInit = min;
                                        // Set the Selected Date in Select date Button
                                        btnSelectTimeInit.setText("Hora elejida :"+hourInit+"-"+minuteInit);
+                                       initTime = true;
                                      }
                                };
        private TimePickerDialog.OnTimeSetListener mTimeEndSetListener =new TimePickerDialog.OnTimeSetListener() {
@@ -182,10 +193,9 @@ public class NotaActivity extends Activity {
                                                   minuteEnd = min;
                                                   // Set the Selected Date in Select date Button
                                                   btnSelectTimeEnd.setText("Hora elejida :"+hourEnd+"-"+minuteEnd);
+                                                  endTime = true;
                                                 }
                                           };
-                
-                        
 
    // Method automatically gets Called when you call showDialog()  method
    @Override

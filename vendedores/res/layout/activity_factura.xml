@@ -17,15 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <Button
-                android:id="@+id/Facturar"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_below="@+id/tablaProductos"
-                android:layout_centerHorizontal="true"
-                android:onClick="Facturar"
-                android:text="@string/btn_text_registrar_venta" />
-
             <TableLayout
                 android:id="@+id/tablaProductos"
                 android:layout_width="wrap_content"
@@ -33,6 +24,40 @@
                 android:background="@android:color/black"
                 android:padding="2dp" >
             </TableLayout>
+
+            <EditText
+                android:id="@+id/MontoTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignTop="@+id/Facturar"
+                android:layout_below="@+id/tablaProductos"
+                android:layout_toRightOf="@+id/Facturar"
+                android:text="@string/monto_tag" 
+                android:focusable="false">
+
+                <requestFocus />
+            </EditText>
+
+            <Button
+                android:id="@+id/Facturar"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/tablaProductos"
+                android:onClick="Facturar"
+                android:text="@string/btn_text_registrar_venta" />
+
+            <EditText
+                android:id="@+id/MontoValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/Facturar"
+                android:layout_below="@+id/tablaProductos"
+                android:layout_toRightOf="@+id/MontoTag"
+                android:focusable="false" />
 
         </RelativeLayout>
     </ScrollView>

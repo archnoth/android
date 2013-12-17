@@ -6,11 +6,13 @@ import com.example.dominio.Usuario;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -39,6 +41,10 @@ public class ListadoClientes extends Activity {
 					//Toast.makeText(getApplicationContext(),"RUT : " + seleccionado.getRut() , Toast.LENGTH_LONG).show();
 			  }
 		});
+		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
+		buscador.setAdapter(adaptador_lista);
+		buscador.setDropDownHeight(0);
+		buscador.setTextColor(Color.LTGRAY);
 	}
 	
 	@Override
