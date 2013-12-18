@@ -41,17 +41,13 @@
                         android:visibility="gone" />
                 </TableRow>
 
-
-
-
-
                 <TableRow
-                    android:id="@+id/tableRow1"
+                    android:id="@+id/tableNombreCliente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
                     <EditText
-                        android:id="@+id/editText1"
+                        android:id="@+id/editTextNombreCliente"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -62,12 +58,12 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRow2"
+                    android:id="@+id/tableRutCliente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
                     <EditText
-                        android:id="@+id/editText2"
+                        android:id="@+id/editTextRutCliente"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -75,12 +71,12 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRow3"
+                    android:id="@+id/tableDireccionCliente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
                     <EditText
-                        android:id="@+id/editText3"
+                        android:id="@+id/editDireccionCliente"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -88,16 +84,137 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRow4"
+                    android:id="@+id/tableTelefono"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
+                
+                 <EditText
+                        android:id="@+id/editTelCliente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                 </TableRow>
+                 <TableRow
+                    android:id="@+id/tableTelefono2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editTel2Cliente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                 </TableRow>
+                  <TableRow
+                    android:id="@+id/tableCelular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editCelularCliente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                
+                
                 </TableRow>
+                
+                  
+                  <TableRow
+                    android:id="@+id/tableEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editEmailCliente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                
+                
+                </TableRow>
+                
+                <TableRow
+                    android:id="@+id/tableWeb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editWebCliente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                
+                
+                </TableRow>
+				<TableRow
+                    android:id="@+id/tableLugarEntrega"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editLugarEntrega"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                
+                
+                </TableRow>
+                <TableRow
+                    android:id="@+id/tableDia_de_entrega"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editDia_de_entregaCliente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                
+                
+                </TableRow>
+                  
+                <TableRow
+                    android:id="@+id/tableHora_de_entrega_desde"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editHora_de_entrega_desde"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                
+                
+                </TableRow>
+                <TableRow
+                    android:id="@+id/tableHora_de_entrega_hasta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                
+                <EditText
+                        android:id="@+id/editHora_de_entrega_hasta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:focusable="false" />
+                
+                
+                </TableRow>  
 
             </TableLayout>
 
             <Button
                 android:id="@+id/btn_nueva_venta"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tableLayout1"
                 android:layout_centerHorizontal="true"
@@ -107,7 +224,7 @@
 
             <Button
                 android:id="@+id/btn_historico"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btn_nueva_venta"
                 android:layout_centerHorizontal="true"

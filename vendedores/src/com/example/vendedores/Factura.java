@@ -254,7 +254,7 @@ public class Factura extends Activity {
 	public void Facturar(View view) throws JSONException {
 		
 		Button b = (Button)findViewById(R.id.Facturar);
-		b.setClickable(false);
+		
 	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
 	    Cliente cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
 	    Calendar fecha=Calendar.getInstance();
@@ -288,7 +288,30 @@ public class Factura extends Activity {
 		json=new JSONObject();
 		nueva_venta.setMonto(monto);
 	    gson = new Gson();
-        VentaRecursiva();
+	    String mensaje="Advertencia!";
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Desea realizar una venta al cliente:"+ nueva_venta.getCliente().getNombre() + 
+				"\n  por un monto de : $"+nueva_venta.getMonto().toString()+"?");
+		builder.setTitle(mensaje)
+		        .setCancelable(false)
+		        .setNegativeButton("Cancelar",
+		                new DialogInterface.OnClickListener() {
+		                    public void onClick(DialogInterface dialog, int id) {
+		                        dialog.cancel();
+		                        
+		                    }
+		                })
+		        .setPositiveButton("Aceptar",
+		                new DialogInterface.OnClickListener() {
+		                    public void onClick(DialogInterface dialog, int id) {
+		                    	VentaRecursiva();
+		                     
+		                    }
+		                });
+		AlertDialog alert = builder.create();
+		alert.show();
+	
+        
         
 	}
 	
@@ -503,6 +526,10 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 					                new DialogInterface.OnClickListener() {
 					                    public void onClick(DialogInterface dialog, int id) {
 					                        dialog.cancel();
+					                        Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
+					    			        loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+					    			        loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));
+					    			        startActivity(loc);
 					                        
 					                    }
 					                })

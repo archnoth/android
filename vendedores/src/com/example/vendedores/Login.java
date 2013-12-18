@@ -1,6 +1,7 @@
 package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -138,7 +139,13 @@ public class Login extends Activity {
 						for(int i=0;i<jarray.length();i++)
 						{
 							JSONObject dic_cliente= jarray.getJSONObject(i);
-							Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),dic_cliente.getString("rut"),dic_cliente.getString("logo"));
+							
+							Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),
+									dic_cliente.getString("rut"),"",dic_cliente.getString("dia_entrega"),dic_cliente.getString("hora_entrega_desde"),dic_cliente.getString("minuto_entrega_desde"),
+									dic_cliente.getString("hora_entrega_hasta"),dic_cliente.getString("minuto_entrega_hasta"),dic_cliente.getString("tel"),dic_cliente.getString("tel2"),
+									dic_cliente.getString("celular"),dic_cliente.getString("email"),dic_cliente.getString("web"),
+									dic_cliente.getString("lugar_entrega"));
+							
 							usuario.getListaClientes().add(cli);
 							((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);
 						}

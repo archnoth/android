@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 
 import com.example.dominio.Cliente;
 
@@ -28,12 +29,34 @@ public class DetalleCliente extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_detalle_cliente);
 		Cliente cliente=getIntent().getExtras().getParcelable("cliente");
-		TextView nombre=(TextView)findViewById(R.id.editText1);
-		TextView rut=(TextView)findViewById(R.id.editText2);
-		TextView direccion=(TextView)findViewById(R.id.editText3);
-		nombre.setText(cliente.getNombre());
-		rut.setText(cliente.getRut());
-		direccion.setText(cliente.getDireccion());
+		TextView nombre=(TextView)findViewById(R.id.editTextNombreCliente);
+		TextView rut=(TextView)findViewById(R.id.editTextRutCliente);
+		TextView direccion=(TextView)findViewById(R.id.editDireccionCliente);
+		TextView tel=(TextView)findViewById(R.id.editTelCliente);
+		TextView tel2=(TextView)findViewById(R.id.editTel2Cliente);
+		TextView celular=(TextView)findViewById(R.id.editCelularCliente);
+		TextView email=(TextView)findViewById(R.id.editEmailCliente);
+		TextView web=(TextView)findViewById(R.id.editWebCliente);
+		TextView lugar_entrega=(TextView)findViewById(R.id.editLugarEntrega);
+		TextView dia_entrega=(TextView)findViewById(R.id.editDia_de_entregaCliente);
+		TextView hora_entrega_desde=(TextView)findViewById(R.id.editHora_de_entrega_desde);
+		TextView hora_entrega_hasta=(TextView)findViewById(R.id.editHora_de_entrega_hasta);
+		nombre.setText("Nombre: "+cliente.getNombre());
+		rut.setText("Rut: "+cliente.getRut());
+		direccion.setText("Dir: "+cliente.getDireccion());
+		tel.setText("Tel: "+cliente.getTel());
+		tel2.setText("Tel2: "+cliente.getTel2());
+		celular.setText("Celular: "+cliente.getCelular());
+		email.setText("Email : "+cliente.getEmail());
+		web.setText("Web: "+cliente.getWeb());
+		lugar_entrega.setText("Dir-entrega: "+cliente.getLugar_entrega());
+		Calendar dia_entega=Calendar.getInstance();
+		dia_entega.set(Calendar.DAY_OF_WEEK, cliente.getDia_de_entrega());
+		dia_entrega.setText("Dia de entrega: "+dia_entega.get(Calendar.DAY_OF_WEEK));
+		
+		hora_entrega_desde.setText("Hora de entrega desde: "+cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY));
+		hora_entrega_hasta.setText("hasta : "+cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY));
+		
 		
 		ImageView mainImageView = (ImageView) findViewById(R.id.imageView);
 		ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);

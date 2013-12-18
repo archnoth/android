@@ -16,6 +16,7 @@ import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.dominio.Cliente;
 import com.example.dominio.Nota;
 import com.google.gson.Gson;
 
@@ -43,7 +44,7 @@ public class NotaActivity extends Activity {
      private boolean datePicked = false;
      private boolean initTime= false;
      private boolean endTime= false;
-     
+     private Cliente cliente=null;
      // variables to save user selected date and time
      public  int year,month,day,hourInit,hourEnd,minuteInit,minuteEnd;  
      // declare  the variables to Show/Set the date and time when Time and  Date Picker Dialog first appears
@@ -53,26 +54,48 @@ public class NotaActivity extends Activity {
      public NotaActivity()
      {
                  // Assign current Date and Time Values to Variables
-                 final Calendar c = Calendar.getInstance();
-                 mYear = c.get(Calendar.YEAR);
-                 mMonth = c.get(Calendar.MONTH);
-                 mDay = c.get(Calendar.DAY_OF_MONTH);
-                 mHourInit = c.get(Calendar.HOUR_OF_DAY);
-                 mMinuteInit = c.get(Calendar.MINUTE);
-                 mHourEnd = c.get(Calendar.HOUR_OF_DAY);
-                 mMinuteEnd= c.get(Calendar.MINUTE);
+    	 		 
      }
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nota);
 		
+		
+		cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
+		 
+		 Calendar cal_dia = Calendar.getInstance();
+		 if (cliente.getDia_de_entrega()!=null)
+		 {
+			 Integer dia_semana=cal_dia.get(Calendar.DAY_OF_WEEK);
+		 
+	 		 while(cliente.getDia_de_entrega()!=dia_semana)
+	 		 {
+	 			 cal_dia.add(Calendar.DAY_OF_WEEK, 1);
+	 			 dia_semana=cal_dia.get(Calendar.DAY_OF_WEEK);
+	 		 }
+		 }           
+        final Calendar c = cal_dia;
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        mHourInit = c.get(Calendar.HOUR_OF_DAY);
+        mMinuteInit = c.get(Calendar.MINUTE);
+        mHourEnd = c.get(Calendar.HOUR_OF_DAY);
+        mMinuteEnd= c.get(Calendar.MINUTE);
+        hourInit = cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY);
+        minuteInit = cliente.getHora_de_entrega_desde().get(Calendar.MINUTE);
+        hourEnd = cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY);
+        minuteEnd=cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE);
+       
         // get the references of buttons
         btnSelectDate=(Button)findViewById(R.id.buttonSelectDate);
         btnSelectTimeInit=(Button)findViewById(R.id.btn_tiempo_entrega_desde);
         btnSelectTimeEnd=(Button)findViewById(R.id.btn_tiempo_entrega_hasta);
         btn_registrar_nota=(Button)findViewById(R.id.btn_registrar_nota);
-        
+        btnSelectDate.setText("Fecha elegida : "+mDay+"-"+mMonth+"-"+mYear);
+        btnSelectTimeInit.setText("Hora elegida :"+hourInit+"-"+minuteInit);
+        btnSelectTimeEnd.setText("Hora elegida :"+hourEnd+"-"+minuteEnd);
         // Set ClickListener on btnSelectDate 
         btnSelectDate.setOnClickListener(new View.OnClickListener() {
             
@@ -116,13 +139,13 @@ public class NotaActivity extends Activity {
 				cal_date.set(year, month, day, hourEnd, minuteEnd);
 				
 				Nota n = new Nota(txt.getText().toString(), cal_time_ini,cal_time_end, cal_date);
-				if(!datePicked) {
+				if(!datePicked && cliente.getDia_de_entrega()== null) {
 					n.setFecha_de_entrega(null);
 				}
-				if(!initTime) {
+				if(!initTime && cliente.getHora_de_entrega_hasta()== null) {
 					n.setHora_de_entrega_desde(null);
 				}
-				if(!endTime) {
+				if(!endTime && cliente.getHora_de_entrega_hasta()== null) {
 					n.setHora_de_entrega_hasta(null);
 				}
 				
@@ -146,7 +169,7 @@ public class NotaActivity extends Activity {
     			String respuesta;
 				try {
 					respuesta = (String)th_async_regitrar_nota.get();
-					Toast.makeText(NotaActivity.this,respuesta, Toast.LENGTH_LONG).show();
+					Toast.makeText(NotaActivity.this,respuesta,10 ).show();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -170,7 +193,7 @@ public class NotaActivity extends Activity {
                                   month = monthOfYear;
                                   day = dayOfMonth;
                                   // Set the Selected Date in Select date Button
-                                  btnSelectDate.setText("Fecha elejida : "+day+"-"+month+"-"+year);
+                                  btnSelectDate.setText("Fecha elegida : "+day+"-"+month+"-"+year);
                                   datePicked = true;
                                }
                            };
@@ -182,7 +205,7 @@ public class NotaActivity extends Activity {
                                        hourInit = hourOfDay;
                                        minuteInit = min;
                                        // Set the Selected Date in Select date Button
-                                       btnSelectTimeInit.setText("Hora elejida :"+hourInit+"-"+minuteInit);
+                                       btnSelectTimeInit.setText("Hora elegida :"+hourInit+"-"+minuteInit);
                                        initTime = true;
                                      }
                                };
@@ -192,7 +215,7 @@ public class NotaActivity extends Activity {
                                                   hourEnd = hourOfDay;
                                                   minuteEnd = min;
                                                   // Set the Selected Date in Select date Button
-                                                  btnSelectTimeEnd.setText("Hora elejida :"+hourEnd+"-"+minuteEnd);
+                                                  btnSelectTimeEnd.setText("Hora elegida :"+hourEnd+"-"+minuteEnd);
                                                   endTime = true;
                                                 }
                                           };
@@ -247,8 +270,10 @@ public class NotaActivity extends Activity {
              // Execute HTTP Post Request
              String text = null;
              try {
-            	 StringEntity se = new StringEntity(params[0].toString());
-            	 se.setContentEncoding("UTF-8");
+            	 
+            	 StringEntity se = new StringEntity(params[0].toString(),"UTF8");
+            	 //se.setContentEncoding("utf-8");
+            	 //se.setChunked(false);
             	 se.setContentType("application/json");
             	 httpPost.setEntity(se);
             	 HttpResponse response = httpClient.execute(httpPost, localContext);
