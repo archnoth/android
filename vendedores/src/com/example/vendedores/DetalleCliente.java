@@ -23,7 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class DetalleCliente extends Activity {
-
+	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,21 +42,42 @@ public class DetalleCliente extends Activity {
 		TextView dia_entrega=(TextView)findViewById(R.id.editDia_de_entregaCliente);
 		TextView hora_entrega_desde=(TextView)findViewById(R.id.editHora_de_entrega_desde);
 		TextView hora_entrega_hasta=(TextView)findViewById(R.id.editHora_de_entrega_hasta);
-		nombre.setText("Nombre: "+cliente.getNombre());
-		rut.setText("Rut: "+cliente.getRut());
-		direccion.setText("Dir: "+cliente.getDireccion());
-		tel.setText("Tel: "+cliente.getTel());
-		tel2.setText("Tel2: "+cliente.getTel2());
-		celular.setText("Celular: "+cliente.getCelular());
-		email.setText("Email : "+cliente.getEmail());
-		web.setText("Web: "+cliente.getWeb());
-		lugar_entrega.setText("Dir-entrega: "+cliente.getLugar_entrega());
-		Calendar dia_entega=Calendar.getInstance();
-		dia_entega.set(Calendar.DAY_OF_WEEK, cliente.getDia_de_entrega());
-		dia_entrega.setText("Dia de entrega: "+dia_entega.get(Calendar.DAY_OF_WEEK));
-		
-		hora_entrega_desde.setText("Hora de entrega desde: "+cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY));
-		hora_entrega_hasta.setText("hasta : "+cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY));
+		nombre.setText(
+				"Nombre:\n"+
+				cliente.getNombre());
+		rut.setText(
+				"Rut:\n"+
+				cliente.getRut());
+		direccion.setText(
+				"Dir:\n"+
+				cliente.getDireccion());
+		tel.setText(
+				"Tel:\n"+
+				cliente.getTel());
+		tel2.setText(
+				"Tel2:\n"+
+				cliente.getTel2());
+		celular.setText(
+				"Celular:\n"+
+				cliente.getCelular());
+		email.setText(
+				"Email:\n"+
+				cliente.getEmail());
+		web.setText(
+				"Web:\n"+
+				cliente.getWeb());
+		lugar_entrega.setText(
+				"Dirección de entrega:\n"+
+				cliente.getLugar_entrega());
+		dia_entrega.setText(
+				"Día de entrega:\n"+
+				dias_de_semana[cliente.getDia_de_entrega()]);
+		hora_entrega_desde.setText(
+				"\nHora de entrega:\n\ndesde: " +
+				cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_desde().get(Calendar.MINUTE) + "hs.");
+		hora_entrega_hasta.setText(
+				"hasta: " + 
+				cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
 		
 		
 		ImageView mainImageView = (ImageView) findViewById(R.id.imageView);

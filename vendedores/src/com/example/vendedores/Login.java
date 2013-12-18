@@ -156,6 +156,7 @@ public class Login extends Activity {
 					{
 						//Intent intent = new Intent(this, ListadoClientes.class);
 						//startActivity(intent);
+						findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
 						Intent loc = new Intent(getApplicationContext(),ListadoClientes.class); 
 				        loc.putExtra("usuario",usuario);  
 				        startActivity(loc);
@@ -171,7 +172,6 @@ public class Login extends Activity {
 					
 			}
 			findViewById(R.id.LoginSeekBar).setVisibility(View.INVISIBLE);
-			findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
 			Button b = (Button)findViewById(R.id.btn_ingresar);
 			b.setClickable(true);
 		}
