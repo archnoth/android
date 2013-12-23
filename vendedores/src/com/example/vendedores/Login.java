@@ -39,6 +39,10 @@ public class Login extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		 EditText username = (EditText)findViewById(R.id.editText1);
+    	 EditText password = (EditText)findViewById(R.id.editTextPassword);
+    	 username.setHint("Nombre de usuario");
+    	 password.setHint("Contraseña");
 	}
 
 	@Override

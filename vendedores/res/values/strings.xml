@@ -24,5 +24,6 @@
     <string name="buscar">Buscar</string>
     <string name="monto_tag">Monto: </string>
     <string name="title_activity_nota">NotaActivity</string>
+    <string name="title_activity_gcm_activity">GCMActivity</string>
 
 </resources>

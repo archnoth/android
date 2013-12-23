@@ -1,5 +1,6 @@
 package com.example.vendedores;
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,6 +34,7 @@ import com.google.gson.Gson;
 
 
 
+import android.R.integer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -105,6 +107,7 @@ public class Factura extends Activity {
 			editText.setBackgroundColor(Color.WHITE);
 			editText.setMaxLines(1);
 			editText.setEms(3);
+			editText.setHint("Cant");
 			editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
 			editText.addTextChangedListener(new TextWatcher(){ 
 			   
@@ -176,6 +179,7 @@ public class Factura extends Activity {
 		     AutoCompleteTextView auto_gen = new AutoCompleteTextView(getApplicationContext());
 		     auto_gen.setAdapter(new ArrayAdapter<Producto>(this, android.R.layout.simple_list_item_1, lista_productos));
 		     auto_gen.setEms(9);
+		     auto_gen.setHint("Producto");
 		     auto_gen.setMaxLines(1);
 		     auto_gen.setHighlightColor(Color.BLUE);
 		     auto_gen.setHorizontallyScrolling(true);
@@ -242,9 +246,9 @@ public class Factura extends Activity {
 			String codigo="";
 			codigo=auto.getText().toString().split("\\s - \\s")[1];	
 			if(sumar) {
-				this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString());
+				this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
 			}else {
-				this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString());
+				this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
 			}
 			EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
 		    monto_value.setText(this.monto_factura.toString());
@@ -277,8 +281,8 @@ public class Factura extends Activity {
     	
     				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
     				{
-    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString());
-    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString())));
+    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""))));
     				}
     			}
 
@@ -304,7 +308,12 @@ public class Factura extends Activity {
 		        .setPositiveButton("Aceptar",
 		                new DialogInterface.OnClickListener() {
 		                    public void onClick(DialogInterface dialog, int id) {
-		                    	VentaRecursiva();
+		                    	try {
+									VentaRecursiva();
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 		                     
 		                    }
 		                });
@@ -409,7 +418,10 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
              // Execute HTTP Post Request
              String text = null;
              try {
-            	 StringEntity se = new StringEntity(params[0].toString());
+            	 StringEntity se = new StringEntity(params[0].toString(),"UTF8");
+            	 se.setContentType("application/json");
+            	 httpPost.setEntity(se);
+            	 
             	 se.setContentEncoding("UTF-8");
             	 se.setContentType("application/json");
             	 httpPost.setEntity(se);
@@ -477,10 +489,22 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 
 	}
 	
-	public void VentaRecursiva()
+	public void VentaRecursiva() throws JSONException
 	{
 		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString(); //venta tentativa espera confirmacion
-    	PostNuevaVenta thred=new PostNuevaVenta();//llamo un proceso en backgroud para realizar la venta
+		JSONObject aux_fecha = new JSONObject(dataString); //venta tentativa espera confirmacion
+		JSONObject f=(JSONObject)aux_fecha.get("fecha");
+		try {
+			Integer month=(Integer) f.get("month");
+			month=month+1;
+			f.put("month",month);
+			dataString=aux_fecha.toString();
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		PostNuevaVenta thred=new PostNuevaVenta();//llamo un proceso en backgroud para realizar la venta
     	
     	//inicia el proceso de vender
         AsyncTask<String, Void, String> async=thred.execute(dataString);	     
@@ -494,7 +518,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 			{
 				Calendar fecha_venta_registrada=Calendar.getInstance();
 				fecha_venta_registrada.set(Calendar.YEAR,Integer.parseInt(((JSONObject)json.get("fecha")).getString("year")));
-				fecha_venta_registrada.set(Calendar.MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("month")));
+				fecha_venta_registrada.set(Calendar.MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("month"))-1);
 				fecha_venta_registrada.set(Calendar.DAY_OF_MONTH,Integer.parseInt(((JSONObject)json.get("fecha")).getString("dayOfMonth")));
 				fecha_venta_registrada.set(Calendar.HOUR_OF_DAY,Integer.parseInt(((JSONObject)json.get("fecha")).getString("hourOfDay")));
 				fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)json.get("fecha")).getString("minute")));
@@ -516,7 +540,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 					
 					String mensaje="Venta exitosa!";
 					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setMessage("Su pedido se proceso correctamente.\n+" +
+					builder.setMessage("Su pedido se proceso correctamente.\n" +
 							"Para el cliente :"+ nueva_venta.getCliente().getNombre() + 
 							"\n  Con un monto de :"+nueva_venta.getMonto().toString()+
 							"\n ¿Desea agregar notas sobre este Pedido?");
@@ -582,7 +606,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 				JSONArray productos_nueva_venta=(JSONArray)ventaObj.get("productos");				
 				for(int i=0;i<productos_nueva_venta.length();i++)
 				{
-					String codigo =((String)((JSONObject)productos_nueva_venta.get(i)).get("producto")).split(":")[2];
+					String codigo =((JSONObject)productos_nueva_venta.get(i)).get("codigo").toString();
 					Producto p = diccionarioProductos.get(codigo);	
 					int cant=Integer.parseInt(((JSONObject)productos_nueva_venta.get(i)).get("cantidad").toString());
 					ProductoVenta pv=new ProductoVenta(p,cant);
@@ -624,7 +648,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 			
 		}catch(Exception e)
 		{
-			
+			System.out.print(e.getMessage());
 		}
 	
 		

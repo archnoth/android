@@ -77,6 +77,7 @@ public class NotaActivity extends Activity {
 		 }           
         final Calendar c = cal_dia;
         mYear = c.get(Calendar.YEAR);
+        
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
         mHourInit = c.get(Calendar.HOUR_OF_DAY);
@@ -87,13 +88,15 @@ public class NotaActivity extends Activity {
         minuteInit = cliente.getHora_de_entrega_desde().get(Calendar.MINUTE);
         hourEnd = cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY);
         minuteEnd=cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE);
-       
+        year=mYear;
+        month=mMonth;
+        day=mDay;
         // get the references of buttons
         btnSelectDate=(Button)findViewById(R.id.buttonSelectDate);
         btnSelectTimeInit=(Button)findViewById(R.id.btn_tiempo_entrega_desde);
         btnSelectTimeEnd=(Button)findViewById(R.id.btn_tiempo_entrega_hasta);
         btn_registrar_nota=(Button)findViewById(R.id.btn_registrar_nota);
-        btnSelectDate.setText("Fecha elegida : "+mDay+"-"+mMonth+"-"+mYear);
+        btnSelectDate.setText("Fecha elegida : "+mDay+"-"+(mMonth+1)+"-"+mYear);
         btnSelectTimeInit.setText("Hora elegida :"+hourInit+"-"+minuteInit);
         btnSelectTimeEnd.setText("Hora elegida :"+hourEnd+"-"+minuteEnd);
         // Set ClickListener on btnSelectDate 
@@ -133,34 +136,44 @@ public class NotaActivity extends Activity {
 				cal_date.set(year, month, day);
 				
 				Calendar cal_time_ini=Calendar.getInstance();
-				cal_date.set(year, month, day, hourInit, minuteInit);
+				cal_time_ini.set(Calendar.HOUR_OF_DAY,hourInit);
+				cal_time_ini.set(Calendar.MINUTE,minuteInit);
+				cal_time_ini.set(Calendar.SECOND,00);
 				
 				Calendar cal_time_end=Calendar.getInstance();
-				cal_date.set(year, month, day, hourEnd, minuteEnd);
+				cal_time_end.set(Calendar.HOUR_OF_DAY,hourEnd);
+				cal_time_end.set(Calendar.MINUTE,minuteEnd);
+				cal_time_end.set(Calendar.SECOND,00);
 				
 				Nota n = new Nota(txt.getText().toString(), cal_time_ini,cal_time_end, cal_date);
+				
 				if(!datePicked && cliente.getDia_de_entrega()== null) {
 					n.setFecha_de_entrega(null);
 				}
-				if(!initTime && cliente.getHora_de_entrega_hasta()== null) {
+				if(!initTime && cliente.getHora_de_entrega_desde()== null) {
 					n.setHora_de_entrega_desde(null);
-				}
+				} 
 				if(!endTime && cliente.getHora_de_entrega_hasta()== null) {
 					n.setHora_de_entrega_hasta(null);
 				}
 				
 				Gson gson=new Gson();
 				String dataString = gson.toJson(n, n.getClass()).toString();
-				
 				JSONObject aux=null;
 				try {
 					aux = new JSONObject(dataString);
 					aux.put("venta_id", getIntent().getExtras().get("venta_id"));
-    				
+					JSONObject f=(JSONObject)aux.get("fecha_de_entrega");
+					Integer month=(Integer) f.get("month");
+					month=month+1;
+					f.put("month",month);
+					dataString=aux.toString();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} //venta tentativa espera confirmacion
+				}
+				
+				//venta tentativa espera confirmacion
 				
 				PostRegistrarNota thred_registrar_nota=new PostRegistrarNota();//llamo un proceso en backgroud para realizar la venta
 				//inicia el proceso de vender

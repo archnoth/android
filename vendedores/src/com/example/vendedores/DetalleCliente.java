@@ -23,7 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class DetalleCliente extends Activity {
-	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
+	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miï¿½rcoles","Jueves","Viernes","Sï¿½bado"}; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +67,10 @@ public class DetalleCliente extends Activity {
 				"Web:\n"+
 				cliente.getWeb());
 		lugar_entrega.setText(
-				"Dirección de entrega:\n"+
+				"DirecciÃ³n de entrega:\n"+
 				cliente.getLugar_entrega());
 		dia_entrega.setText(
-				"Día de entrega:\n"+
+				"DÃ­a de entrega:\n"+
 				dias_de_semana[cliente.getDia_de_entrega()]);
 		hora_entrega_desde.setText(
 				"\nHora de entrega:\n\ndesde: " +
