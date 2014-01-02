@@ -45,10 +45,11 @@ public class NotaActivity extends Activity {
      private boolean initTime= false;
      private boolean endTime= false;
      private Cliente cliente=null;
+     
      // variables to save user selected date and time
-     public  int year,month,day,hourInit,hourEnd,minuteInit,minuteEnd;  
+     public  int year,month,day,hourInit,hourEnd,minuteInit,minuteEnd=1;  
      // declare  the variables to Show/Set the date and time when Time and  Date Picker Dialog first appears
-     private int mYear, mMonth, mDay,mHourInit,mMinuteInit,mHourEnd,mMinuteEnd; 
+     private int mYear, mMonth, mDay,mHourInit,mMinuteInit,mHourEnd,mMinuteEnd=1; 
      
      // constructor
      public NotaActivity()
@@ -84,12 +85,24 @@ public class NotaActivity extends Activity {
         mMinuteInit = c.get(Calendar.MINUTE);
         mHourEnd = c.get(Calendar.HOUR_OF_DAY);
         mMinuteEnd= c.get(Calendar.MINUTE);
-        hourInit = cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY);
-        minuteInit = cliente.getHora_de_entrega_desde().get(Calendar.MINUTE);
-        hourEnd = cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY);
-        minuteEnd=cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE);
+        if(cliente.getHora_de_entrega_desde()!=null)
+        {
+        	hourInit = cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY);
+        	minuteInit = cliente.getHora_de_entrega_desde().get(Calendar.MINUTE);
+        }else
+        {
+        	hourInit=minuteInit=0;
+        }
+        if(cliente.getHora_de_entrega_hasta()!=null) {	
+        	hourEnd = cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY);
+        	minuteEnd=cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE);
+        }
+        else
+        {
+        	hourEnd=minuteEnd=0;
+        }
         year=mYear;
-        month=mMonth;
+        //month=mMonth;
         day=mDay;
         // get the references of buttons
         btnSelectDate=(Button)findViewById(R.id.buttonSelectDate);
@@ -136,11 +149,13 @@ public class NotaActivity extends Activity {
 				cal_date.set(year, month, day);
 				
 				Calendar cal_time_ini=Calendar.getInstance();
+				cal_time_ini.set(Calendar.MONTH, 1);
 				cal_time_ini.set(Calendar.HOUR_OF_DAY,hourInit);
 				cal_time_ini.set(Calendar.MINUTE,minuteInit);
 				cal_time_ini.set(Calendar.SECOND,00);
 				
 				Calendar cal_time_end=Calendar.getInstance();
+				cal_time_end.set(Calendar.MONTH, 1);
 				cal_time_end.set(Calendar.HOUR_OF_DAY,hourEnd);
 				cal_time_end.set(Calendar.MINUTE,minuteEnd);
 				cal_time_end.set(Calendar.SECOND,00);
@@ -167,6 +182,7 @@ public class NotaActivity extends Activity {
 					Integer month=(Integer) f.get("month");
 					month=month+1;
 					f.put("month",month);
+					aux.put("fecha_de_entrega", f);
 					dataString=aux.toString();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -178,7 +194,7 @@ public class NotaActivity extends Activity {
 				PostRegistrarNota thred_registrar_nota=new PostRegistrarNota();//llamo un proceso en backgroud para realizar la venta
 				//inicia el proceso de vender
     			
-				AsyncTask<String, Void, String> th_async_regitrar_nota=thred_registrar_nota.execute(aux.toString());	     
+				AsyncTask<String, Void, String> th_async_regitrar_nota=thred_registrar_nota.execute(dataString);	     
     			String respuesta;
 				try {
 					respuesta = (String)th_async_regitrar_nota.get();

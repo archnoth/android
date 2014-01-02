@@ -30,23 +30,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignTop="@+id/Facturar"
                 android:layout_below="@+id/tablaProductos"
-                android:layout_toRightOf="@+id/Facturar"
-                android:text="@string/monto_tag" 
-                android:focusable="false">
+                android:focusable="false"
+                android:text="@string/monto_tag" >
 
-                <requestFocus />
+                <requestFocus android:layout_width="match_parent" />
+
             </EditText>
-
-            <Button
-                android:id="@+id/Facturar"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/tablaProductos"
-                android:onClick="Facturar"
-                android:text="@string/btn_text_registrar_venta" />
 
             <EditText
                 android:id="@+id/MontoValue"
@@ -54,11 +44,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/Facturar"
                 android:layout_below="@+id/tablaProductos"
                 android:layout_toRightOf="@+id/MontoTag"
                 android:focusable="false" />
-
         </RelativeLayout>
     </ScrollView>
 
@@ -70,5 +58,20 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/Facturar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scrollView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5sp"
+        android:layout_marginTop="23dp"
+        android:background="#6699FF"
+        android:onClick="Facturar"
+        android:text="@string/btn_text_registrar_venta"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
 
 </RelativeLayout>

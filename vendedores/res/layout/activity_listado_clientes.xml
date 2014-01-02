@@ -9,18 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ListadoClientes" >
 
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buscador_vendedores" >
-
-	    <ListView
-	        android:id="@+id/ViewListaVendedores"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content" >
-	    </ListView>
-	</HorizontalScrollView>
-
+    
     <ProgressBar
         android:id="@+id/ListadoClientesprogressBar"
         style="?android:attr/progressBarStyleLarge"
@@ -29,21 +18,62 @@
         android:layout_centerInParent="true"
         android:visibility="invisible" />
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
+            
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/buscador_vendedores"
-        android:src="@drawable/ic_buscar" />
+        android:background="#6699FF" >
 
-    <AutoCompleteTextView
-        android:id="@+id/buscador_vendedores"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#6699FF"
+            android:src="@drawable/buscar" />
+
+        <AutoCompleteTextView
+            android:id="@+id/buscador_vendedores"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#6699FF"
+            android:ems="6"
+            android:maxLines="1"
+            android:textSize="30sp" >
+        </AutoCompleteTextView>
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:ems="6"
-        android:maxLines="1"
-        android:textSize="30sp" />
+        android:layout_above="@+id/btn_clientes_sin_visitar"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:layout_alignRight="@+id/btn_clientes_sin_visitar"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_marginTop="24dp" >
 
+        <ListView
+            android:id="@+id/ViewListaVendedores"
+            android:layout_width="wrap_content"
+            android:layout_height="194dp" >
+        </ListView>
+        
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/btn_clientes_sin_visitar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:layout_alignParentBottom="true"
+        android:background="#6699FF"
+        android:onClick="clientes_sin_visitar"
+        android:text="@string/text_btn_clientes_sin_visitar"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+
+  
 </RelativeLayout>

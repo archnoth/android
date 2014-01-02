@@ -1,7 +1,9 @@
 package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,13 +20,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.dominio.Cliente;
+import com.example.dominio.Producto;
 import com.example.dominio.Usuario;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -35,14 +48,62 @@ import android.widget.Toast;
 public class Login extends Activity {
 
 	public Usuario usuario=null;
+	
+	//for GCM
+	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	public static final String PROPERTY_REG_ID = "registration_id";
+	private static final String PROPERTY_APP_VERSION = "appVersion";
+	private GCMActivity googleGCMClient;
+	String registrationID;
+	GoogleCloudMessaging gcm;
+	String SENDER_ID = "354046703161";
+
+	private Context context;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		context = getApplicationContext();
 		 EditText username = (EditText)findViewById(R.id.editText1);
     	 EditText password = (EditText)findViewById(R.id.editTextPassword);
     	 username.setHint("Nombre de usuario");
     	 password.setHint("Contraseña");
+    	 
+    	 try{//checkeo si vendo de una notificacion
+	    	 if(getIntent().getExtras().getString("mensaje")!=null)
+	    	 {
+	    		 AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setMessage(getIntent().getExtras().getString("mensaje"));
+					builder.setTitle(getIntent().getExtras().getString("titulo"))
+					        .setCancelable(false)
+					        .setPositiveButton("Aceptar",
+					                new DialogInterface.OnClickListener() {
+					                    public void onClick(DialogInterface dialog, int id) {
+					                     try{
+					                    	
+					                    	            dialog.cancel();
+								                        
+								                    							               
+					                     }catch(Exception e){}
+					                    }
+					                });
+					AlertDialog alert = builder.create();
+					alert.show();
+				
+	    		 
+	    	 } 
+    	 }catch(Exception e)
+    	 {
+    		 
+    	 }
+    	 
+    	 if (checkPlayServices()) {
+ 	        // If this check succeeds, proceed with normal processing.
+ 	        // Otherwise, prompt user to get valid Play Services APK.
+    		 registerInBackground();//llamo un proceso en backgroud para cargar los productos de la empresa
+    		 
+ 	    }
 	}
 
 	@Override
@@ -71,6 +132,7 @@ public class Login extends Activity {
 	protected void onResume(){
 		super.onResume();
 		findViewById(R.id.LoginConectado).setVisibility(View.INVISIBLE);
+		
 	}
 	
 	private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
@@ -97,7 +159,7 @@ public class Login extends Activity {
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
 
-             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","");
+             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","",registrationID);
         	 Gson gson = new Gson();
              String dataString = gson.toJson(usuario_login, usuario_login.getClass()).toString();
              
@@ -126,15 +188,13 @@ public class Login extends Activity {
 			if (results!=null) {			
 				JSONObject jsonObject;
 				try {
-					jsonObject = new JSONObject(results);
-										
+					jsonObject = new JSONObject(results);				
 					String api_key = jsonObject.getString("api_key");
-					//String user_id=jsonObject.getString("user_id");
+					//String device_id=jsonObject.getString("device_id");
 					String username=jsonObject.getString("username");
 					String jsonClientes=jsonObject.getString("user_clients");
 					JSONArray jarray=new JSONArray(jsonClientes);
-
-					usuario = new Usuario("", "", username, "", "", api_key);
+					usuario = new Usuario("", "", username, "", "", api_key,""/*device_id*/);
 					((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(10);
 					int porcentaje_progreso=0;
 					if(jarray.length()>0)
@@ -156,10 +216,8 @@ public class Login extends Activity {
 						
 					}else ((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(100);
 					
-					if(usuario!=null)
+					if(usuario.getNombreUsuario()!=null)
 					{
-						//Intent intent = new Intent(this, ListadoClientes.class);
-						//startActivity(intent);
 						findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
 						Intent loc = new Intent(getApplicationContext(),ListadoClientes.class); 
 				        loc.putExtra("usuario",usuario);  
@@ -171,9 +229,7 @@ public class Login extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					System.out.println(e.getCause());
-				}
-					
-					
+				}	
 			}
 			findViewById(R.id.LoginSeekBar).setVisibility(View.INVISIBLE);
 			Button b = (Button)findViewById(R.id.btn_ingresar);
@@ -182,7 +238,80 @@ public class Login extends Activity {
     }
     
 	
+	public boolean checkPlayServices() {
+	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+	    if (resultCode != ConnectionResult.SUCCESS) {
+	        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+	            GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+	                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
+	        } else {
+	         
+	            finish();
+	        }
+	        return false;
+	    }
+	    return true;
+	}
+	private static int getAppVersion(Context context) {
+	    try {
+	        PackageInfo packageInfo = context.getPackageManager()
+	                .getPackageInfo(context.getPackageName(), 0);
+	        return packageInfo.versionCode;
+	    } catch (NameNotFoundException e) {
+	        // should never happen
+	        throw new RuntimeException("Could not get package name: " + e);
+	    }
+	}
+	private SharedPreferences getGCMPreferences(Context context) {
+	    // This sample app persists the registration ID in shared preferences, but
+	    // how you store the regID in your app is up to you.
+	    return getSharedPreferences(GCMActivity.class.getSimpleName(),
+	            Context.MODE_PRIVATE);
+	}
+	private void storeRegistrationId(Context context, String regId) {
+	    final SharedPreferences prefs = getGCMPreferences(context);
+	    int appVersion = getAppVersion(context);
+	  
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putString(PROPERTY_REG_ID, regId);
+	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
+	    editor.commit();
+	}
+	
+
+	
+	private void registerInBackground(){
+		
+		 new AsyncTask() {
+
+			@Override
+			protected String doInBackground(Object... params) {
+				
+	            try {
+	                if (gcm == null) {
+	                    gcm = GoogleCloudMessaging.getInstance(context);
+	                }
+	                registrationID = gcm.register(SENDER_ID);
+	                
+	                //sendRegistrationIdToBackend();
+	                // Persist the regID - no need to register again.
+	                storeRegistrationId(context, registrationID);
+	            } catch (IOException ex) {
+	            	registrationID = "Error :" + ex.getMessage();
+	                // If there is an error, don't just keep trying to register.
+	                // Require the user to click a button again, or perform
+	                // exponential back-off.
+	            }
+	            return registrationID;
+			}
+			@Override
+	        protected void onPostExecute(Object msg) {
+	           // mDisplay.append(msg.toString() + "\n");
+	        }
 			
+			}.execute(null, null, null);
+	}
+
 
 	
 }

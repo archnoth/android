@@ -43,6 +43,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.InputFilter;
@@ -65,11 +67,14 @@ public class Factura extends Activity {
 
 	private static List<Producto> lista_productos;
 	private static HashMap<String, Producto> diccionarioProductos;
-	private Double monto_factura;
+	private Double monto_factura=0.0;
 	private Venta nueva_venta;
+	private Venta venta_original;
 	private EditText last_text_cantidad;
 	private JSONObject json;
 	private Gson gson;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -92,11 +97,24 @@ public class Factura extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 
-		addRowToTableProductos();
-		this.monto_factura = 0.0;
+		
+		Venta ultima_venta=null;
+		try{
+			ultima_venta=(Venta)getIntent().getExtras().getParcelable("venta");
+		}catch(Exception e)
+		{
+			
+		}
+		if(ultima_venta!=null){
+			cargar_ultima_venta(ultima_venta);
+		}
+		else
+		{
+			addRowToTableProductos(null);
+		}
 		EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
 	    monto_value.setText(this.monto_factura.toString());
+		
 	}
 
 		
@@ -129,7 +147,7 @@ public class Factura extends Activity {
 						{
 							if(agregar)
 							{
-								addRowToTableProductos();
+								addRowToTableProductos(null);
 								agregar=false;
 							}	
 						};
@@ -149,8 +167,9 @@ public class Factura extends Activity {
 		}
 		
 		
-		private void addRowToTableProductos()
-		{
+		private void addRowToTableProductos(ProductoVenta pv)
+		{	
+			
 			 AutoCompleteTextView autocomplete=Factura.this.generarAutocomplete();
 		     EditText text_cant =Factura.this.generarEditText();
 		     TableRow tbr= new TableRow(getApplicationContext());
@@ -169,7 +188,13 @@ public class Factura extends Activity {
 		     tbr.setBackgroundColor(Color.LTGRAY);
 		     tbr.setPadding(2, 1, 2, 1);
 		     TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-		     tbl.addView(tbr,tbl.getChildCount());	
+		     tbl.addView(tbr,tbl.getChildCount());
+		     if(pv!=null){	
+		    	 autocomplete.setText(pv.getProducto().toString());
+		    	 text_cant.setText(pv.getCantidad().toString());
+		    	 
+		    	 
+		     }
 		}
 		
 		
@@ -186,6 +211,7 @@ public class Factura extends Activity {
 		     auto_gen.setCursorVisible(true);
 		     auto_gen.setTextColor(Color.BLACK);
 		     auto_gen.setBackgroundColor(Color.WHITE);
+		     auto_gen.setDropDownBackgroundResource(android.R.color.white);
 		     auto_gen.addTextChangedListener(new TextWatcher(){ 
 				   
 					@Override
@@ -292,6 +318,10 @@ public class Factura extends Activity {
 		json=new JSONObject();
 		nueva_venta.setMonto(monto);
 	    gson = new Gson();
+	    venta_original=new Venta(nueva_venta.getUsuario(), nueva_venta.getCliente(),nueva_venta.getFecha(),nueva_venta.getMonto());
+	    venta_original.setProductos(nueva_venta.getProductos());
+	    
+	    
 	    String mensaje="Advertencia!";
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Desea realizar una venta al cliente:"+ nueva_venta.getCliente().getNombre() + 
@@ -421,8 +451,6 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
             	 StringEntity se = new StringEntity(params[0].toString(),"UTF8");
             	 se.setContentType("application/json");
             	 httpPost.setEntity(se);
-            	 
-            	 se.setContentEncoding("UTF-8");
             	 se.setContentType("application/json");
             	 httpPost.setEntity(se);
             	 HttpResponse response = httpClient.execute(httpPost, localContext);
@@ -443,7 +471,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 
 	}
 	
-	private class PostNuevaVentaTentativa extends AsyncTask <String, Void, String > {
+private class PostNuevaVentaTentativa extends AsyncTask <String, Void, String > {
 		
 	 
 		protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
@@ -467,8 +495,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
              // Execute HTTP Post Request
              String text = null;
              try {
-            	 StringEntity se = new StringEntity(params[0].toString());
-            	 se.setContentEncoding("UTF-8");
+            	 StringEntity se = new StringEntity(params[0].toString(),"UTF8");
             	 se.setContentType("application/json");
             	 httpPost.setEntity(se);
             	 HttpResponse response = httpClient.execute(httpPost, localContext);
@@ -489,7 +516,7 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 
 	}
 	
-	public void VentaRecursiva() throws JSONException
+public void VentaRecursiva() throws JSONException
 	{
 		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString(); //venta tentativa espera confirmacion
 		JSONObject aux_fecha = new JSONObject(dataString); //venta tentativa espera confirmacion
@@ -528,69 +555,64 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 				//JSONObject cliente_venta_creada=((JSONObject)(json.get("cliente")));
 				
 				// la venta es igual a la que envie originalmente, entonces proceso completo!!!! corto el loop
-				if(nueva_venta.getMonto()==Double.parseDouble(json.getString("monto").toString())&&
-						nueva_venta.getCliente().getRut().equalsIgnoreCase(json.getString("rut_cliente"))&&
-						nueva_venta.getCliente().getNombre().equalsIgnoreCase(json.getString("nombre_cliente"))&&
-						nueva_venta.getFecha().get(Calendar.YEAR)==fecha_venta_registrada.get(Calendar.YEAR)&&
-						nueva_venta.getFecha().get(Calendar.MONTH)==fecha_venta_registrada.get(Calendar.MONTH)&&
-						nueva_venta.getFecha().get(Calendar.DAY_OF_MONTH)==fecha_venta_registrada.get(Calendar.DAY_OF_MONTH)&&
-						nueva_venta.getFecha().get(Calendar.HOUR_OF_DAY)==fecha_venta_registrada.get(Calendar.HOUR_OF_DAY)&&
-						nueva_venta.getFecha().get(Calendar.MINUTE)==fecha_venta_registrada.get(Calendar.MINUTE)&&
-						nueva_venta.getFecha().get(Calendar.SECOND)==fecha_venta_registrada.get(Calendar.SECOND)){
-					
-					String mensaje="Venta exitosa!";
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setMessage("Su pedido se proceso correctamente.\n" +
-							"Para el cliente :"+ nueva_venta.getCliente().getNombre() + 
-							"\n  Con un monto de :"+nueva_venta.getMonto().toString()+
-							"\n ¿Desea agregar notas sobre este Pedido?");
-					builder.setTitle(mensaje)
-					        .setCancelable(false)
-					        .setNegativeButton("Cancelar",
-					                new DialogInterface.OnClickListener() {
-					                    public void onClick(DialogInterface dialog, int id) {
-					                        dialog.cancel();
-					                        Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
-					    			        loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-					    			        loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));
-					    			        startActivity(loc);
-					                        
-					                    }
-					                })
-					        .setPositiveButton("Aceptar",
-					                new DialogInterface.OnClickListener() {
-					                    public void onClick(DialogInterface dialog, int id) {
-					                     try{
-					                    	
-					                    	 //Toast.makeText(Factura.this,"Aca tengo que generar una nueva actividad donde el vendedor agrega notas de la venta", Toast.LENGTH_LONG).show();
-					                    	Intent loc = new Intent(getApplicationContext(),NotaActivity.class); 
-					                    	loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
-					                    	loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente")); 
-					 				        loc.putExtra("venta_id", json.getString("venta_id"));
-					 				        startActivity(loc);
-					                     }catch(Exception e){}
-					                    }
-					                });
-					AlertDialog alert = builder.create();
-					alert.show();
-				
-
-				}
-				else
-				{
-					
+				if(!(venta_original.getMonto() == Double.parseDouble(json.getString("monto").toString())&&
+						venta_original.getCliente().getRut().equalsIgnoreCase(json.getString("rut_cliente"))&&
+						venta_original.getCliente().getNombre().equalsIgnoreCase(json.getString("nombre_cliente"))&&
+						venta_original.getFecha().get(Calendar.YEAR)==fecha_venta_registrada.get(Calendar.YEAR)&&
+						venta_original.getFecha().get(Calendar.MONTH)==fecha_venta_registrada.get(Calendar.MONTH)&&
+						venta_original.getFecha().get(Calendar.DAY_OF_MONTH)==fecha_venta_registrada.get(Calendar.DAY_OF_MONTH)&&
+						venta_original.getFecha().get(Calendar.HOUR_OF_DAY)==fecha_venta_registrada.get(Calendar.HOUR_OF_DAY)&&
+						venta_original.getFecha().get(Calendar.MINUTE)==fecha_venta_registrada.get(Calendar.MINUTE)&&
+						venta_original.getFecha().get(Calendar.SECOND)==fecha_venta_registrada.get(Calendar.SECOND))){
+									
 					//llamo a crear venta tentativa con nueva_venta
-					dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString();
+					dataString = gson.toJson(venta_original, venta_original.getClass()).toString();
 					JSONObject aux = new JSONObject(dataString); //venta tentativa espera confirmacion
 					aux.put("venta_id", json.getString("venta_id"));
 					aux.put("monto",json.getString("monto"));
     				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
     				//inicia el proceso de vender
         			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
-					String mensaje=(String)th_async_tentativa.get();
-					Toast.makeText(Factura.this,mensaje, Toast.LENGTH_LONG).show();
 					
 				}
+				String mensaje="Venta exitosa!";
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage("Su pedido se proceso correctamente.\n" +
+						"Para el cliente :"+ nueva_venta.getCliente().getNombre() + 
+						"\n  Con un monto de :"+nueva_venta.getMonto().toString()+
+						"\n ¿Desea agregar notas sobre este Pedido?");
+				builder.setTitle(mensaje)
+				        .setCancelable(false)
+				        .setNegativeButton("Cancelar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                        dialog.cancel();
+				                        Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
+				    			        loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+				    			        loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));
+				    			        startActivity(loc);
+				                        
+				                    }
+				                })
+				        .setPositiveButton("Aceptar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                     try{
+				                    	
+				                    	 //Toast.makeText(Factura.this,"Aca tengo que generar una nueva actividad donde el vendedor agrega notas de la venta", Toast.LENGTH_LONG).show();
+				                    	Intent loc = new Intent(getApplicationContext(),NotaActivity.class); 
+				                    	loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+				                    	loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente")); 
+				 				        loc.putExtra("venta_id", json.getString("venta_id"));
+				 				        startActivity(loc);
+				                     }catch(Exception e){}
+				                    }
+				                });
+				AlertDialog alert = builder.create();
+				alert.show();
+			
+
+
 				
 			}
 			if(json.getString("response").toString().equalsIgnoreCase("Stock insuficiente"))
@@ -654,5 +676,21 @@ private class PostNuevaVenta extends AsyncTask <String, Void, String > {
 		
 	}
  
+	
+private void cargar_ultima_venta(Venta ultima_venta)
+	{
+		for(int i =0;i < ultima_venta.getProductos().size();i++)
+		{
+			ProductoVenta pv=ultima_venta.getProductos().get(i);
+			addRowToTableProductos(pv);
+			TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
+		    if (tbl.getChildCount() > 1 && i!=ultima_venta.getProductos().size()-1){
+		    	tbl.removeViewAt(tbl.getChildCount()-1);
+		    }
+		}
+		this.monto_factura=ultima_venta.getMonto();
+		
+	}
+	
 	
 }

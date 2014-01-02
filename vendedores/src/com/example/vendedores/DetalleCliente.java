@@ -4,11 +4,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.example.dominio.Cliente;
+import com.example.dominio.Producto;
+import com.example.dominio.ProductoVenta;
+import com.example.dominio.Usuario;
+import com.example.dominio.Venta;
 
 
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,10 +40,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DetalleCliente extends Activity {
-	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Mi�rcoles","Jueves","Viernes","S�bado"}; 
-	
+	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
+	private Venta venta;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,43 +62,31 @@ public class DetalleCliente extends Activity {
 		TextView dia_entrega=(TextView)findViewById(R.id.editDia_de_entregaCliente);
 		TextView hora_entrega_desde=(TextView)findViewById(R.id.editHora_de_entrega_desde);
 		TextView hora_entrega_hasta=(TextView)findViewById(R.id.editHora_de_entrega_hasta);
-		nombre.setText(
-				"Nombre:\n"+
-				cliente.getNombre());
-		rut.setText(
-				"Rut:\n"+
-				cliente.getRut());
-		direccion.setText(
-				"Dir:\n"+
-				cliente.getDireccion());
-		tel.setText(
-				"Tel:\n"+
-				cliente.getTel());
-		tel2.setText(
-				"Tel2:\n"+
-				cliente.getTel2());
-		celular.setText(
-				"Celular:\n"+
-				cliente.getCelular());
-		email.setText(
-				"Email:\n"+
-				cliente.getEmail());
-		web.setText(
-				"Web:\n"+
-				cliente.getWeb());
-		lugar_entrega.setText(
-				"Dirección de entrega:\n"+
-				cliente.getLugar_entrega());
-		dia_entrega.setText(
-				"Día de entrega:\n"+
-				dias_de_semana[cliente.getDia_de_entrega()]);
-		hora_entrega_desde.setText(
-				"\nHora de entrega:\n\ndesde: " +
-				cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_desde().get(Calendar.MINUTE) + "hs.");
-		hora_entrega_hasta.setText(
-				"hasta: " + 
-				cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
 		
+		if(cliente.getNombre()!=null) nombre.setText("Nombre:\n"+cliente.getNombre());
+		else nombre.setVisibility(View.GONE);
+		if(cliente.getRut()!=null) rut.setText("Rut:\n"+cliente.getRut());
+		else rut.setVisibility(View.GONE);
+		if(cliente.getDireccion()!=null) direccion.setText("Dir:\n"+cliente.getDireccion());
+		else direccion.setVisibility(View.GONE);
+		if(cliente.getTel()!=null)tel.setText("Tel:\n"+	cliente.getTel());
+		else tel.setVisibility(View.GONE);
+		if(cliente.getTel2()!=null)tel2.setText("Tel2:\n"+cliente.getTel2());
+		else tel2.setVisibility(View.GONE);
+		if(cliente.getCelular()!=null)celular.setText("Celular:\n"+	cliente.getCelular());
+		else celular.setVisibility(View.GONE);
+		if(cliente.getEmail()!=null)email.setText("Email:\n"+cliente.getEmail());
+		else email.setVisibility(View.GONE);
+		if(cliente.getWeb()!=null)web.setText("Web:\n"+cliente.getWeb());
+		else web.setVisibility(View.GONE);
+		if(cliente.getLugar_entrega()!=null)lugar_entrega.setText("Dirección de entrega:\n"+cliente.getLugar_entrega());
+		else lugar_entrega.setVisibility(View.GONE);
+		if(cliente.getDia_de_entrega()!=null)dia_entrega.setText("Día de entrega:\n"+dias_de_semana[cliente.getDia_de_entrega()]);
+		else dia_entrega.setVisibility(View.GONE);
+		if(cliente.getHora_de_entrega_desde()!=null)hora_entrega_desde.setText("\nHora de entrega:\n\ndesde: " +cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_desde().get(Calendar.MINUTE) + "hs.");
+		else hora_entrega_desde.setVisibility(View.GONE);
+		if(cliente.getHora_de_entrega_hasta()!=null)hora_entrega_hasta.setText(	"hasta: " +	cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
+	
 		
 		ImageView mainImageView = (ImageView) findViewById(R.id.imageView);
 		ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -110,6 +118,30 @@ public class DetalleCliente extends Activity {
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));  
 	    startActivity(fac_intent);
 	}
+	
+	public void to_factura_activity_con_venta(View view){
+		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
+		GetUltimaVenta thred=new GetUltimaVenta();//llamo un proceso en backgroud para realizar la venta
+    	
+    	//inicia el proceso de cargar la ultima venta
+        AsyncTask<Void, Void, Venta> async=thred.execute();	     
+        Venta respuesta=null;
+        try {				
+			//obtengo la respuesta asincrona
+			respuesta= (Venta)async.get();
+			
+		}catch(Exception e){}
+		
+        if(respuesta!=null)
+        {
+        	Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
+			fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+			fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+			fac_intent.putExtra("venta",respuesta);
+		    startActivity(fac_intent);
+        }//aca en el else tengo que informar sobre el error al levantar la ultima venta
+	}
+	
 	
 public void to_historico_activity(View view){
 		
@@ -169,4 +201,91 @@ class ImageDownlaodThread extends Thread {
 	  }
 	  return d;
 	 }
+	 
+	 
+	 
+private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
+			
+		 
+			protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
+		       InputStream in = entity.getContent();
+		         StringBuffer out = new StringBuffer();
+		         int n = 1;
+		         while (n>0) {
+		             byte[] b = new byte[4096];
+		             n =  in.read(b);
+		             if (n>0) out.append(new String(b, 0, n));
+		         }
+		         return out.toString();
+		    }
+			
+			@Override
+			protected  Venta doInBackground(Void... params) {
+				venta=null;
+				ArrayList<ProductoVenta> lista = null;
+				HttpClient httpClient = new DefaultHttpClient();
+				 HttpContext localContext = new BasicHttpContext();
+				 
+				 //http://ventas.jm-ga.com/api/ventas/ultima/?nombre=luis&rut=123132&key=39b212ca41d9564d917bf7a9748746d52ffe28c9
+
+		         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/ventas/ultima/?nombre="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getNombreUsuario()+"&key="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"&rut="+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut());
+		           
+		  
+		             // Execute HTTP Post Request
+		         String text = null;
+		         try {
+		        	 HttpResponse response = httpClient.execute(httpGet, localContext);
+		        	 HttpEntity entity = response.getEntity();
+		               
+		             text = getASCIIContentFromEntity(entity);
+		               
+		         } catch (Exception e) {
+		        	 
+		         }
+		         //return text; 
+		         if (text!=null) {
+		        	 if(!text.equals("No hay ventas"))
+		        	 {			
+						JSONObject jsonObject;
+						try {
+							jsonObject = new JSONObject(text);
+							
+							Calendar fecha_venta_registrada=Calendar.getInstance();
+							fecha_venta_registrada.set(Calendar.YEAR,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("year")));
+							fecha_venta_registrada.set(Calendar.MONTH,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("month"))-1);
+							fecha_venta_registrada.set(Calendar.DAY_OF_MONTH,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("dayOfMonth")));
+							fecha_venta_registrada.set(Calendar.HOUR_OF_DAY,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("hourOfDay")));
+							fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("minute")));
+							fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("second")));
+							
+							venta=new Venta((Usuario)getIntent().getExtras().getParcelable("usuario"),(Cliente)getIntent().getExtras().getParcelable("cliente"),fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()));
+							
+							JSONArray jarray =(JSONArray)jsonObject.get("productos");
+							lista= new ArrayList<ProductoVenta>();
+							for(int i=0;i<jarray.length();i++)
+							{
+								JSONObject jsonPvp=(JSONObject)((JSONObject)jarray.get(i)).get("producto");
+								String cant=((JSONObject)jarray.get(i)).get("cantidad").toString();
+								Producto prod= new Producto(jsonPvp.getString("nombre"),jsonPvp.getDouble("precio"),jsonPvp.getString("codigo"),jsonPvp.getString("descripcion"));
+								ProductoVenta pv=new ProductoVenta(prod,Integer.parseInt(cant));
+								venta.getProductos().add(pv);
+							}
+						
+							
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+		        	 }else
+		        	 {
+		        		 Toast.makeText(DetalleCliente.this,text, Toast.LENGTH_LONG).show(); 
+		        	 }
+						
+				}
+				return venta;
+			}
+
+
+		}
+	 
+	 
 }

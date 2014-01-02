@@ -10,9 +10,10 @@
     <string name="title_activity_detalle_cliente">DetalleCliente</string>
     <string name="title_activity_factura">Factura</string>
     <string name="autocomplete_producto">Producto</string>
-    <string name="btn_text_registrar_venta">Registrar Venta</string>
+    <string name="btn_text_registrar_venta">Registrar nueva venta</string>
+    <string name="btn_text_repetir_venta">Repetir última venta</string>
     <string name="title_activity_ventas_historico">VentasHistorico</string>
-    <string name="text_btn_historico">Historico</string>
+    <string name="text_btn_historico">Ver datos historicos</string>
     <string name="text_btn_generar_factura">Generar Factura</string>
     <string name="text_btn_add">Mas </string>
     <string name="text_btn_rem">Menos </string>
@@ -25,5 +26,6 @@
     <string name="monto_tag">Monto: </string>
     <string name="title_activity_nota">NotaActivity</string>
     <string name="title_activity_gcm_activity">GCMActivity</string>
+     <string name="text_btn_clientes_sin_visitar">Ver clientes sin visitar</string>
 
 </resources>

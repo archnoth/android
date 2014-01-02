@@ -14,16 +14,19 @@ public class Usuario implements Parcelable {
 	private String password;
 	private String email;
 	private String key;
+	private String device_id;
+	
 	private ArrayList<Cliente> listaClientes;
-	public Usuario(String nom,String apell,String nomUsu,String pas,String emai,String k)
+	public Usuario(String nom,String apell,String nomUsu,String pas,String emai,String k,String device_id)
 	{
-		nombre=nom;
-		apellido=apell;
-		nombreUsuario=nomUsu;
-		password=pas;
-		email=emai;
-		key=k;
-		listaClientes=new ArrayList<Cliente>();
+		this.nombre=nom;
+		this.apellido=apell;
+		this.nombreUsuario=nomUsu;
+		this.password=pas;
+		this.email=emai;
+		this.key=k;
+		this.device_id=device_id;
+		this.listaClientes=new ArrayList<Cliente>();
 
 	}
 	
@@ -72,6 +75,14 @@ public class Usuario implements Parcelable {
 		this.listaClientes = listaClientes;
 	}
 
+	public String getDevice_id() {
+		return device_id;
+	}
+
+	public void setDevice_id(String device_id) {
+		this.device_id = device_id;
+	}
+
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -87,6 +98,7 @@ public class Usuario implements Parcelable {
 		dest.writeString(email);
 		dest.writeString(key);
 		dest.writeTypedList(listaClientes);
+		dest.writeString(device_id);
 	}
 	
 	public static final Parcelable.Creator<Usuario> CREATOR
@@ -109,7 +121,9 @@ private Usuario(Parcel in) {
 	email = in.readString();
 	key = in.readString();
 	listaClientes = in.createTypedArrayList(Cliente.CREATOR);
+	device_id=in.readString();
 }
+
 	
 
 }

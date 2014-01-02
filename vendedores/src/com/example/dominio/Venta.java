@@ -71,7 +71,8 @@ public void setLista_notas(ArrayList<Nota> lista_notas) {
 }
 
 private Venta(Parcel in) {
-	fecha = in.readParcelable(Calendar.class.getClassLoader());
+	fecha = Calendar.getInstance();
+	fecha.setTimeInMillis(in.readLong());
 	monto= in.readDouble();
 	cliente = in.readParcelable(Cliente.class.getClassLoader());
 	usuario = in.readParcelable(Usuario.class.getClassLoader());
@@ -87,7 +88,7 @@ public int describeContents() {
 @Override
 public void writeToParcel(Parcel dest, int flags) {
 	
-	dest.writeString(fecha.toString());
+	dest.writeLong(fecha.getTimeInMillis());
 	dest.writeDouble(monto);
 	dest.writeParcelable(cliente,flags);
 	dest.writeParcelable(usuario,flags);
