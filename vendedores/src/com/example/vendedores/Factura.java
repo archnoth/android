@@ -610,10 +610,7 @@ public void VentaRecursiva() throws JSONException
 				                });
 				AlertDialog alert = builder.create();
 				alert.show();
-			
 
-
-				
 			}
 			if(json.getString("response").toString().equalsIgnoreCase("Stock insuficiente"))
 			{

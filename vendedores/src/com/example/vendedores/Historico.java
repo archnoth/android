@@ -3,6 +3,7 @@ package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -17,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.dominio.Cliente;
 import com.example.dominio.Usuario;
 import com.example.dominio.Venta;
 
@@ -24,21 +26,61 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.view.WindowManager.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.annotation.TargetApi;
+import android.graphics.Color;
 import android.os.Build;
 
 public class Historico extends Activity {
 
 	private static List<Venta> lista_ventas;
 	ArrayAdapter<Venta> adapter ;
-	
+	private Usuario usuario;
+	private Cliente cliente;
+	private HashMap<Integer, Double> producto_porcentaje;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ventas_historico);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		usuario=(Usuario)getIntent().getExtras().getParcelable("usuario"); 
+		cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
+		producto_porcentaje=(HashMap<Integer, Double>)getIntent().getExtras().getSerializable("dict");
+		
+		while(producto_porcentaje.keySet().iterator().hasNext())
+		{
+			
+			Integer codigo = producto_porcentaje.keySet().iterator().next();
+			
+			LinearLayout linear=new LinearLayout(getApplicationContext());
+			LinearLayout .LayoutParams layoutParams= new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 
+			LinearLayout.LayoutParams.WRAP_CONTENT);
+			linear.setLayoutParams(layoutParams);
+			
+		                    
+			TextView text_barra_porcentaje=new TextView(getApplicationContext());
+			text_barra_porcentaje.setText(codigo.toString());
+			text_barra_porcentaje.setSingleLine(true);
+			text_barra_porcentaje.setBackgroundColor(Color.BLUE);
+			
+			
+			text_barra_porcentaje.setWidth((int)(producto_porcentaje.get(codigo)*100/260));
+			text_barra_porcentaje.setHeight(30);
+			
+			
+			TextView text_porcentaje=new TextView(getApplicationContext());
+			text_porcentaje.setText(""+producto_porcentaje.get(codigo));
+			text_porcentaje.setBackgroundColor(Color.WHITE);
+			text_porcentaje.setWidth(LayoutParams.MATCH_PARENT);
+			text_porcentaje.setHeight(30);
+			
+			
+		}
+		
 	}
 
 	/**

@@ -27,5 +27,5 @@
     <string name="title_activity_nota">NotaActivity</string>
     <string name="title_activity_gcm_activity">GCMActivity</string>
      <string name="text_btn_clientes_sin_visitar">Ver clientes sin visitar</string>
-
+	<string name="text_porcentajes">Porcentajes de compras</string>
 </resources>

@@ -2,10 +2,13 @@ package com.example.vendedores;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -24,6 +27,7 @@ import com.example.dominio.Producto;
 import com.example.dominio.ProductoVenta;
 import com.example.dominio.Usuario;
 import com.example.dominio.Venta;
+import com.google.android.gms.internal.bj;
 
 
 
@@ -92,9 +96,7 @@ public class DetalleCliente extends Activity {
 		ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		String imageurl = "http://ventas.jm-ga.com/source/media/"+cliente.getUrl_imagen();
 		  
-		ImageDownloadMessageHandler imageDownloadMessageHandler1= new ImageDownloadMessageHandler(progressBar, mainImageView);
-		ImageDownlaodThread imageDownlaodThread = new ImageDownlaodThread(imageDownloadMessageHandler1,imageurl);
-		imageDownlaodThread.start();
+		
 		
 		
 	}
@@ -145,62 +147,38 @@ public class DetalleCliente extends Activity {
 	
 public void to_historico_activity(View view){
 		
-		Intent hist_intent = new Intent(getApplicationContext(),Historico.class); 
-		hist_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));  
-	    startActivity(hist_intent);
+		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
+		GetHistorico thread=new GetHistorico();//llamo un proceso en backgroud para realizar la estadistica
+    	
+    	//inicia el proceso de cargar estadisticas del cliente
+        AsyncTask<Void, Void, HashMap<Integer,Double>> async=thread.execute();	     
+        HashMap<Integer, Double> respuesta=null;
+        try {				
+			//obtengo la respuesta asincrona
+			respuesta=(HashMap<Integer,Double>)async.get();
+			
+		}catch(Exception e){}
+		
+        if(respuesta!=null)
+        {
+        	Intent hist_intent = new Intent(getApplicationContext(),Historico.class);  
+        	hist_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+        	hist_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+        	Bundle extras = new Bundle();
+        	extras.putSerializable("dict", (Serializable) respuesta);
+        	hist_intent.putExtras(extras);
+        	startActivity(hist_intent);
+        }
+        else
+        {
+        	 Toast.makeText(DetalleCliente.this,"Error mientras se procesaban los datos", Toast.LENGTH_LONG).show(); 	
+        }//aca en el else tengo que informar sobre el error al levantar las estadisticas
 	}
+	
 
 
-class ImageDownlaodThread extends Thread {
-	  ImageDownloadMessageHandler imageDownloadMessageHandler;
-	  String imageUrl;
 
-	  public ImageDownlaodThread(ImageDownloadMessageHandler imageDownloadMessageHandler, String imageUrl) {
-	   this.imageDownloadMessageHandler = imageDownloadMessageHandler;
-	   this.imageUrl = imageUrl;
-	  }
 
-	  @Override
-	  public void run() {
-	   Drawable drawable = LoadImageFromWebOperations(imageUrl);
-	   Message message = imageDownloadMessageHandler.obtainMessage(1, drawable);
-	   imageDownloadMessageHandler.sendMessage(message);
-	   System.out.println("Message sent");
-	  }
-
-	 }
-
-	 class ImageDownloadMessageHandler extends Handler {
-	  ProgressBar progressBar;
-	  View imageTextView;
-
-	  public  ImageDownloadMessageHandler(ProgressBar progressBar, View imageTextView) {
-	   this.progressBar = progressBar;
-	   this.imageTextView = imageTextView;
-	  }
-
-	  @Override
-	  public void handleMessage(Message message) {
-	   progressBar.setVisibility(View.GONE);
-	   imageTextView.setBackgroundDrawable(((Drawable) message.obj));
-	   imageTextView.setVisibility(View.VISIBLE);
-	  }
-
-	 }
-
-	 Drawable LoadImageFromWebOperations(String url) {
-	  Drawable d = null;
-	  InputStream is = null;
-	  try {
-	   is = (InputStream) new URL(url).getContent();
-	   d = Drawable.createFromStream(is, "src name");
-	  } catch (MalformedURLException e) {
-	   e.printStackTrace();
-	  } catch (IOException e) {
-	   e.printStackTrace();
-	  }
-	  return d;
-	 }
 	 
 	 
 	 
@@ -228,7 +206,7 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 				 
 				 //http://ventas.jm-ga.com/api/ventas/ultima/?nombre=luis&rut=123132&key=39b212ca41d9564d917bf7a9748746d52ffe28c9
 
-		         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/ventas/ultima/?nombre="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getNombreUsuario()+"&key="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"&rut="+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut());
+		         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/estadisticas/ventas/ultima/?nombre="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getNombreUsuario()+"&key="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"&rut="+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut());
 		           
 		  
 		             // Execute HTTP Post Request
@@ -286,6 +264,76 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 
 
 		}
+
+
+
+private class GetHistorico extends AsyncTask <Void, Void, HashMap<Integer, Double> > {
+	
 	 
+	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
+       InputStream in = entity.getContent();
+         StringBuffer out = new StringBuffer();
+         int n = 1;
+         while (n>0) {
+             byte[] b = new byte[4096];
+             n =  in.read(b);
+             if (n>0) out.append(new String(b, 0, n));
+         }
+         return out.toString();
+    }
+	
+	@Override
+	protected  HashMap<Integer, Double>  doInBackground(Void... params) {
+		
+		HashMap<Integer, Double> retorno=null;
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpContext localContext = new BasicHttpContext();
+		 
+		 //http://ventas.jm-ga.com/api/ventas/ultima/?nombre=luis&rut=123132&key=39b212ca41d9564d917bf7a9748746d52ffe28c9
+
+         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/estadisticas/ventas/porcentaje_productos_cliente/?rut="+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut());
+           
+  
+             // Execute HTTP Post Request
+         String text = null;
+         try {
+        	 HttpResponse response = httpClient.execute(httpGet, localContext);
+        	 HttpEntity entity = response.getEntity();
+               
+             text = getASCIIContentFromEntity(entity);
+               
+         } catch (Exception e) {
+        	 
+         } 
+         if (text!=null) {
+        	 if(!text.contains("Error"))
+        	 {			
+				try {
+					retorno = new HashMap<Integer, Double>();
+					JSONArray jarray =new JSONArray(text);
+					for(int i=0;i<jarray.length();i++)
+					{
+						JSONArray aux =(JSONArray)jarray.get(i);
+						retorno.put(Integer.parseInt(aux.get(0).toString()), Double.parseDouble(aux.get(1).toString()));
+						//Toast.makeText(DetalleCliente.this,retorno.toString(), Toast.LENGTH_LONG).show();
+					}
+				
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+        	 }else
+        	 {
+        		 Toast.makeText(DetalleCliente.this,text, Toast.LENGTH_LONG).show(); 
+        	 }
+				
+		}
+		return retorno;
+	}
+
+
+}
+
+
 	 
 }
