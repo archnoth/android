@@ -7,8 +7,26 @@
     android:scrollbars="horizontal|vertical"
     tools:context=".Factura" >
 
+    <RelativeLayout
+        android:id="@+id/progressFacturaLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="@color/blue"
+        android:keepScreenOn="true" 
+        android:visibility="invisible">
+
+        <ProgressBar
+            android:id="@+id/progressBarFactura"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
     <ScrollView
-        android:id="@+id/scrollView1"
+        android:id="@+id/scrollViewVenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -21,6 +39,7 @@
                 android:id="@+id/tablaProductos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:background="@android:color/black"
                 android:padding="2dp" >
             </TableLayout>
@@ -29,10 +48,11 @@
                 android:id="@+id/MontoTag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_below="@+id/tablaProductos"
                 android:focusable="false"
-                android:text="@string/monto_tag" >
+                android:text="@string/monto_tag" 
+                android:background="@color/white"
+                android:ems="4">
 
                 <requestFocus android:layout_width="match_parent" />
 
@@ -42,36 +62,25 @@
                 android:id="@+id/MontoValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/tablaProductos"
                 android:layout_toRightOf="@+id/MontoTag"
-                android:focusable="false" />
+                android:focusable="false"
+                android:background="@color/white" />
+
+            <Button
+                android:id="@+id/Facturar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/MontoValue"
+                android:background="#6699FF"
+                android:onClick="Facturar"
+                android:text="@string/btn_text_registrar_venta"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
         </RelativeLayout>
     </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/progressBarFactura"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible" />
-
-    <Button
-        android:id="@+id/Facturar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/scrollView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5sp"
-        android:layout_marginTop="23dp"
-        android:background="#6699FF"
-        android:onClick="Facturar"
-        android:text="@string/btn_text_registrar_venta"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
 
 </RelativeLayout>

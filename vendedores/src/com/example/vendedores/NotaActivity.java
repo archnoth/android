@@ -144,6 +144,8 @@ public class NotaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				findViewById(R.id.progressBarNotaLayout).setVisibility(View.VISIBLE);
+				findViewById(R.id.scrollViewNota).setFocusable(false);
 				EditText txt=(EditText)findViewById(R.id.editTextRedaccionNota);
 				Calendar cal_date=Calendar.getInstance();
 				cal_date.set(year, month, day);
@@ -207,8 +209,8 @@ public class NotaActivity extends Activity {
 					e.printStackTrace();
 				}
 				
-				
-				
+				findViewById(R.id.progressBarNotaLayout).setVisibility(View.INVISIBLE);
+				findViewById(R.id.scrollViewNota).setFocusable(true);
 			}
 		});
 	}
