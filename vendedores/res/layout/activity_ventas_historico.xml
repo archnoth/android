@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lista_historico_grafica"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -16,52 +17,6 @@
         android:ems="10"
         android:text="Porcentajes de ventas por producto" />
  
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
-        android:layout_marginTop="10dp">
-
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="260dp"
-            android:layout_height="30dp"
-            
-            android:layout_weight="1"
-            android:background="@color/blue"
-            android:singleLine="true"
-            android:text="Producto lalala, buenísimo" >
-
-            <requestFocus />
-        </EditText>
-
-        <EditText
-            android:id="@+id/EditText02"
-            android:layout_width="wrap_content"
-            android:background="@color/white"
-            android:layout_height="wrap_content"
-            android:text="  100%" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
-        android:layout_marginTop="10dp">
-
-        <EditText
-            android:id="@+id/EditText03"
-            android:layout_width="159dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@color/blue"
-            android:singleLine="true"
-            android:text="Producto lalala, buenísimo" />
-
-        <EditText
-            android:id="@+id/EditText01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:text="  60%" />
-    </LinearLayout>
+   
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -113,7 +114,10 @@ public class Factura extends Activity {
 			addRowToTableProductos(null);
 		}
 		EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
-	    monto_value.setText(this.monto_factura.toString());
+		DecimalFormat formatter = new DecimalFormat("##0.0######");
+		
+		
+	    monto_value.setText(formatter.format(this.monto_factura.doubleValue()));
 		
 	}
 
@@ -277,16 +281,19 @@ public class Factura extends Activity {
 				this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
 			}
 			EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
-		    monto_value.setText(this.monto_factura.toString());
+			DecimalFormat formatter = new DecimalFormat("##0.0######");
+	    	monto_value.setText(formatter.format(this.monto_factura.doubleValue()));
+		
+		   
 		}catch (Exception e) {}
 	}
 	
 	public void Facturar(View view) throws JSONException {
 		
 		Button b = (Button)findViewById(R.id.Facturar);
-		
-	    Usuario vendedor=(Usuario)getIntent().getExtras().getParcelable("usuario");
-	    Cliente cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
+		boolean error_formato_monto=false;
+	    Usuario vendedor=new Usuario("","",((Usuario)getIntent().getExtras().getParcelable("usuario")).getNombreUsuario(),"","",((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey(),"");
+	    Cliente cliente=new Cliente(((Cliente)getIntent().getExtras().getParcelable("cliente")).getNombre(),"",((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut(),"","","","","","","","","","","","");
 	    Calendar fecha=Calendar.getInstance();
 	    Double monto=0.0;
 	    TableLayout tbl=(TableLayout)this.findViewById(R.id.tablaProductos);
@@ -307,49 +314,59 @@ public class Factura extends Activity {
     	
     				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
     				{
-    					monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
-    					nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""))));
+    					try{
+    						monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+    						nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""))));
+    						
+    					}catch(NumberFormatException e)
+    					{
+    						error_formato_monto=true;
+    						Toast.makeText(Factura.this,"El campo cantidad solo acepta valores numéricos", Toast.LENGTH_LONG).show();
+    					}
     				}
     			}
 
 	    	i=i+1;
 	    }
 	     
-		json=new JSONObject();
-		nueva_venta.setMonto(monto);
-	    gson = new Gson();
-	    venta_original=new Venta(nueva_venta.getUsuario(), nueva_venta.getCliente(),nueva_venta.getFecha(),nueva_venta.getMonto());
-	    venta_original.setProductos(nueva_venta.getProductos());
-	    
-	    
-	    String mensaje="Advertencia!";
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Desea realizar una venta al cliente:"+ nueva_venta.getCliente().getNombre() + 
-				"\n  por un monto de : $"+nueva_venta.getMonto().toString()+"?");
-		builder.setTitle(mensaje)
-		        .setCancelable(false)
-		        .setNegativeButton("Cancelar",
-		                new DialogInterface.OnClickListener() {
-		                    public void onClick(DialogInterface dialog, int id) {
-		                        dialog.cancel();
-		                        
-		                    }
-		                })
-		        .setPositiveButton("Aceptar",
-		                new DialogInterface.OnClickListener() {
-		                    public void onClick(DialogInterface dialog, int id) {
-		                    	try {
-									VentaRecursiva();
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-		                     
-		                    }
-		                });
-		AlertDialog alert = builder.create();
-		alert.show();
-	
+	    if(!error_formato_monto)
+	    {
+			json=new JSONObject();
+			nueva_venta.setMonto(monto);
+		    gson = new Gson();
+		    venta_original=new Venta(nueva_venta.getUsuario(), nueva_venta.getCliente(),nueva_venta.getFecha(),nueva_venta.getMonto());
+		    venta_original.setProductos(nueva_venta.getProductos());
+		    
+		    
+		    String mensaje="Advertencia!";
+		    DecimalFormat formatter = new DecimalFormat("##0.0######");
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Desea realizar una venta al cliente:"+ nueva_venta.getCliente().getNombre() + 
+					"\n  por un monto de : $"+formatter.format(this.nueva_venta.getMonto())+"?");
+			builder.setTitle(mensaje)
+			        .setCancelable(false)
+			        .setNegativeButton("Cancelar",
+			                new DialogInterface.OnClickListener() {
+			                    public void onClick(DialogInterface dialog, int id) {
+			                        dialog.cancel();
+			                        
+			                    }
+			                })
+			        .setPositiveButton("Aceptar",
+			                new DialogInterface.OnClickListener() {
+			                    public void onClick(DialogInterface dialog, int id) {
+			                    	try {
+										VentaRecursiva();
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+			                     
+			                    }
+			                });
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
         
         
 	}
@@ -570,16 +587,27 @@ public void VentaRecursiva() throws JSONException
 					JSONObject aux = new JSONObject(dataString); //venta tentativa espera confirmacion
 					aux.put("venta_id", json.getString("venta_id"));
 					aux.put("monto",json.getString("monto"));
+					JSONObject fecha=(JSONObject)aux.get("fecha");
+					try {
+						Integer month=(Integer) fecha.get("month");
+						month=month+1;
+						fecha.put("month",month);
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
     				PostNuevaVentaTentativa thred_venta_tentativa=new PostNuevaVentaTentativa();//llamo un proceso en backgroud para realizar la venta
     				//inicia el proceso de vender
         			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
-					
+					//falta controlar errores de las ventas tentativas segun la respuesta del server para la venta tentativa
 				}
 				String mensaje="Venta exitosa!";
+				DecimalFormat formatter = new DecimalFormat("##0.0######");
+				
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setMessage("Su pedido se proceso correctamente.\n" +
 						"Para el cliente :"+ nueva_venta.getCliente().getNombre() + 
-						"\n  Con un monto de :"+nueva_venta.getMonto().toString()+
+						"\n  Con un monto de :"+formatter.format(this.nueva_venta.getMonto())+
 						"\n ¿Desea agregar notas sobre este Pedido?");
 				builder.setTitle(mensaje)
 				        .setCancelable(false)
@@ -640,7 +668,8 @@ public void VentaRecursiva() throws JSONException
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(this.getApplicationContext(), R.layout.lista_productos_venta, nueva_venta.getProductos());
 				builder.setAdapter(adaptador_venta_modificada,null);
-				builder.setTitle("Desea Realizar la siguiente venta por un total de :"+nueva_venta.getMonto()+"?")
+				DecimalFormat formatter = new DecimalFormat("##0.0######");
+				builder.setTitle("Desea Realizar la siguiente venta por un total de :"+formatter.format(this.nueva_venta.getMonto())+"?")
 				        .setCancelable(false)
 				        .setNegativeButton("Cancelar",
 				                new DialogInterface.OnClickListener() {

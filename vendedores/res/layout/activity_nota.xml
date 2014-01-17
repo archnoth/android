@@ -16,7 +16,11 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/buttonSelectDate"
         android:text="Seleccione hora de entrega Inicial"
-        android:textSize="25dp" />
+         android:background="#6699FF"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
 
     <Button
         android:id="@+id/btn_tiempo_entrega_hasta"
@@ -25,7 +29,11 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/btn_tiempo_entrega_desde"
         android:text="Seleccione hora de entrega final"
-        android:textSize="25dp" />
+         android:background="#6699FF"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp" 
+        android:layout_marginBottom="10dp"/>
 
     <TextView
         android:id="@+id/textView1"
@@ -45,7 +53,11 @@
         android:layout_below="@+id/textView1"
         android:layout_marginTop="15dp"
         android:text="Seleccione fecha de entrega"
-        android:textSize="25dp" />
+         android:background="#6699FF"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
 
     <EditText
         android:id="@+id/editTextRedaccionNota"
@@ -67,7 +79,10 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="Registrar Nota"
-        android:textSize="25dp" />
+         android:background="#6699FF"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
 
 </RelativeLayout>
         

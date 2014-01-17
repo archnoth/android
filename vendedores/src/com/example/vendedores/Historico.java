@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -51,37 +52,47 @@ public class Historico extends Activity {
 		cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
 		producto_porcentaje=(HashMap<Integer, Double>)getIntent().getExtras().getSerializable("dict");
 		
-		while(producto_porcentaje.keySet().iterator().hasNext())
-		{
-			
-			Integer codigo = producto_porcentaje.keySet().iterator().next();
-			
-			LinearLayout linear=new LinearLayout(getApplicationContext());
-			LinearLayout .LayoutParams layoutParams= new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 
-			LinearLayout.LayoutParams.WRAP_CONTENT);
-			linear.setLayoutParams(layoutParams);
-			
-		                    
-			TextView text_barra_porcentaje=new TextView(getApplicationContext());
-			text_barra_porcentaje.setText(codigo.toString());
-			text_barra_porcentaje.setSingleLine(true);
-			text_barra_porcentaje.setBackgroundColor(Color.BLUE);
-			
-			
-			text_barra_porcentaje.setWidth((int)(producto_porcentaje.get(codigo)*100/260));
-			text_barra_porcentaje.setHeight(30);
-			
-			
-			TextView text_porcentaje=new TextView(getApplicationContext());
-			text_porcentaje.setText(""+producto_porcentaje.get(codigo));
-			text_porcentaje.setBackgroundColor(Color.WHITE);
-			text_porcentaje.setWidth(LayoutParams.MATCH_PARENT);
-			text_porcentaje.setHeight(30);
-			
-			
+		 Iterator<Integer> iterador = producto_porcentaje.keySet().iterator();
+		 Double mayor=0.0; 
+		 while(iterador.hasNext())
+		  {
+		   
+		   Integer codigo = iterador.next();
+		   if(producto_porcentaje.get(codigo) > mayor){
+			    mayor = producto_porcentaje.get(codigo);
+		   }
+		   
+		   LinearLayout linear=new LinearLayout(getApplicationContext());
+		   LinearLayout .LayoutParams layoutParams= new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 
+		   LinearLayout.LayoutParams.WRAP_CONTENT);
+		   layoutParams.setMargins(0, 0, 0, 20);
+		   linear.setLayoutParams(layoutParams);
+		   
+		                      
+		   TextView text_barra_porcentaje=new TextView(getApplicationContext());
+		   text_barra_porcentaje.setText(codigo.toString());
+		   text_barra_porcentaje.setTextColor(Color.BLACK);
+		   text_barra_porcentaje.setTextSize(20);
+		   text_barra_porcentaje.setSingleLine(true);
+		   text_barra_porcentaje.setBackgroundColor(getResources().getColor(R.color.blue));
+		   text_barra_porcentaje.setWidth((int)(producto_porcentaje.get(codigo)*260/mayor));
+		   text_barra_porcentaje.setHeight(45);
+		   linear.addView(text_barra_porcentaje);
+		   
+		   TextView text_porcentaje=new TextView(getApplicationContext());
+		   text_porcentaje.setText(producto_porcentaje.get(codigo).toString()+"%");
+		   text_porcentaje.setBackgroundColor(getResources().getColor(R.color.white));
+		   text_porcentaje.setWidth(60);
+		   text_porcentaje.setHeight(45);
+		   text_barra_porcentaje.setTextSize(20);
+		   text_porcentaje.setTextColor(Color.BLACK);
+		   linear.addView(text_porcentaje);
+		   
+		   android.widget.LinearLayout grafica = (LinearLayout) findViewById(R.id.lista_historico_grafica);
+		   grafica.addView(linear);
+		  }
+		  
 		}
-		
-	}
 
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -99,97 +110,5 @@ public class Historico extends Activity {
 		getMenuInflater().inflate(R.menu.ventas_historico, menu);
 		return true;
 	}
-/*
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpTo(getParent(), NavUtils.getParentActivityIntent(getParent()));
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-*/	
-	@Override
-	protected void onResume()
-	{
-		 super.onResume();
-		 LongRunningGetIO thred=new LongRunningGetIO();//llamo un proceso en backgroud para cargar los productos de la empresa
-		 AsyncTask<Void, Void, List<Venta>> async=thred.execute();
-		 ArrayList<Venta> list;
-		try {
-			list = (ArrayList<Venta>)async.get();
-			 adapter= new ArrayAdapter<Venta>(this, android.R.layout.simple_list_item_1, list);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	private class LongRunningGetIO extends AsyncTask <Void, Void, List<Venta> > {
-		
-		 
-		protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-	       InputStream in = entity.getContent();
-	         StringBuffer out = new StringBuffer();
-	         int n = 1;
-	         while (n>0) {
-	             byte[] b = new byte[4096];
-	             n =  in.read(b);
-	             if (n>0) out.append(new String(b, 0, n));
-	         }
-	         return out.toString();
-	    }
-		
-		@Override
-		protected  List<Venta> doInBackground(Void... params) {
-			 
-			HttpClient httpClient = new DefaultHttpClient();
-			 HttpContext localContext = new BasicHttpContext();
-             HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/historico/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
-           
-  
-             // Execute HTTP Post Request
-             String text = null;
-             try {
-            	 HttpResponse response = httpClient.execute(httpGet, localContext);
-            	 HttpEntity entity = response.getEntity();
-                   
-                 text = getASCIIContentFromEntity(entity);
-                   
-             } catch (Exception e) {
-            	 
-             }
-             //return text; 
-             if (text!=null) {
- 				
- 				
- 				JSONObject jsonObject;
- 				try {
- 					jsonObject = new JSONObject(text);
- 										
- 					JSONArray jarray =(JSONArray)jsonObject.get("objects");
- 					lista_ventas= new ArrayList<Venta>();
- 					
- 				} catch (JSONException e) {
- 					// TODO Auto-generated catch block
- 					e.printStackTrace();
- 				}
- 					
- 					
- 			}
-			return null;
-		}
-	}
+
 }

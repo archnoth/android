@@ -92,9 +92,9 @@ public class DetalleCliente extends Activity {
 		if(cliente.getHora_de_entrega_hasta()!=null)hora_entrega_hasta.setText(	"hasta: " +	cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
 	
 		
-		ImageView mainImageView = (ImageView) findViewById(R.id.imageView);
-		ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-		String imageurl = "http://ventas.jm-ga.com/source/media/"+cliente.getUrl_imagen();
+		//ImageView mainImageView = (ImageView) findViewById(R.id.imageView);
+		//ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+		//String imageurl = "http://ventas.jm-ga.com/source/media/"+cliente.getUrl_imagen();
 		  
 		
 		
@@ -141,7 +141,11 @@ public class DetalleCliente extends Activity {
 			fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			fac_intent.putExtra("venta",respuesta);
 		    startActivity(fac_intent);
-        }//aca en el else tengo que informar sobre el error al levantar la ultima venta
+        }else
+	        {
+	        	 Toast.makeText(DetalleCliente.this,"No hay ventas asociadas para este cliente",Toast.LENGTH_LONG).show(); 
+	        	 ((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.INVISIBLE);
+	        }//aca en el else tengo que informar sobre el error al levantar las estadisticas
 	}
 	
 	
@@ -171,7 +175,8 @@ public void to_historico_activity(View view){
         }
         else
         {
-        	 Toast.makeText(DetalleCliente.this,"Error mientras se procesaban los datos", Toast.LENGTH_LONG).show(); 	
+        	 Toast.makeText(DetalleCliente.this,"No hay ventas asociadas para este cliente",Toast.LENGTH_LONG).show(); 
+        	 ((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.INVISIBLE);
         }//aca en el else tengo que informar sobre el error al levantar las estadisticas
 	}
 	
@@ -253,10 +258,7 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-		        	 }else
-		        	 {
-		        		 Toast.makeText(DetalleCliente.this,text, Toast.LENGTH_LONG).show(); 
-		        	 }
+		        	 } 
 						
 				}
 				return venta;
@@ -324,7 +326,7 @@ private class GetHistorico extends AsyncTask <Void, Void, HashMap<Integer, Doubl
 				}
         	 }else
         	 {
-        		 Toast.makeText(DetalleCliente.this,text, Toast.LENGTH_LONG).show(); 
+        		 //Toast.makeText(DetalleCliente.this,text, Toast.LENGTH_LONG).show(); 
         	 }
 				
 		}
