@@ -1,90 +1,114 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scrollView1"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/progressBarNotaLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="@color/blue"
+        android:visibility="invisible" >
 
-<RelativeLayout
-    android:layout_width="fill_parent"
-    android:layout_height="446dp"
-    android:orientation="vertical" >
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_centerInParent="true"/>
 
-    <Button
-        android:id="@+id/btn_tiempo_entrega_desde"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/buttonSelectDate"
-        android:text="Seleccione hora de entrega Inicial"
-         android:background="#6699FF"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="20sp"
-        android:layout_marginBottom="10dp" />
-
-    <Button
-        android:id="@+id/btn_tiempo_entrega_hasta"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/btn_tiempo_entrega_desde"
-        android:text="Seleccione hora de entrega final"
-         android:background="#6699FF"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="20sp" 
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Ingrese notas del pedidio"
-        android:textSize="25dp" />
-
-    <Button
-        android:id="@+id/buttonSelectDate"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="15dp"
-        android:text="Seleccione fecha de entrega"
-         android:background="#6699FF"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="20sp"
-        android:layout_marginBottom="10dp" />
-
-    <EditText
-        android:id="@+id/editTextRedaccionNota"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/btn_tiempo_entrega_hasta"
-        android:ems="10"
-        android:inputType="textMultiLine" >
-
-        <requestFocus />
-       
-    </EditText>
-
-    <Button
-        android:id="@+id/btn_registrar_nota"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:text="Registrar Nota"
-         android:background="#6699FF"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
-
-</RelativeLayout>
+    </RelativeLayout>
+    
+        <ScrollView
+                android:id="@+id/scrollViewNota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
         
-</ScrollView>
-
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="446dp"
+            android:orientation="vertical" >
+        
+            <Button
+                android:id="@+id/btn_tiempo_entrega_desde"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/buttonSelectDate"
+                android:text="Seleccione hora de entrega Inicial"
+                android:background="#6699FF"
+        	    android:textAlignment="center"
+        	    android:textColor="#ffffff"
+        	    android:layout_marginBottom="10sp"
+        	    
+        	    android:textSize="20sp" />
+        
+            <Button
+                android:id="@+id/btn_tiempo_entrega_hasta"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/btn_tiempo_entrega_desde"
+                android:text="Seleccione hora de entrega final"
+                android:background="#6699FF"
+	        	android:textAlignment="center"
+	        	android:textColor="#ffffff"
+	        	android:layout_marginBottom="10sp"
+	        	android:textSize="20sp" />
+        
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="Ingrese notas del pedidio"
+                android:textSize="25dp" />
+        
+            <Button
+                android:id="@+id/buttonSelectDate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textView1"
+                android:layout_marginTop="15dp"
+                android:text="Seleccione fecha de entrega"
+                android:background="#6699FF"
+	        	android:textAlignment="center"
+	        	android:textColor="#ffffff"
+	        	android:layout_marginBottom="10sp"
+	        	android:textSize="20sp" />
+        
+            <EditText
+                android:id="@+id/editTextRedaccionNota"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/btn_tiempo_entrega_hasta"
+                android:ems="10"
+                android:inputType="textMultiLine" >
+        
+                <requestFocus
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+               
+            </EditText>
+        
+            <Button
+                android:id="@+id/btn_registrar_nota"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:text="Registrar Nota"
+                android:background="#6699FF"
+        		android:textAlignment="center"
+        		android:textColor="#ffffff"
+        		android:textSize="20sp" />
+        
+        </RelativeLayout>
+                
+        </ScrollView>
+                
+</FrameLayout>

@@ -133,14 +133,16 @@ public class Factura extends Activity {
 			editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
 			editText.addTextChangedListener(new TextWatcher(){ 
 			   
-				boolean agregar=true;
 				@Override
 				public void onTextChanged(CharSequence s, int start, int before,int count) {
 					// TODO Auto-generated method stub
 				}
-
+				
+				boolean agregar=true;
+				
 				@Override
 				public void afterTextChanged(Editable s) {
+				
 					try {
 						ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
 					} catch (Exception e) {}
@@ -251,7 +253,7 @@ public class Factura extends Activity {
 		   @Override
 		   public void onClick(View v) {
 		    TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
-		    if (tbl.getChildCount() > 1){
+		    if (tbl.getChildAt(tbl.getChildCount()-1)!=v.getParent()){
 		    	tbl.removeView((View)v.getParent());
 		    }
 		   }
@@ -535,6 +537,8 @@ private class PostNuevaVentaTentativa extends AsyncTask <String, Void, String > 
 	
 public void VentaRecursiva() throws JSONException
 	{
+		findViewById(R.id.progressFacturaLayout).setVisibility(View.VISIBLE);
+		findViewById(R.id.scrollViewVenta).setFocusable(false);
 		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString(); //venta tentativa espera confirmacion
 		JSONObject aux_fecha = new JSONObject(dataString); //venta tentativa espera confirmacion
 		JSONObject f=(JSONObject)aux_fecha.get("fecha");
@@ -601,6 +605,7 @@ public void VentaRecursiva() throws JSONException
         			AsyncTask<String, Void, String> th_async_tentativa=thred_venta_tentativa.execute(aux.toString());	     
 					//falta controlar errores de las ventas tentativas segun la respuesta del server para la venta tentativa
 				}
+				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
 				String mensaje="Venta exitosa!";
 				DecimalFormat formatter = new DecimalFormat("##0.0######");
 				
@@ -614,7 +619,8 @@ public void VentaRecursiva() throws JSONException
 				        .setNegativeButton("Cancelar",
 				                new DialogInterface.OnClickListener() {
 				                    public void onClick(DialogInterface dialog, int id) {
-				                        dialog.cancel();
+				                    	findViewById(R.id.scrollViewVenta).setFocusable(true);
+				                    	dialog.cancel();
 				                        Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
 				    			        loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 				    			        loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario"));
@@ -626,7 +632,7 @@ public void VentaRecursiva() throws JSONException
 				                new DialogInterface.OnClickListener() {
 				                    public void onClick(DialogInterface dialog, int id) {
 				                     try{
-				                    	
+				                    	 findViewById(R.id.scrollViewVenta).setFocusable(true);
 				                    	 //Toast.makeText(Factura.this,"Aca tengo que generar una nueva actividad donde el vendedor agrega notas de la venta", Toast.LENGTH_LONG).show();
 				                    	Intent loc = new Intent(getApplicationContext(),NotaActivity.class); 
 				                    	loc.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
@@ -664,7 +670,7 @@ public void VentaRecursiva() throws JSONException
 				
 				nueva_venta.setProductos(nuevaListaProductos);
 				nueva_venta.setMonto(mnt);
-				
+				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(this.getApplicationContext(), R.layout.lista_productos_venta, nueva_venta.getProductos());
 				builder.setAdapter(adaptador_venta_modificada,null);
@@ -674,15 +680,14 @@ public void VentaRecursiva() throws JSONException
 				        .setNegativeButton("Cancelar",
 				                new DialogInterface.OnClickListener() {
 				                    public void onClick(DialogInterface dialog, int id) {
-				                        dialog.cancel();
-				                        
+				                    	findViewById(R.id.scrollViewVenta).setFocusable(true);
+				                    	dialog.cancel();
 				                    }
 				                })
 				        .setPositiveButton("Aceptar",
 				                new DialogInterface.OnClickListener() {
 				                    public void onClick(DialogInterface dialog, int id) {
 				                     try{
-				                    	
 				                    	VentaRecursiva();
 				                     }catch(Exception e){}
 				                    }
