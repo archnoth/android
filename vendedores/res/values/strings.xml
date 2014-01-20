@@ -43,5 +43,6 @@
 	<string name="modo_de_pago">Modo de pago</string>
 	<string name="credito">Credito</string>
 	<string name="contado">Contado</string>
+	<string name="porcentaje">%</string>
 	
 </resources>

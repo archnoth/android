@@ -49,8 +49,12 @@ import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.InputFilter;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
@@ -76,6 +80,8 @@ public class Factura extends Activity {
 	private JSONObject json;
 	private Gson gson;
 	private int descuento_contado;
+	private int descuento_producto = 0;
+	private Menu menu;
 	
 	
 	@Override
@@ -274,7 +280,7 @@ public class Factura extends Activity {
 				return false;
 			}
 		});
-		  
+		  registerForContextMenu(cruz);
 		  return cruz;
 		 }
 
@@ -428,8 +434,66 @@ public class Factura extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.factura, menu);
-		
+		this.menu = menu;
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch (item.getItemId()) {
+			case R.id.contado_radio_button:
+				item.setChecked(true);
+	            this.menu.findItem(R.id.credito_radio_button).setChecked(false);
+		    	Toast.makeText(Factura.this,"COMPRA AL CONTADO, checked", Toast.LENGTH_LONG).show();
+		        return true;
+		    case R.id.credito_radio_button:
+		    	item.setChecked(true);
+		    	this.menu.findItem(R.id.contado_radio_button).setChecked(false);
+		    	Toast.makeText(Factura.this,"COMPRA A CREDITO, checked", Toast.LENGTH_LONG).show();
+		        return true;
+		    default:
+	            return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	                                ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.factura_floating_context, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.borrar_fila:
+	        	Toast.makeText(Factura.this,"BORRAR FILA", Toast.LENGTH_LONG).show();
+	            return true;
+	        case R.id.agregar_descuento:
+	        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        	final View vista = getLayoutInflater().inflate(R.layout.input_descuento,null);
+	        	((EditText)vista.findViewById(R.id.input_descuento_editText)).setText(""+descuento_producto);
+	        	builder.setTitle("Agregar descuento")
+	        			.setView(vista)
+				        .setNegativeButton("Cancelar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                        dialog.cancel();
+				                    }
+				                })
+				        .setPositiveButton("Aceptar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                    	descuento_producto = Integer.parseInt(((EditText)vista.findViewById(R.id.input_descuento_editText)).getText().toString());
+				                    }
+				                });
+				AlertDialog alert = builder.create();
+				alert.show();
+	            return true;    
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
 	}
 	
 private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
