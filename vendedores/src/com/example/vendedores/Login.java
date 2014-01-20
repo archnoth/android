@@ -54,6 +54,8 @@ public class Login extends Activity {
 	public static final String PROPERTY_REG_ID = "registration_id";
 	private static final String PROPERTY_APP_VERSION = "appVersion";
 	private GCMActivity googleGCMClient;
+	private Integer decuento_contado;
+	
 	String registrationID;
 	GoogleCloudMessaging gcm;
 	String SENDER_ID = "354046703161";
@@ -70,7 +72,7 @@ public class Login extends Activity {
     	 username.setHint("Nombre de usuario");
     	 password.setHint("Contraseña");
     	 
-    	 try{//checkeo si vendo de una notificacion
+    	 try{//checkeo si vengo de una notificacion
 	    	 if(getIntent().getExtras().getString("mensaje")!=null)
 	    	 {
 	    		 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -192,6 +194,21 @@ public class Login extends Activity {
 					String api_key = jsonObject.getString("api_key");
 					//String device_id=jsonObject.getString("device_id");
 					String username=jsonObject.getString("username");
+					
+					String jsonConfigs=jsonObject.getString("configuraciones");
+					JSONArray jarrayConfgs=new JSONArray(jsonConfigs);
+					
+					for(int i=0;i<jarrayConfgs.length();i++)
+					{
+						JSONObject conf= jarrayConfgs.getJSONObject(i);
+						
+						if(conf.get("clave").toString().equals("contado"))
+						{
+							decuento_contado= Integer.parseInt(conf.get("valor").toString());
+						}
+				
+					}
+					
 					String jsonClientes=jsonObject.getString("user_clients");
 					JSONArray jarray=new JSONArray(jsonClientes);
 					usuario = new Usuario("", "", username, "", "", api_key,""/*device_id*/);
@@ -208,7 +225,7 @@ public class Login extends Activity {
 									dic_cliente.getString("rut"),"",dic_cliente.getString("dia_entrega"),dic_cliente.getString("hora_entrega_desde"),dic_cliente.getString("minuto_entrega_desde"),
 									dic_cliente.getString("hora_entrega_hasta"),dic_cliente.getString("minuto_entrega_hasta"),dic_cliente.getString("tel"),dic_cliente.getString("tel2"),
 									dic_cliente.getString("celular"),dic_cliente.getString("email"),dic_cliente.getString("web"),
-									dic_cliente.getString("lugar_entrega"));
+									dic_cliente.getString("lugar_entrega"),dic_cliente.getInt("tipo"));
 							
 							usuario.getListaClientes().add(cli);
 							((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);
@@ -220,7 +237,8 @@ public class Login extends Activity {
 					{
 						findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
 						Intent loc = new Intent(getApplicationContext(),ListadoClientes.class); 
-				        loc.putExtra("usuario",usuario);  
+				        loc.putExtra("usuario",usuario); 
+				        loc.putExtra("descuento_contado",decuento_contado);
 				        startActivity(loc);
 					}
 					

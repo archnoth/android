@@ -54,7 +54,6 @@
             android:name="com.example.vendedores.ListadoClientes"
             android:label="@string/title_activity_listado_clientes"
             android:windowSoftInputMode="adjustPan" >
-            
         </activity>
         <activity
             android:name="com.example.vendedores.DetalleCliente"
@@ -64,14 +63,14 @@
         <activity
             android:name="com.example.vendedores.Factura"
             android:label="@string/title_activity_factura"
-            android:screenOrientation="portrait" 
-            android:windowSoftInputMode="adjustPan">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="com.example.vendedores.Historico"
             android:label="@string/title_activity_ventas_historico"
-            android:parentActivityName="com.example.vendedores.DetalleCliente" 
-            android:windowSoftInputMode="adjustPan">
+            android:parentActivityName="com.example.vendedores.DetalleCliente"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.vendedores.DetalleCliente" />
@@ -80,12 +79,13 @@
             android:name="com.example.vendedores.NotaActivity"
             android:label="@string/title_activity_nota" >
         </activity>
-        
-         <activity
+        <activity
             android:name="com.example.vendedores.GCMActivity"
             android:label="@string/title_activity_gcm_activity" >
-           
-			
+        </activity>
+         <activity
+            android:name="com.example.vendedores.EleccionFactura"
+            android:label="@string/eleccion_factura_activity" >
         </activity>
        
     </application>

@@ -52,6 +52,7 @@ import android.text.InputFilter;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -74,6 +75,7 @@ public class Factura extends Activity {
 	private EditText last_text_cantidad;
 	private JSONObject json;
 	private Gson gson;
+	private int descuento_contado;
 	
 	
 	@Override
@@ -81,7 +83,9 @@ public class Factura extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_factura);
-
+		
+		descuento_contado=getIntent().getExtras().getInt("decuento_contado",-1);
+		
 		LongRunningGetIO thred=new LongRunningGetIO();//llamo un proceso en backgroud para cargar los productos de la empresa
 		 AsyncTask<Void, Void, List<Producto>> async=thred.execute();
 		try {
@@ -248,8 +252,10 @@ public class Factura extends Activity {
 		 {
 		  Button cruz = new Button(getApplicationContext());
 		  cruz.setText("X");
+		  
+		  
 		  cruz.setOnClickListener(new OnClickListener() {
-		   
+		 
 		   @Override
 		   public void onClick(View v) {
 		    TableLayout tbl=(TableLayout)findViewById(R.id.tablaProductos);
@@ -258,6 +264,17 @@ public class Factura extends Activity {
 		    }
 		   }
 		  });
+		  
+		  cruz.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				
+				Toast.makeText(Factura.this,"HOLA", Toast.LENGTH_LONG).show();
+				return false;
+			}
+		});
+		  
 		  return cruz;
 		 }
 
@@ -277,11 +294,28 @@ public class Factura extends Activity {
 			EditText cant=(EditText)row.getChildAt(0);
 			String codigo="";
 			codigo=auto.getText().toString().split("\\s - \\s")[1];	
-			if(sumar) {
-				this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
-			}else {
-				this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+			
+				
+				switch(nueva_venta.getCliente().getTipo()){
+				case 0:
+					if(sumar)
+					this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio_cliente_final()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+					else
+					this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio_cliente_final()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+						
+				case 1:
+					if(sumar)
+					this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio_mayorista()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+					else
+					this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio_mayorista()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+					
+				case 2:
+					if(sumar)
+					this.monto_factura=this.monto_factura+(diccionarioProductos.get(codigo)).getPrecio_distribuidor()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+					else
+					this.monto_factura=this.monto_factura-(diccionarioProductos.get(codigo)).getPrecio_distribuidor()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
 			}
+			
 			EditText monto_value = (EditText)(findViewById(R.id.MontoValue));
 			DecimalFormat formatter = new DecimalFormat("##0.0######");
 	    	monto_value.setText(formatter.format(this.monto_factura.doubleValue()));
@@ -295,7 +329,7 @@ public class Factura extends Activity {
 		Button b = (Button)findViewById(R.id.Facturar);
 		boolean error_formato_monto=false;
 	    Usuario vendedor=new Usuario("","",((Usuario)getIntent().getExtras().getParcelable("usuario")).getNombreUsuario(),"","",((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey(),"");
-	    Cliente cliente=new Cliente(((Cliente)getIntent().getExtras().getParcelable("cliente")).getNombre(),"",((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut(),"","","","","","","","","","","","");
+	    Cliente cliente=new Cliente(((Cliente)getIntent().getExtras().getParcelable("cliente")).getNombre(),"",((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut(),"","","","","","","","","","","","",((Cliente)getIntent().getExtras().getParcelable("cliente")).getTipo());
 	    Calendar fecha=Calendar.getInstance();
 	    Double monto=0.0;
 	    TableLayout tbl=(TableLayout)this.findViewById(R.id.tablaProductos);
@@ -317,7 +351,15 @@ public class Factura extends Activity {
     				if(((Producto)auto.getAdapter().getItem(j)).getCodigo().equals(codigo))
     				{
     					try{
-    						monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+    						switch(nueva_venta.getCliente().getTipo()){
+    							case 0:
+    								monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio_cliente_final()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+    							case 1:
+    								monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio_mayorista()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+    							case 2:
+    								monto=monto+((Producto)auto.getAdapter().getItem(j)).getPrecio_distribuidor()*Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""));
+    	    						
+    						}
     						nueva_venta.getProductos().add(new ProductoVenta((Producto)auto.getAdapter().getItem(j),Integer.parseInt(cant.getText().toString().replaceAll("\\s+",""))));
     						
     					}catch(NumberFormatException e)
@@ -334,7 +376,16 @@ public class Factura extends Activity {
 	    if(!error_formato_monto)
 	    {
 			json=new JSONObject();
-			nueva_venta.setMonto(monto);
+			if(descuento_contado!=-1)
+			{
+			    double descuento=monto*(descuento_contado/100);
+				monto=monto-descuento;
+				nueva_venta.setMonto(monto);
+			}else
+			{
+				nueva_venta.setMonto(monto);
+			}
+			
 		    gson = new Gson();
 		    venta_original=new Venta(nueva_venta.getUsuario(), nueva_venta.getCliente(),nueva_venta.getFecha(),nueva_venta.getMonto());
 		    venta_original.setProductos(nueva_venta.getProductos());
@@ -427,7 +478,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 				for(int i=0;i<jarray.length();i++)
 				{
 					JSONObject dic_producto = jarray.getJSONObject(i);
-					Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
+					Producto prod= new Producto(dic_producto.getString("nombre"),dic_producto.getDouble("precio_cliente_final"),dic_producto.getDouble("precio_distribuidor"),dic_producto.getDouble("precio_mayorista"),dic_producto.getString("codigo"),dic_producto.getString("descripcion"));
 					lista.add(prod);
 				}
 				
@@ -575,7 +626,7 @@ public void VentaRecursiva() throws JSONException
 				
 				//JSONObject cliente_venta_creada=((JSONObject)(json.get("cliente")));
 				
-				// la venta es igual a la que envie originalmente, entonces proceso completo!!!! corto el loop
+				// si la venta no es igual a la que envie originalmente, entonces llamo a venta tentativa!!!!
 				if(!(venta_original.getMonto() == Double.parseDouble(json.getString("monto").toString())&&
 						venta_original.getCliente().getRut().equalsIgnoreCase(json.getString("rut_cliente"))&&
 						venta_original.getCliente().getNombre().equalsIgnoreCase(json.getString("nombre_cliente"))&&
@@ -663,13 +714,29 @@ public void VentaRecursiva() throws JSONException
 					Producto p = diccionarioProductos.get(codigo);	
 					int cant=Integer.parseInt(((JSONObject)productos_nueva_venta.get(i)).get("cantidad").toString());
 					ProductoVenta pv=new ProductoVenta(p,cant);
-					mnt=mnt+p.getPrecio()*cant;
+					switch(nueva_venta.getCliente().getTipo()){
+					case 0:
+						mnt=mnt+p.getPrecio_cliente_final()*cant;
+					case 1:
+						mnt=mnt+p.getPrecio_mayorista()*cant;
+					case 2:
+						mnt=mnt+p.getPrecio_distribuidor()*cant;
+						
+				}
 					nuevaListaProductos.add(pv);
 					prod_a_mostrar="Producto :"+prod_a_mostrar+pv.getProducto().getNombre()+"\nCodigo :"+pv.getProducto().getCodigo()+"\nCantidad :"+pv.getCantidad().toString()+"\n";
 				}
 				
 				nueva_venta.setProductos(nuevaListaProductos);
-				nueva_venta.setMonto(mnt);
+				if(descuento_contado!=-1)
+				{
+				    double descuento=mnt*(descuento_contado/100);
+				    mnt=mnt-descuento;
+					nueva_venta.setMonto(mnt);
+				}else
+				{
+					nueva_venta.setMonto(mnt);
+				}
 				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(this.getApplicationContext(), R.layout.lista_productos_venta, nueva_venta.getProductos());

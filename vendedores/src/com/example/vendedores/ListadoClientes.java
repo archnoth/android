@@ -170,6 +170,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 						String email="";
 						String web="";
 						String lugar_entrega="";
+						Integer tipo=-1;
 						
 						if(dic_cliente.has("nombre")&& dic_cliente.getString("nombre")!= null)direccion =dic_cliente.getString("nombre");
 						
@@ -199,11 +200,12 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 						
 						if(dic_cliente.has("lugar_entrega")&&dic_cliente.getString("lugar_entrega")!=null)lugar_entrega=dic_cliente.getString("lugar_entrega");
 						
+						if(dic_cliente.has("tipo")&& dic_cliente.getInt("tipo")!= -1)tipo=dic_cliente.getInt("tipo");
 							
 						Cliente cli= new Cliente(dic_cliente.getString("nombre"),direccion,rut,"",dia_entrega.toString(),
 								hora_entrega_desde.toString(),minuto_entrega_desde.toString(),
 								hora_entrega_hasta.toString(),minuto_entrega_hasta.toString(),tel,tel2,
-								celular,email,web,lugar_entrega);
+								celular,email,web,lugar_entrega,tipo);
 						lista.add(cli);
 						
 					}
@@ -238,6 +240,7 @@ private void set_lista_clientesAdapter(ArrayAdapter<Cliente> adaptador_lista)
 					Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
 			        loc.putExtra("cliente",seleccionado);
 			        loc.putExtra("usuario",usuario);
+			        loc.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			        startActivity(loc);
 					
 			  }

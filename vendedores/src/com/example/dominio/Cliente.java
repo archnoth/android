@@ -8,6 +8,7 @@ import android.os.Parcelable;
 
 public class Cliente implements Parcelable{
 
+	
 	private String nombre;//
 	private String direccion;//
 	private String lugar_entrega;
@@ -23,11 +24,12 @@ public class Cliente implements Parcelable{
 	private Integer dia_de_entrega=0;//
 	private Calendar hora_de_entrega_desde=Calendar.getInstance();//
 	private Calendar hora_de_entrega_hasta=Calendar.getInstance();//
+	private Integer tipo;
 	
 	
 	
 	public Cliente(String nombre,String direccion,String rut,String url_imagen,String dia_entrega,String hora_de_entrega_desde,String minuto_de_entrega_desde,
-			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega)
+			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo)
 	{
 		this.nombre=nombre;//
 		this.direccion=direccion;//
@@ -63,6 +65,7 @@ public class Cliente implements Parcelable{
 		longitud=0;
 		this.email=email;
 		this.lugar_entrega=lugarEntrega;
+		this.setTipo(tipo);
 		
 		
 	}
@@ -129,7 +132,7 @@ public class Cliente implements Parcelable{
 		else
 			dest.writeString("");
 		
-
+		dest.writeInt(tipo);
 		
 		
 	}
@@ -191,6 +194,7 @@ public class Cliente implements Parcelable{
 		}
 		else hora_de_entrega_hasta=null; 
 		
+		tipo = in.readInt();
 	}
 	
 	@Override
@@ -268,6 +272,12 @@ public class Cliente implements Parcelable{
 	}
 	public void setHora_de_entrega_hasta(Calendar hora_de_entrega_hasta) {
 		this.hora_de_entrega_hasta = hora_de_entrega_hasta;
+	}
+	public Integer getTipo() {
+		return tipo;
+	}
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
 	}
 	
 }

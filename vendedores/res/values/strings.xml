@@ -28,4 +28,15 @@
     <string name="title_activity_gcm_activity">GCMActivity</string>
      <string name="text_btn_clientes_sin_visitar">Ver clientes sin visitar</string>
 	<string name="text_porcentajes">Porcentajes de compras</string>
+	<string name="eleccion_factura_activity">Eleccion factura</string>
+	
+	
+	<string name="text_btn_factura_contado">Facturar Contado</string>
+	<string name="text_btn_factura_credito">Facturar Credito</string>
+	<string name="text_btn_nota_contado">Nota dev Contado</string>
+	<string name="text_btn_nota_credito">Nota dev Credito</string>
+	<string name="text_btn_visita">Visita</string>
+	<string name="titulo_eleccion_facura">"Seleccione una operación"</string>
+	<string name="button">btn_fac_contado</string>
+	
 </resources>

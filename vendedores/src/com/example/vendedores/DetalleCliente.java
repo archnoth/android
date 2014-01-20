@@ -115,9 +115,10 @@ public class DetalleCliente extends Activity {
 	
 	public void to_factura_activity(View view){
 		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
-		Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
+		Intent fac_intent = new Intent(getApplicationContext(),EleccionFactura.class); 
 		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
-		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));  
+		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+		fac_intent.putExtra("descuento_contado",getIntent().getExtras().getParcelable("descuento_contado"));
 	    startActivity(fac_intent);
 	}
 	
@@ -249,7 +250,7 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 							{
 								JSONObject jsonPvp=(JSONObject)((JSONObject)jarray.get(i)).get("producto");
 								String cant=((JSONObject)jarray.get(i)).get("cantidad").toString();
-								Producto prod= new Producto(jsonPvp.getString("nombre"),jsonPvp.getDouble("precio"),jsonPvp.getString("codigo"),jsonPvp.getString("descripcion"));
+								Producto prod= new Producto(jsonPvp.getString("nombre"),jsonPvp.getDouble("precio_cliente_final"),jsonPvp.getDouble("precio_distribuidor"),jsonPvp.getDouble("precio_mayorista"),jsonPvp.getString("codigo"),jsonPvp.getString("descripcion"));
 								ProductoVenta pv=new ProductoVenta(prod,Integer.parseInt(cant));
 								venta.getProductos().add(pv);
 							}
