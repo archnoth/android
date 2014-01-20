@@ -38,5 +38,10 @@
 	<string name="text_btn_visita">Visita</string>
 	<string name="titulo_eleccion_facura">"Seleccione una operación"</string>
 	<string name="button">btn_fac_contado</string>
+	<string name="borrar_fila">Borrar fila</string>
+	<string name="agregar_descuento">Agregar descuento</string>
+	<string name="modo_de_pago">Modo de pago</string>
+	<string name="credito">Credito</string>
+	<string name="contado">Contado</string>
 	
 </resources>

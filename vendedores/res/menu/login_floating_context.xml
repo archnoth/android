@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+   
+    <item android:id="@+id/borrar_fila"
+          android:title="@string/borrar_fila"
+          />
+    <item android:id="@+id/agregar_descuento"
+          android:title="@string/agregar_descuento"/>
+    
+</menu>
+
+<!-- android:showAsAction="ifRoom|withText" -->

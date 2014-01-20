@@ -27,6 +27,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
 
+import android.R.menu;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -37,17 +38,30 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
+import android.support.v4.view.MenuItemCompat;
+import android.text.InputType;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 public class Login extends Activity {
 
 	public Usuario usuario=null;
+	public boolean contado = true;
+	public int descuento = 0;
 	
 	//for GCM
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -66,6 +80,7 @@ public class Login extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		registerForContextMenu(findViewById(R.id.editTextPassword));
 		context = getApplicationContext();
 		 EditText username = (EditText)findViewById(R.id.editText1);
     	 EditText password = (EditText)findViewById(R.id.editTextPassword);
@@ -109,10 +124,76 @@ public class Login extends Activity {
 	}
 
 	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	                                ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.login_floating_context, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.borrar_fila:
+	        	Toast.makeText(Login.this,"BORRAR FILA", Toast.LENGTH_LONG).show();
+	            return true;
+	        case R.id.agregar_descuento:
+	        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        	View vista = getLayoutInflater().inflate(R.layout.input_descuento,null);
+	        	builder.setTitle("Agregar descuento")
+	        			.setView(vista)
+				        .setNegativeButton("Cancelar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                        dialog.cancel();
+				                    }
+				                })
+				        .setPositiveButton("Aceptar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                    	descuento = Integer.parseInt(((EditText)findViewById(R.id.input_descuento_editText)).getText().toString());
+				                    }
+				                });
+				AlertDialog alert = builder.create();
+				alert.show();
+	            return true;    
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.login, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu){
+		menu.setGroupCheckable(R.id.grupo_modo_de_pago, true, true);
+		return true;
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch (item.getItemId()) {
+			case R.id.contado_radio_button:
+		    	//this.contado = true;
+				if (item.isChecked()) item.setChecked(false);
+	            else item.setChecked(true);
+		    	Toast.makeText(Login.this,"COMPRA AL CONTADO, checked", Toast.LENGTH_LONG).show();
+		        return true;
+		    case R.id.credito_radio_button:
+		    	//this.contado = false;
+		    	if (item.isChecked()) item.setChecked(false);
+	            else item.setChecked(true);
+		    	Toast.makeText(Login.this,"COMPRA A CREDITO, checked", Toast.LENGTH_LONG).show();
+		        return true;
+		    default:
+	            return super.onOptionsItemSelected(item);
+		}
 	}
 
 	public void post(View view) {
@@ -161,7 +242,7 @@ public class Login extends Activity {
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
 
-             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","",registrationID);
+             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","","");
         	 Gson gson = new Gson();
              String dataString = gson.toJson(usuario_login, usuario_login.getClass()).toString();
              
