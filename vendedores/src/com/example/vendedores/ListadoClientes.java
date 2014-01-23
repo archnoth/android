@@ -171,6 +171,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 						String web="";
 						String lugar_entrega="";
 						Integer tipo=-1;
+						Integer descuento=0;
 						
 						if(dic_cliente.has("nombre")&& dic_cliente.getString("nombre")!= null)direccion =dic_cliente.getString("nombre");
 						
@@ -201,11 +202,13 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 						if(dic_cliente.has("lugar_entrega")&&dic_cliente.getString("lugar_entrega")!=null)lugar_entrega=dic_cliente.getString("lugar_entrega");
 						
 						if(dic_cliente.has("tipo")&& dic_cliente.getInt("tipo")!= -1)tipo=dic_cliente.getInt("tipo");
+						
+						if(dic_cliente.has("descuento")&& dic_cliente.getInt("descuento")!= -1)descuento=dic_cliente.getInt("descuento");
 							
 						Cliente cli= new Cliente(dic_cliente.getString("nombre"),direccion,rut,"",dia_entrega.toString(),
 								hora_entrega_desde.toString(),minuto_entrega_desde.toString(),
 								hora_entrega_hasta.toString(),minuto_entrega_hasta.toString(),tel,tel2,
-								celular,email,web,lugar_entrega,tipo);
+								celular,email,web,lugar_entrega,tipo,descuento);
 						lista.add(cli);
 						
 					}

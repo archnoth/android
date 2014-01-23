@@ -240,7 +240,7 @@ public class Login extends Activity {
 									dic_cliente.getString("rut"),"",dic_cliente.getString("dia_entrega"),dic_cliente.getString("hora_entrega_desde"),dic_cliente.getString("minuto_entrega_desde"),
 									dic_cliente.getString("hora_entrega_hasta"),dic_cliente.getString("minuto_entrega_hasta"),dic_cliente.getString("tel"),dic_cliente.getString("tel2"),
 									dic_cliente.getString("celular"),dic_cliente.getString("email"),dic_cliente.getString("web"),
-									dic_cliente.getString("lugar_entrega"),dic_cliente.getInt("tipo"));
+									dic_cliente.getString("lugar_entrega"),dic_cliente.getInt("tipo"),dic_cliente.getInt("descuento"));
 							
 							usuario.getListaClientes().add(cli);
 							((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);

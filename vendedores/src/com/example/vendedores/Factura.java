@@ -1,6 +1,5 @@
 package com.example.vendedores;
 
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -8,7 +7,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +33,6 @@ import com.example.dominio.ProductoVenta;
 import com.example.dominio.Usuario;
 import com.example.dominio.Venta;
 import com.google.gson.Gson;
-
-import android.R.integer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -44,10 +41,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.InputFilter;
 import android.view.ContextMenu;
@@ -56,14 +50,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -318,6 +309,11 @@ public class Factura extends Activity {
 					descuento_contado_monto = monto_factura.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
 					monto_factura =monto_factura.subtract(descuento_contado_monto);
 				}
+				if(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()!=0)
+				{
+					BigDecimal descuento_cliente= monto_factura.multiply(new BigDecimal(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()).divide(new BigDecimal("100.0")));
+					monto_factura =monto_factura.subtract(descuento_cliente);
+				}
 				monto_value.setText(monto_factura.toString());
 		
 		} catch (Exception e) {
@@ -326,22 +322,16 @@ public class Factura extends Activity {
 
 	public void Facturar(View view) throws JSONException {
 
-		Button b = (Button) findViewById(R.id.Facturar);
+		//Button b = (Button) findViewById(R.id.Facturar);
 		boolean error_formato_monto = false;
 		Usuario vendedor = new Usuario("", "", ((Usuario) getIntent()
 				.getExtras().getParcelable("usuario")).getNombreUsuario(), "",
-				"",
-				((Usuario) getIntent().getExtras().getParcelable("usuario"))
-						.getKey(), "");
+				"",((Usuario) getIntent().getExtras().getParcelable("usuario"))	.getKey(), "");
 		Cliente cliente = new Cliente(((Cliente) getIntent().getExtras()
-				.getParcelable("cliente")).getNombre(), "",
-				((Cliente) getIntent().getExtras().getParcelable("cliente"))
-						.getRut(), "", "", "", "", "", "", "", "", "", "", "",
-				"",
-				((Cliente) getIntent().getExtras().getParcelable("cliente"))
-						.getTipo());
+				.getParcelable("cliente")).getNombre(), "",((Cliente) getIntent().getExtras().getParcelable("cliente")).getRut(),
+				"", "", "", "", "", "", "", "", "", "", "","",((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo(),((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente());
 		Calendar fecha = Calendar.getInstance();
-		Double monto = 0.0;
+		//Double monto = 0.0;
 		TableLayout tbl = (TableLayout) this.findViewById(R.id.tablaProductos);
 		nueva_venta = new Venta(vendedor, cliente, fecha, monto_factura.doubleValue(), tipo);
 
@@ -849,8 +839,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 																									// la
 																									// venta
 					// inicia el proceso de vender
-					AsyncTask<String, Void, String> th_async_tentativa = thred_venta_tentativa
-							.execute(aux.toString());
+					AsyncTask<String, Void, String> th_async_tentativa = thred_venta_tentativa.execute(aux.toString());
 					// falta controlar errores de las ventas tentativas segun la
 					// respuesta del server para la venta tentativa
 				}

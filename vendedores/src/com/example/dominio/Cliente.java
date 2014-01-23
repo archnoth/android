@@ -25,15 +25,16 @@ public class Cliente implements Parcelable{
 	private Calendar hora_de_entrega_desde=Calendar.getInstance();//
 	private Calendar hora_de_entrega_hasta=Calendar.getInstance();//
 	private Integer tipo;
-	
+	private Integer descuento_cliente;
 	
 	
 	public Cliente(String nombre,String direccion,String rut,String url_imagen,String dia_entrega,String hora_de_entrega_desde,String minuto_de_entrega_desde,
-			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo)
+			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,Integer descuento)
 	{
 		this.nombre=nombre;//
 		this.direccion=direccion;//
 		this.rut=rut;//
+		
 		if(dia_entrega!=null&&dia_entrega!="")
 			this.dia_de_entrega=Integer.parseInt(dia_entrega);
 		else this.dia_de_entrega=null;
@@ -66,6 +67,7 @@ public class Cliente implements Parcelable{
 		this.email=email;
 		this.lugar_entrega=lugarEntrega;
 		this.setTipo(tipo);
+		this.descuento_cliente=descuento;
 		
 		
 	}
@@ -134,6 +136,7 @@ public class Cliente implements Parcelable{
 		
 		dest.writeInt(tipo);
 		
+		dest.writeInt(descuento_cliente);
 		
 	}
 	public static final Parcelable.Creator<Cliente> CREATOR
@@ -195,6 +198,8 @@ public class Cliente implements Parcelable{
 		else hora_de_entrega_hasta=null; 
 		
 		tipo = in.readInt();
+		
+		descuento_cliente = in.readInt();
 	}
 	
 	@Override
@@ -278,6 +283,12 @@ public class Cliente implements Parcelable{
 	}
 	public void setTipo(Integer tipo) {
 		this.tipo = tipo;
+	}
+	public Integer getDescuento_cliente() {
+		return descuento_cliente;
+	}
+	public void setDescuento_cliente(Integer descuento_cliente) {
+		this.descuento_cliente = descuento_cliente;
 	}
 	
 }
