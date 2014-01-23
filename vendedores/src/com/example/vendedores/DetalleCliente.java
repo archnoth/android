@@ -3,6 +3,7 @@ package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class DetalleCliente extends Activity {
 		Intent fac_intent = new Intent(getApplicationContext(),EleccionFactura.class); 
 		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-		fac_intent.putExtra("descuento_contado",getIntent().getExtras().getParcelable("descuento_contado"));
+		fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 	    startActivity(fac_intent);
 	}
 	
@@ -242,16 +243,25 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 							fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("minute")));
 							fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("second")));
 							
-							venta=new Venta((Usuario)getIntent().getExtras().getParcelable("usuario"),(Cliente)getIntent().getExtras().getParcelable("cliente"),fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()));
+							venta=new Venta((Usuario)getIntent().getExtras().getParcelable("usuario"),(Cliente)getIntent().getExtras().getParcelable("cliente"),fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()),Integer.parseInt(jsonObject.get("tipo").toString()));
 							
 							JSONArray jarray =(JSONArray)jsonObject.get("productos");
 							lista= new ArrayList<ProductoVenta>();
 							for(int i=0;i<jarray.length();i++)
 							{
 								JSONObject jsonPvp=(JSONObject)((JSONObject)jarray.get(i)).get("producto");
-								String cant=((JSONObject)jarray.get(i)).get("cantidad").toString();
-								Producto prod= new Producto(jsonPvp.getString("nombre"),jsonPvp.getDouble("precio_cliente_final"),jsonPvp.getDouble("precio_distribuidor"),jsonPvp.getDouble("precio_mayorista"),jsonPvp.getString("codigo"),jsonPvp.getString("descripcion"));
-								ProductoVenta pv=new ProductoVenta(prod,Integer.parseInt(cant));
+								int cant=((JSONObject)jarray.get(i)).getInt("cantidad");
+								int desc=((JSONObject)jarray.get(i)).getInt("descuento");
+								boolean sin_costo=((JSONObject)jarray.get(i)).getBoolean("sin_cargo");
+								int s_costo=1;
+								if(sin_costo)
+									s_costo=0;
+								Producto prod= new Producto(jsonPvp.getString("nombre"),
+										new BigDecimal(jsonPvp.getDouble("precio_cliente_final")),
+										new BigDecimal(jsonPvp.getDouble("precio_distribuidor")),
+										new BigDecimal(jsonPvp.getDouble("precio_mayorista")),
+										jsonPvp.getString("codigo"),jsonPvp.getString("descripcion"));
+								ProductoVenta pv=new ProductoVenta(prod,cant,desc,s_costo);
 								venta.getProductos().add(pv);
 							}
 						

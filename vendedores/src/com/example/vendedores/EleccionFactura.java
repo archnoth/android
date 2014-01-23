@@ -25,7 +25,8 @@ public class EleccionFactura extends Activity {
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-			   fac_intent.putExtra("descuento_contado",getIntent().getExtras().getParcelable("descuento_contado"));
+			   fac_intent.putExtra("tipo",0);
+			   fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			   startActivity(fac_intent);
 		   }
 	   });
@@ -37,6 +38,7 @@ public class EleccionFactura extends Activity {
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+			   fac_intent.putExtra("tipo",1);
 			   startActivity(fac_intent);
 		   }
 	   });
@@ -44,10 +46,11 @@ public class EleccionFactura extends Activity {
 	btn_dev_credito.setOnClickListener(new View.OnClickListener() {
 	   
 		   public void onClick(View v) {
-			   
+			 
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+			   fac_intent.putExtra("tipo",3);
 			   startActivity(fac_intent);
 		   
 		   }
@@ -61,7 +64,8 @@ public class EleccionFactura extends Activity {
 			    Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-			    startActivity(fac_intent);
+				fac_intent.putExtra("tipo",2);
+				startActivity(fac_intent);
 		   
 		   }
 	  
@@ -72,8 +76,14 @@ public class EleccionFactura extends Activity {
 	   
 		   public void onClick(View v) {
 			    
+			   Intent fac_intent = new Intent(getApplicationContext(),VisitaActivity.class); 
+				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+				startActivity(fac_intent);
 		   
 		   }
+		   
+		   
 	  
 	   });
 	

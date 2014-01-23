@@ -83,11 +83,14 @@
             android:name="com.example.vendedores.GCMActivity"
             android:label="@string/title_activity_gcm_activity" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.vendedores.EleccionFactura"
             android:label="@string/eleccion_factura_activity" >
         </activity>
-       
+        <activity
+            android:name="com.example.vendedores.VisitaActivity"
+            android:label="@string/title_activity_visita" >
+        </activity>
     </application>
 
 </manifest>

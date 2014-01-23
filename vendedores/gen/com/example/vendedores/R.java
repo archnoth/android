@@ -151,6 +151,7 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f01000f;
     }
     public static final class color {
+        public static final int blue=0x7f04000a;
         public static final int common_action_bar_splitter=0x7f040009;
         /**  Sign-in Button Colors 
          */
@@ -163,8 +164,9 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f040006;
         public static final int common_signin_btn_light_text_focused=0x7f040007;
         public static final int common_signin_btn_light_text_pressed=0x7f040005;
-        public static final int common_signin_btn_text_dark=0x7f04000a;
-        public static final int common_signin_btn_text_light=0x7f04000b;
+        public static final int common_signin_btn_text_dark=0x7f04000c;
+        public static final int common_signin_btn_text_light=0x7f04000d;
+        public static final int white=0x7f04000b;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -211,77 +213,101 @@ containing a value of this type.
         public static final int ic_plusone_tall_off_client=0x7f02001f;
     }
     public static final class id {
-        public static final int Facturar=0x7f05002e;
-        public static final int ListadoClientesprogressBar=0x7f050033;
-        public static final int LoginConectado=0x7f05003f;
-        public static final int LoginProgressBar=0x7f050040;
-        public static final int LoginSeekBar=0x7f05003e;
-        public static final int MontoTag=0x7f05002b;
-        public static final int MontoValue=0x7f05002c;
-        public static final int RelativeLayout1=0x7f050032;
-        public static final int ViewListaVendedores=0x7f050038;
-        public static final int action_settings=0x7f050046;
-        public static final int btn_clientes_sin_visitar=0x7f050037;
-        public static final int btn_historico=0x7f050007;
-        public static final int btn_ingresar=0x7f05003d;
-        public static final int btn_nueva_venta=0x7f050009;
-        public static final int btn_registrar_nota=0x7f050045;
-        public static final int btn_repetir_venta=0x7f050026;
-        public static final int btn_tiempo_entrega_desde=0x7f050041;
-        public static final int btn_tiempo_entrega_hasta=0x7f050043;
-        public static final int buscador_vendedores=0x7f050036;
-        public static final int buttonSelectDate=0x7f050042;
-        public static final int clear=0x7f050030;
-        public static final int editCelularCliente=0x7f050019;
-        public static final int editDia_de_entregaCliente=0x7f050021;
-        public static final int editDireccionCliente=0x7f050013;
-        public static final int editEmailCliente=0x7f05001b;
-        public static final int editHora_de_entrega_desde=0x7f050023;
-        public static final int editHora_de_entrega_hasta=0x7f050025;
-        public static final int editLugarEntrega=0x7f05001f;
-        public static final int editTel2Cliente=0x7f050017;
-        public static final int editTelCliente=0x7f050015;
-        public static final int editText1=0x7f05003c;
-        public static final int editTextNombreCliente=0x7f05000f;
-        public static final int editTextPassword=0x7f05003a;
-        public static final int editTextRedaccionNota=0x7f050044;
-        public static final int editTextRutCliente=0x7f050011;
-        public static final int editWebCliente=0x7f05001d;
-        public static final int factura_layout=0x7f050027;
-        public static final int frameLayout1=0x7f050039;
-        public static final int horizontalScrollView1=0x7f050008;
+        public static final int Facturar=0x7f050030;
+        public static final int ListadoClientesprogressBar=0x7f050035;
+        public static final int LoginConectado=0x7f050042;
+        public static final int LoginProgressBar=0x7f050043;
+        public static final int LoginSeekBar=0x7f050041;
+        public static final int MontoTag=0x7f05002e;
+        public static final int MontoValue=0x7f05002f;
+        public static final int RelativeLayout1=0x7f050034;
+        public static final int ViewListaVendedores=0x7f05003a;
+        public static final int action_settings=0x7f050057;
+        public static final int agregar_descuento=0x7f05005d;
+        public static final int autoCompleteMotivoNota=0x7f05004d;
+        public static final int borrar_fila=0x7f05005c;
+        public static final int btn_RegistrarVisita=0x7f05004e;
+        public static final int btn_clientes_sin_visitar=0x7f050039;
+        public static final int btn_factura_contado=0x7f050050;
+        public static final int btn_factura_credito=0x7f050052;
+        public static final int btn_historico=0x7f050008;
+        public static final int btn_ingresar=0x7f050040;
+        public static final int btn_nota_contado=0x7f050051;
+        public static final int btn_nota_credito=0x7f050053;
+        public static final int btn_nueva_venta=0x7f05000a;
+        public static final int btn_registrar_nota=0x7f05004a;
+        public static final int btn_repetir_venta=0x7f050027;
+        public static final int btn_tiempo_entrega_desde=0x7f050046;
+        public static final int btn_tiempo_entrega_hasta=0x7f050048;
+        public static final int btn_visita=0x7f05004f;
+        public static final int buscador_vendedores=0x7f050038;
+        public static final int buttonSelectDate=0x7f050047;
+        public static final int clear=0x7f050032;
+        public static final int contado_radio_button=0x7f05005a;
+        public static final int credito_radio_button=0x7f05005b;
+        public static final int descuento=0x7f050005;
+        public static final int editCelularCliente=0x7f05001a;
+        public static final int editDia_de_entregaCliente=0x7f050022;
+        public static final int editDireccionCliente=0x7f050014;
+        public static final int editEmailCliente=0x7f05001c;
+        public static final int editHora_de_entrega_desde=0x7f050024;
+        public static final int editHora_de_entrega_hasta=0x7f050026;
+        public static final int editLugarEntrega=0x7f050020;
+        public static final int editTel2Cliente=0x7f050018;
+        public static final int editTelCliente=0x7f050016;
+        public static final int editText1=0x7f05003f;
+        public static final int editTextNombreCliente=0x7f050010;
+        public static final int editTextPassword=0x7f05003d;
+        public static final int editTextRedaccionNota=0x7f050049;
+        public static final int editTextRutCliente=0x7f050012;
+        public static final int editTextVisitaDEscripcion=0x7f05004c;
+        public static final int editWebCliente=0x7f05001e;
+        public static final int factura_layout=0x7f050028;
+        public static final int frameLayout1=0x7f05003c;
+        public static final int grupo_modo_de_pago=0x7f050059;
+        public static final int horizontalScrollView1=0x7f050009;
         public static final int hybrid=0x7f050004;
-        public static final int imageView=0x7f05000d;
-        public static final int imageView1=0x7f050035;
-        public static final int linearLayout1=0x7f050034;
-        public static final int mDisplay=0x7f050031;
+        public static final int imageView=0x7f05000e;
+        public static final int imageView1=0x7f050037;
+        public static final int input_descuento_editText=0x7f050056;
+        public static final int input_descuento_layout=0x7f050055;
+        public static final int linearLayout1=0x7f050036;
+        public static final int lista_historico_grafica=0x7f05004b;
+        public static final int mDisplay=0x7f050033;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int progressBar=0x7f050006;
-        public static final int progressBarDetalleAFactura=0x7f050005;
-        public static final int progressBarFactura=0x7f05002d;
-        public static final int realtiveBig=0x7f05000a;
+        public static final int progressBarDetalleAFactura=0x7f050007;
+        public static final int progressBarFactura=0x7f05002a;
+        public static final int progressBarNotaLayout=0x7f050044;
+        public static final int progressFacturaLayout=0x7f050029;
+        public static final int realtiveBig=0x7f05000b;
         public static final int satellite=0x7f050002;
-        public static final int scrollView1=0x7f050028;
-        public static final int send=0x7f05002f;
-        public static final int tablaProductos=0x7f05002a;
-        public static final int tableCelular=0x7f050018;
-        public static final int tableDia_de_entrega=0x7f050020;
-        public static final int tableDireccionCliente=0x7f050012;
-        public static final int tableEmail=0x7f05001a;
-        public static final int tableHora_de_entrega_desde=0x7f050022;
-        public static final int tableHora_de_entrega_hasta=0x7f050024;
-        public static final int tableLayout1=0x7f05000b;
-        public static final int tableLugarEntrega=0x7f05001e;
-        public static final int tableNombreCliente=0x7f05000e;
-        public static final int tableRowImage=0x7f05000c;
-        public static final int tableRutCliente=0x7f050010;
-        public static final int tableTelefono=0x7f050014;
-        public static final int tableTelefono2=0x7f050016;
-        public static final int tableWeb=0x7f05001c;
+        public static final int scrollView1=0x7f05003b;
+        public static final int scrollViewNota=0x7f050045;
+        public static final int scrollViewVenta=0x7f05002b;
+        public static final int send=0x7f050031;
+        public static final int sin_cargo=0x7f050006;
+        public static final int sin_costo=0x7f05005e;
+        public static final int submenu_modo_de_pago=0x7f050058;
+        public static final int tablaProductos=0x7f05002d;
+        public static final int tableCelular=0x7f050019;
+        public static final int tableDia_de_entrega=0x7f050021;
+        public static final int tableDireccionCliente=0x7f050013;
+        public static final int tableEmail=0x7f05001b;
+        public static final int tableHora_de_entrega_desde=0x7f050023;
+        public static final int tableHora_de_entrega_hasta=0x7f050025;
+        public static final int tableLayout1=0x7f05000c;
+        public static final int tableLugarEntrega=0x7f05001f;
+        public static final int tableNombreCliente=0x7f05000f;
+        public static final int tableRowImage=0x7f05000d;
+        public static final int tableRutCliente=0x7f050011;
+        public static final int tableTelefono=0x7f050015;
+        public static final int tableTelefono2=0x7f050017;
+        public static final int tableWeb=0x7f05001d;
         public static final int terrain=0x7f050003;
-        public static final int textView1=0x7f05003b;
-        public static final int wrap_table_btn_facturar=0x7f050029;
+        public static final int textView1=0x7f05003e;
+        public static final int titulo_eleccion_facura=0x7f050054;
+        public static final int wrap_table_btn_facturar=0x7f05002c;
     }
     public static final class integer {
         public static final int google_play_services_version=0x7f070000;
@@ -294,20 +320,25 @@ containing a value of this type.
         public static final int activity_login=0x7f030004;
         public static final int activity_nota=0x7f030005;
         public static final int activity_ventas_historico=0x7f030006;
-        public static final int lista_productos_venta=0x7f030007;
-        public static final int lista_text_view=0x7f030008;
+        public static final int activity_visita=0x7f030007;
+        public static final int eleccion_factura_activity=0x7f030008;
+        public static final int input_descuento=0x7f030009;
+        public static final int lista_productos_venta=0x7f03000a;
+        public static final int lista_text_view=0x7f03000b;
     }
     public static final class menu {
         public static final int detalle_cliente=0x7f0a0000;
         public static final int factura=0x7f0a0001;
-        public static final int listado_clientes=0x7f0a0002;
-        public static final int login=0x7f0a0003;
-        public static final int nota=0x7f0a0004;
-        public static final int ventas_historico=0x7f0a0005;
+        public static final int factura_floating_context=0x7f0a0002;
+        public static final int listado_clientes=0x7f0a0003;
+        public static final int login=0x7f0a0004;
+        public static final int nota=0x7f0a0005;
+        public static final int ventas_historico=0x7f0a0006;
     }
     public static final class string {
         public static final int LoginConectado=0x7f06002e;
         public static final int action_settings=0x7f06001b;
+        public static final int agregar_descuento=0x7f06003f;
         public static final int app_name=0x7f06001a;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 
@@ -333,9 +364,11 @@ containing a value of this type.
          */
         public static final int auth_client_using_bad_version_title=0x7f060014;
         public static final int autocomplete_producto=0x7f060022;
+        public static final int borrar_fila=0x7f06003e;
         public static final int btn_text_registrar_venta=0x7f060023;
         public static final int btn_text_repetir_venta=0x7f060024;
         public static final int buscar=0x7f06002f;
+        public static final int button=0x7f06003d;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -407,17 +440,28 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f060013;
+        public static final int contado=0x7f060042;
+        public static final int credito=0x7f060041;
+        public static final int eleccion_factura_activity=0x7f060035;
         public static final int hello_world=0x7f06001c;
+        public static final int modo_de_pago=0x7f060040;
         public static final int monto_tag=0x7f060030;
+        public static final int porcentaje=0x7f060043;
         public static final int text_btn_add=0x7f060028;
         public static final int text_btn_clientes_sin_visitar=0x7f060033;
+        public static final int text_btn_factura_contado=0x7f060037;
+        public static final int text_btn_factura_credito=0x7f060038;
         public static final int text_btn_generar_factura=0x7f060027;
         public static final int text_btn_historico=0x7f060026;
         public static final int text_btn_ingresar=0x7f06001f;
+        public static final int text_btn_nota_contado=0x7f060039;
+        public static final int text_btn_nota_credito=0x7f06003a;
         public static final int text_btn_rem=0x7f060029;
+        public static final int text_btn_visita=0x7f06003b;
         public static final int text_dialog_no=0x7f06002b;
         public static final int text_dialog_si=0x7f06002a;
         public static final int text_dialog_text=0x7f06002c;
+        public static final int text_porcentajes=0x7f060034;
         public static final int title_activity_detalle_cliente=0x7f060020;
         public static final int title_activity_factura=0x7f060021;
         public static final int title_activity_gcm_activity=0x7f060032;
@@ -425,6 +469,8 @@ containing a value of this type.
         public static final int title_activity_login=0x7f06001e;
         public static final int title_activity_nota=0x7f060031;
         public static final int title_activity_ventas_historico=0x7f060025;
+        public static final int title_activity_visita=0x7f060036;
+        public static final int titulo_eleccion_facura=0x7f06003c;
         public static final int todo=0x7f06002d;
     }
     public static final class style {

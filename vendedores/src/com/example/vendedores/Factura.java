@@ -3,10 +3,12 @@ package com.example.vendedores;
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +47,20 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.InputFilter;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -66,23 +75,28 @@ public class Factura extends Activity {
 
 	private static List<Producto> lista_productos;
 	private static HashMap<String, Producto> diccionarioProductos;
-	private Double monto_factura = 0.0;
+	private BigDecimal monto_factura = new BigDecimal("0.0");
 	private Venta nueva_venta;
 	private Venta venta_original;
 	private EditText last_text_cantidad;
 	private JSONObject json;
 	private Gson gson;
-	private int descuento_contado;
+	private int descuento_contado_porcentaje;
+	private BigDecimal descuento_contado_monto;
 	private int tipo;
-
+	private int descuento_producto = 0;
+	private Menu menu;
+	private View context_view;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_factura);
 
-		descuento_contado = getIntent().getExtras().getInt("decuento_contado",
-				-1);
+		descuento_contado_porcentaje = getIntent().getExtras().getInt("descuento_contado");
+		 tipo=getIntent().getExtras().getInt("tipo");
 
 		LongRunningGetIO thred = new LongRunningGetIO();// llamo un proceso en
 														// backgroud para cargar
@@ -129,8 +143,9 @@ public class Factura extends Activity {
 		editText.setTextColor(Color.BLACK);
 		editText.setBackgroundColor(Color.WHITE);
 		editText.setMaxLines(1);
-		editText.setEms(3);
+		editText.setEms(4);
 		editText.setHint("Cant");
+		editText.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 		editText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(6) });
 		editText.addTextChangedListener(new TextWatcher() {
 
@@ -186,12 +201,12 @@ public class Factura extends Activity {
 		divider.setBackgroundColor(Color.BLACK);
 		divider.setWidth(2);
 		divider.setInputType(android.text.InputType.TYPE_NULL);
-		Button cruz = Factura.this.generarCruz();
+		//Button cruz = Factura.this.generarCruz();
 		tbr.addView(text_cant, ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		tbr.addView(divider);
 		tbr.addView(autocomplete);
-		tbr.addView(cruz);
+		//tbr.addView(cruz);
 		tbr.setLayoutParams(new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -204,6 +219,9 @@ public class Factura extends Activity {
 			text_cant.setText(pv.getCantidad().toString());
 
 		}
+		tbr.setTag(R.id.sin_cargo,0);
+	    tbr.setTag(R.id.descuento,0);
+		registerForContextMenu(tbr);
 	}
 
 	private AutoCompleteTextView generarAutocomplete() {
@@ -212,7 +230,7 @@ public class Factura extends Activity {
 				getApplicationContext());
 		auto_gen.setAdapter(new ArrayAdapter<Producto>(this,
 				android.R.layout.simple_list_item_1, lista_productos));
-		auto_gen.setEms(9);
+		auto_gen.setEms(12);
 		auto_gen.setHint("Producto");
 		auto_gen.setMaxLines(1);
 		auto_gen.setHighlightColor(Color.BLUE);
@@ -221,6 +239,16 @@ public class Factura extends Activity {
 		auto_gen.setTextColor(Color.BLACK);
 		auto_gen.setBackgroundColor(Color.WHITE);
 		auto_gen.setDropDownBackgroundResource(android.R.color.white);
+		auto_gen.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				
+				ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
+				
+			}
+		
+		});
 		auto_gen.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -231,8 +259,7 @@ public class Factura extends Activity {
 			@Override
 			public void afterTextChanged(Editable s) {
 				try {
-					ActualizarFilaFactura((TableRow) getCurrentFocus()
-							.getParent(), true);
+					//ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
 				} catch (Exception e) {
 				}
 			}
@@ -241,8 +268,7 @@ public class Factura extends Activity {
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				try {
-					ActualizarFilaFactura((TableRow) getCurrentFocus()
-							.getParent(), false);
+					//ActualizarFilaFactura((TableRow) getCurrentFocus().getParent(), false);
 				} catch (Exception e) {
 				}
 			}
@@ -251,100 +277,52 @@ public class Factura extends Activity {
 
 	}
 
-	private Button generarCruz() {
-		Button cruz = new Button(getApplicationContext());
-		cruz.setText("X");
-
-		cruz.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				TableLayout tbl = (TableLayout) findViewById(R.id.tablaProductos);
-				if (tbl.getChildAt(tbl.getChildCount() - 1) != v.getParent()) {
-					tbl.removeView((View) v.getParent());
-				}
-			}
-		});
-
-		cruz.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-
-				Toast.makeText(Factura.this, "HOLA", Toast.LENGTH_LONG).show();
-				return false;
-			}
-		});
-
-		return cruz;
-	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
 	}
+	
+	
 
 	private void ActualizarFilaFactura(TableRow row, Boolean sumar) {
 		try {
-			AutoCompleteTextView auto = (AutoCompleteTextView) row
-					.getChildAt(2);
+			AutoCompleteTextView auto = (AutoCompleteTextView) row.getChildAt(2);
 			EditText cant = (EditText) row.getChildAt(0);
 			String codigo = "";
 			codigo = auto.getText().toString().split("\\s - \\s")[1];
-
-			switch (((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo()) {
-			case 0:
-				if (sumar)
-					this.monto_factura = this.monto_factura
-							+ (diccionarioProductos.get(codigo))
-									.getPrecio_cliente_final()
-							* Integer.parseInt(cant.getText().toString()
-									.replaceAll("\\s+", ""));
-				else
-					this.monto_factura = this.monto_factura
-							- (diccionarioProductos.get(codigo))
-									.getPrecio_cliente_final()
-							* Integer.parseInt(cant.getText().toString()
-									.replaceAll("\\s+", ""));
-
-			case 1:
-				if (sumar)
-					this.monto_factura = this.monto_factura
-							+ (diccionarioProductos.get(codigo))
-									.getPrecio_mayorista()
-							* Integer.parseInt(cant.getText().toString()
-									.replaceAll("\\s+", ""));
-				else
-					this.monto_factura = this.monto_factura
-							- (diccionarioProductos.get(codigo))
-									.getPrecio_mayorista()
-							* Integer.parseInt(cant.getText().toString()
-									.replaceAll("\\s+", ""));
-
-			case 2:
-				if (sumar)
-					this.monto_factura = this.monto_factura
-							+ (diccionarioProductos.get(codigo))
-									.getPrecio_distribuidor()
-							* Integer.parseInt(cant.getText().toString()
-									.replaceAll("\\s+", ""));
-				else
-					this.monto_factura = this.monto_factura
-							- (diccionarioProductos.get(codigo))
-									.getPrecio_distribuidor()
-							* Integer.parseInt(cant.getText().toString()
-									.replaceAll("\\s+", ""));
-			}
-
-			EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
-			DecimalFormat formatter = new DecimalFormat("##0.0######");
-			monto_value.setText(formatter.format(this.monto_factura
-					.doubleValue()));
-
+			int signo = 1;
+			if (!sumar) signo = -1;
+			 BigDecimal precio_uso = BigDecimal.ZERO;
+			   if((Integer)row.getTag(R.id.sin_cargo)==0){
+			    switch (((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo()) {
+			     case 0:
+			       precio_uso =  (diccionarioProductos.get(codigo)).getPrecio_cliente_final();
+			     case 1:
+			       precio_uso = (diccionarioProductos.get(codigo)).getPrecio_mayorista();
+			     case 2:
+			       precio_uso = (diccionarioProductos.get(codigo)).getPrecio_distribuidor();
+			    }
+			   }
+			   BigDecimal descuento = BigDecimal.ZERO;
+			   descuento = precio_uso.multiply(new BigDecimal(row.getTag(R.id.descuento).toString()).divide(new BigDecimal("100.0")));
+			   precio_uso = new BigDecimal(signo).multiply(precio_uso.subtract(descuento));
+			   this.monto_factura = this.monto_factura.add(precio_uso).multiply(new BigDecimal(cant.getText().toString().replaceAll("\\s+", "")));
+			   
+			   //this.monto_factura = this.monto_factura + signo *(precio_uso-descuento) * Integer.parseInt(cant.getText().toString().replaceAll("\\s+", ""));
+			   EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
+			 
+			
+				if (descuento_contado_porcentaje !=0) {
+					descuento_contado_monto = monto_factura.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
+					monto_factura =monto_factura.subtract(descuento_contado_monto);
+				}
+				monto_value.setText(monto_factura.toString());
+		
 		} catch (Exception e) {
 		}
-	}
+}
 
 	public void Facturar(View view) throws JSONException {
 
@@ -365,8 +343,7 @@ public class Factura extends Activity {
 		Calendar fecha = Calendar.getInstance();
 		Double monto = 0.0;
 		TableLayout tbl = (TableLayout) this.findViewById(R.id.tablaProductos);
-		nueva_venta = new Venta(vendedor, cliente, fecha, monto, getIntent()
-				.getExtras().getInt("tipo"));
+		nueva_venta = new Venta(vendedor, cliente, fecha, monto_factura.doubleValue(), tipo);
 
 		for (int i = 0; i < tbl.getChildCount();) {
 			TableRow tr = (TableRow) tbl.getChildAt(i);
@@ -382,7 +359,7 @@ public class Factura extends Activity {
 
 				if (((Producto) auto.getAdapter().getItem(j)).getCodigo()
 						.equals(codigo)) {
-					try {
+					/*try {
 						switch (nueva_venta.getCliente().getTipo()) {
 						case 0:
 							monto = monto
@@ -403,20 +380,17 @@ public class Factura extends Activity {
 									* Integer.parseInt(cant.getText()
 											.toString().replaceAll("\\s+", ""));
 
-						}
+						}*/
 						nueva_venta.getProductos().add(
-								new ProductoVenta((Producto) auto.getAdapter()
-										.getItem(j), Integer.parseInt(cant
-										.getText().toString()
-										.replaceAll("\\s+", ""))));
+								new ProductoVenta((Producto) auto.getAdapter().getItem(j), Integer.parseInt(cant.getText().toString().replaceAll("\\s+", "")),(Integer)tr.getTag(R.id.descuento),(Integer)tr.getTag(R.id.sin_cargo)));
 
-					} catch (NumberFormatException e) {
+					/*} catch (NumberFormatException e) {
 						error_formato_monto = true;
 						Toast.makeText(
 								Factura.this,
 								"El campo cantidad solo acepta valores numéricos",
 								Toast.LENGTH_LONG).show();
-					}
+					}*/
 				}
 			}
 
@@ -425,14 +399,6 @@ public class Factura extends Activity {
 
 		if (!error_formato_monto) {
 			json = new JSONObject();
-			if (descuento_contado != -1) {
-				double descuento = monto * (descuento_contado / 100);
-				monto = monto - descuento;
-				nueva_venta.setMonto(monto);
-			} else {
-				nueva_venta.setMonto(monto);
-			}
-
 			gson = new Gson();
 			venta_original = new Venta(nueva_venta.getUsuario(),
 					nueva_venta.getCliente(), nueva_venta.getFecha(),
@@ -480,48 +446,161 @@ public class Factura extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.factura, menu);
 
+		this.menu = menu;
+		if(tipo==0){
+			menu.findItem(R.id.contado_radio_button).setChecked(true);
+			menu.findItem(R.id.credito_radio_button).setChecked(false);
+			
+			
+		}
+		else{
+			menu.findItem(R.id.credito_radio_button).setChecked(true);
+			menu.findItem(R.id.contado_radio_button).setChecked(false);
+		}
 		return true;
 	}
-
-	private class LongRunningGetIO extends
-			AsyncTask<Void, Void, List<Producto>> {
-
-		protected String getASCIIContentFromEntity(HttpEntity entity)
-				throws IllegalStateException, IOException {
-			InputStream in = entity.getContent();
-			StringBuffer out = new StringBuffer();
-			int n = 1;
-			while (n > 0) {
-				byte[] b = new byte[4096];
-				n = in.read(b);
-				if (n > 0)
-					out.append(new String(b, 0, n));
-			}
-			return out.toString();
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		
+		
+		EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
+		switch (item.getItemId()) {
+		
+			case R.id.contado_radio_button:
+				
+				if (!item.isChecked())
+		    	{
+					descuento_contado_monto = monto_factura.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
+					monto_factura = monto_factura.subtract(descuento_contado_monto);
+		    	}
+				tipo=0;
+				item.setChecked(true);
+	            this.menu.findItem(R.id.credito_radio_button).setChecked(false);
+	            monto_value = (EditText) (findViewById(R.id.MontoValue));
+	    		monto_value.setText(monto_factura.toString());Toast.makeText(Factura.this,"COMPRA AL CONTADO", Toast.LENGTH_LONG).show();
+		        return true;
+		        
+		    case R.id.credito_radio_button:
+		    	
+	    		if(this.menu.findItem(R.id.contado_radio_button).isChecked())
+	    		{
+					monto_factura = monto_factura.add(descuento_contado_monto);	
+	    		}
+		    	tipo=1;
+		    	item.setChecked(true);
+		    	this.menu.findItem(R.id.contado_radio_button).setChecked(false);
+		    	monto_value = (EditText) (findViewById(R.id.MontoValue));
+	    		monto_value.setText(monto_factura.toString());
+		    	Toast.makeText(Factura.this,"COMPRA A CREDITO", Toast.LENGTH_LONG).show();
+		        
+		    	return true;
+		    default:
+		    	
+	            return super.onOptionsItemSelected(item); 
 		}
-
-		@Override
-		protected List<Producto> doInBackground(Void... params) {
-			ArrayList<Producto> lista = null;
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpContext localContext = new BasicHttpContext();
-			HttpGet httpGet = new HttpGet(
-					"http://ventas.jm-ga.com/api/productos/"
-							+ ((Usuario) getIntent().getExtras().getParcelable(
-									"usuario")).getKey() + "/");
-
-			// Execute HTTP Post Request
-			String text = null;
-			try {
-				HttpResponse response = httpClient.execute(httpGet,
-						localContext);
-				HttpEntity entity = response.getEntity();
-
-				text = getASCIIContentFromEntity(entity);
-
-			} catch (Exception e) {
-
-			}
+		
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	                                ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+	    MenuInflater inflater = getMenuInflater();
+	    context_view=v;
+	    inflater.inflate(R.menu.factura_floating_context, menu);
+	    
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.borrar_fila:
+	        	Toast.makeText(Factura.this,"BORRAR FILA", Toast.LENGTH_LONG).show();
+	        	TableLayout tbl = (TableLayout) findViewById(R.id.tablaProductos);
+				if (tbl.getChildAt(tbl.getChildCount() - 1) != context_view) {
+					tbl.removeView((View) context_view);
+					ActualizarFilaFactura((TableRow)context_view, false);
+				}
+	            return true;
+	        case R.id.agregar_descuento:
+	        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        	final View vista = getLayoutInflater().inflate(R.layout.input_descuento,null);
+	        	((EditText)vista.findViewById(R.id.input_descuento_editText)).setText(""+descuento_producto);
+	        	builder.setTitle("Agregar descuento")
+	        			.setView(vista)
+				        .setNegativeButton("Cancelar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                        dialog.cancel();
+				                    }
+				                })
+				        .setPositiveButton("Aceptar",
+				                new DialogInterface.OnClickListener() {
+				                    public void onClick(DialogInterface dialog, int id) {
+				                    	descuento_producto = Integer.parseInt(((EditText)vista.findViewById(R.id.input_descuento_editText)).getText().toString());
+				                    	ActualizarFilaFactura((TableRow)context_view, false);
+				                    	context_view.setTag(R.id.descuento,descuento_producto);
+				                    	ActualizarFilaFactura((TableRow)context_view, true);
+				                    }
+				                });
+				AlertDialog alert = builder.create();
+				alert.show();
+	            return true;
+	        
+	        case R.id.sin_costo:
+	            if (item.isChecked()){
+	            	item.setChecked(false);
+	            	ActualizarFilaFactura((TableRow)context_view, true);
+	            	context_view.setTag(R.id.sin_cargo,0);
+	            }
+	            else{
+	            	item.setChecked(true);
+	            	ActualizarFilaFactura((TableRow)context_view, false);
+	            	context_view.setTag(R.id.sin_cargo,1);
+	            }
+	        	
+	        	//aca tengo que asociar al producto venta esta variable
+	        	
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
+	}
+	
+private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
+		
+		 
+	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
+       InputStream in = entity.getContent();
+         StringBuffer out = new StringBuffer();
+         int n = 1;
+         while (n>0) {
+             byte[] b = new byte[4096];
+             n =  in.read(b);
+             if (n>0) out.append(new String(b, 0, n));
+         }
+         return out.toString();
+    }
+	
+	@Override
+	protected  List<Producto> doInBackground(Void... params) {
+		ArrayList<Producto> lista = null;
+		HttpClient httpClient = new DefaultHttpClient();
+		 HttpContext localContext = new BasicHttpContext();
+         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/productos/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
+           
+  
+             // Execute HTTP Post Request
+         String text = null;
+         try {
+        	 HttpResponse response = httpClient.execute(httpGet, localContext);
+        	 HttpEntity entity = response.getEntity();
+               
+             text = getASCIIContentFromEntity(entity);
+               
+         } catch (Exception e) {
+        	 
+         }
 			// return text;
 			if (text != null) {
 
@@ -535,9 +614,9 @@ public class Factura extends Activity {
 						JSONObject dic_producto = jarray.getJSONObject(i);
 						Producto prod = new Producto(
 								dic_producto.getString("nombre"),
-								dic_producto.getDouble("precio_cliente_final"),
-								dic_producto.getDouble("precio_distribuidor"),
-								dic_producto.getDouble("precio_mayorista"),
+								new BigDecimal(dic_producto.getDouble("precio_cliente_final")),
+								new BigDecimal(dic_producto.getDouble("precio_distribuidor")),
+								new BigDecimal(dic_producto.getDouble("precio_mayorista")),
 								dic_producto.getString("codigo"),
 								dic_producto.getString("descripcion"));
 						lista.add(prod);
@@ -574,8 +653,12 @@ public class Factura extends Activity {
 
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpContext localContext = new BasicHttpContext();
-			HttpPost httpPost = new HttpPost(
-					"http://ventas.jm-ga.com/api/ventas/concreta/");
+			String url="http://ventas.jm-ga.com/api/ventas/concreta/";
+			
+			if(getIntent().getExtras().getInt("tipo")== 2 ||getIntent().getExtras().getInt("tipo")== 3) 
+				url="http://ventas.jm-ga.com/api/ventas/devolucion/";
+			
+			HttpPost httpPost = new HttpPost(url);
 			// Execute HTTP Post Request
 			String text = null;
 			try {
@@ -816,7 +899,6 @@ public class Factura extends Activity {
 										try {
 											findViewById(R.id.scrollViewVenta)
 													.setFocusable(true);
-											// Toast.makeText(Factura.this,"Aca tengo que generar una nueva actividad donde el vendedor agrega notas de la venta",
 											// Toast.LENGTH_LONG).show();
 											Intent loc = new Intent(
 													getApplicationContext(),
@@ -848,7 +930,7 @@ public class Factura extends Activity {
 				String prod_a_mostrar = "";
 
 				JSONObject ventaObj = ((JSONObject) json.get("venta"));
-				Double mnt = 0.0;
+				BigDecimal mnt = BigDecimal.ZERO;
 				// sino llamo nuevamente al proceso de vender con nueva_venta
 				// arreglada
 
@@ -862,15 +944,35 @@ public class Factura extends Activity {
 					int cant = Integer
 							.parseInt(((JSONObject) productos_nueva_venta
 									.get(i)).get("cantidad").toString());
-					ProductoVenta pv = new ProductoVenta(p, cant);
-					switch (nueva_venta.getCliente().getTipo()) {
-					case 0:
-						mnt = mnt + p.getPrecio_cliente_final() * cant;
-					case 1:
-						mnt = mnt + p.getPrecio_mayorista() * cant;
-					case 2:
-						mnt = mnt + p.getPrecio_distribuidor() * cant;
-
+					int descuento = Integer
+							.parseInt(((JSONObject) productos_nueva_venta
+									.get(i)).get("descuento").toString());
+					int sin_costo = Integer
+							.parseInt(((JSONObject) productos_nueva_venta
+									.get(i)).get("sin_costo").toString());
+					
+					ProductoVenta pv = new ProductoVenta(p, cant,descuento,sin_costo);
+					
+					if(sin_costo!=1)
+					{
+						
+						BigDecimal descuento_prod =BigDecimal.ZERO;
+					
+						switch (nueva_venta.getCliente().getTipo()) {
+						case 0:
+						
+							descuento_prod = p.getPrecio_cliente_final().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
+							mnt = mnt.add(p.getPrecio_cliente_final().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							
+						case 1:
+							descuento_prod = p.getPrecio_mayorista().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
+							mnt = mnt.add(p.getPrecio_mayorista().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							
+						case 2:
+							descuento_prod = p.getPrecio_distribuidor().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
+							mnt = mnt.add(p.getPrecio_distribuidor().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							
+					}
 					}
 					nuevaListaProductos.add(pv);
 					prod_a_mostrar = "Producto :" + prod_a_mostrar
@@ -880,12 +982,13 @@ public class Factura extends Activity {
 				}
 
 				nueva_venta.setProductos(nuevaListaProductos);
-				if (descuento_contado != -1) {
-					double descuento = mnt * (descuento_contado / 100);
-					mnt = mnt - descuento;
-					nueva_venta.setMonto(mnt);
+				
+				if (descuento_contado_porcentaje != 0) {
+					descuento_contado_monto= mnt.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
+					mnt = mnt.subtract(descuento_contado_monto) ;
+					nueva_venta.setMonto(mnt.doubleValue());
 				} else {
-					nueva_venta.setMonto(mnt);
+					nueva_venta.setMonto(mnt.doubleValue());
 				}
 				findViewById(R.id.progressFacturaLayout).setVisibility(
 						View.INVISIBLE);
@@ -924,6 +1027,12 @@ public class Factura extends Activity {
 				alert.show();
 
 			}
+			if(json.getString("response").toString().equalsIgnoreCase("Devolucion creada"))
+			{
+				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
+				Toast.makeText(Factura.this,"devolucion creada ", Toast.LENGTH_LONG).show();
+				
+			}
 
 		} catch (Exception e) {
 			System.out.print(e.getMessage());
@@ -941,7 +1050,8 @@ public class Factura extends Activity {
 				tbl.removeViewAt(tbl.getChildCount() - 1);
 			}
 		}
-		this.monto_factura = ultima_venta.getMonto();
+		this.monto_factura =new BigDecimal( ultima_venta.getMonto().toString());
+		this.tipo=ultima_venta.getTipo();
 
 	}
 

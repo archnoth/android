@@ -29,6 +29,7 @@
      <string name="text_btn_clientes_sin_visitar">Ver clientes sin visitar</string>
 	<string name="text_porcentajes">Porcentajes de compras</string>
 	<string name="eleccion_factura_activity">Eleccion factura</string>
+	<string name="title_activity_visita">Visita</string>
 	
 	
 	<string name="text_btn_factura_contado">Facturar Contado</string>
@@ -38,5 +39,11 @@
 	<string name="text_btn_visita">Visita</string>
 	<string name="titulo_eleccion_facura">"Seleccione una operación"</string>
 	<string name="button">btn_fac_contado</string>
+	<string name="borrar_fila">Borrar fila</string>
+	<string name="agregar_descuento">Agregar descuento</string>
+	<string name="modo_de_pago">Modo de pago</string>
+	<string name="credito">Credito</string>
+	<string name="contado">Contado</string>
+	<string name="porcentaje">%</string>
 	
 </resources>

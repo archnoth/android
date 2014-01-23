@@ -15,9 +15,10 @@ public class Venta implements Parcelable{
  private Calendar fecha;
  private Double monto;
  private ArrayList<Nota> lista_notas;
+ private int tipo;
  
  
- public Venta(Usuario usuario, Cliente cliente, Calendar fecha,Double monto)
+ public Venta(Usuario usuario, Cliente cliente, Calendar fecha,Double monto,int tipo)
  {
 	 this.usuario=usuario;
 	 this.cliente=cliente;
@@ -25,6 +26,7 @@ public class Venta implements Parcelable{
 	 this.setMonto(monto);
 	 this.productos=new ArrayList<ProductoVenta>();
 	 this.setLista_notas(new ArrayList<Nota>());
+	 this.tipo=tipo;
 	 
 	 
  } 
@@ -70,6 +72,16 @@ public void setLista_notas(ArrayList<Nota> lista_notas) {
 	this.lista_notas = lista_notas;
 }
 
+
+public int getTipo() {
+	return tipo;
+}
+
+public void setTipo(int tipo) {
+	this.tipo = tipo;
+}
+
+
 private Venta(Parcel in) {
 	fecha = Calendar.getInstance();
 	fecha.setTimeInMillis(in.readLong());
@@ -77,6 +89,7 @@ private Venta(Parcel in) {
 	cliente = in.readParcelable(Cliente.class.getClassLoader());
 	usuario = in.readParcelable(Usuario.class.getClassLoader());
 	productos = in.createTypedArrayList(ProductoVenta.CREATOR);
+	tipo=in.readInt();
 }
 
 @Override
@@ -93,6 +106,7 @@ public void writeToParcel(Parcel dest, int flags) {
 	dest.writeParcelable(cliente,flags);
 	dest.writeParcelable(usuario,flags);
 	dest.writeTypedList(productos);
+	dest.writeInt(tipo);
 	
 }
 
