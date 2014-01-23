@@ -299,13 +299,13 @@ public class Factura extends Activity {
 			   BigDecimal descuento = BigDecimal.ZERO;
 			   descuento = precio_uso.multiply(new BigDecimal(row.getTag(R.id.descuento).toString()).divide(new BigDecimal("100.0")));
 			   precio_uso = new BigDecimal(signo).multiply(precio_uso.subtract(descuento));
-			   this.monto_factura = this.monto_factura.add(precio_uso).multiply(new BigDecimal(cant.getText().toString().replaceAll("\\s+", "")));
+			   this.monto_factura = this.monto_factura.add(precio_uso.multiply(new BigDecimal(cant.getText().toString().replaceAll("\\s+", ""))));
 			   
 			   //this.monto_factura = this.monto_factura + signo *(precio_uso-descuento) * Integer.parseInt(cant.getText().toString().replaceAll("\\s+", ""));
 			   EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
 			 
 			
-				if (descuento_contado_porcentaje !=0) {
+				if (descuento_contado_porcentaje !=0 && tipo==0) {
 					descuento_contado_monto = monto_factura.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
 					monto_factura =monto_factura.subtract(descuento_contado_monto);
 				}
@@ -473,7 +473,8 @@ public class Factura extends Activity {
 		        
 		    case R.id.credito_radio_button:
 		    	
-	    		if(this.menu.findItem(R.id.contado_radio_button).isChecked())
+	    		//if(this.menu.findItem(R.id.contado_radio_button).isChecked())
+		    	if (!item.isChecked())
 	    		{
 					monto_factura = monto_factura.add(descuento_contado_monto);	
 	    		}
@@ -972,7 +973,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 
 				nueva_venta.setProductos(nuevaListaProductos);
 				
-				if (descuento_contado_porcentaje != 0) {
+				if (descuento_contado_porcentaje != 0 && tipo==0) {
 					descuento_contado_monto= mnt.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
 					mnt = mnt.subtract(descuento_contado_monto) ;
 					nueva_venta.setMonto(mnt.doubleValue());

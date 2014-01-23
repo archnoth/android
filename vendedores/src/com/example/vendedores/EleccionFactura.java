@@ -39,6 +39,7 @@ public class EleccionFactura extends Activity {
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",1);
+			   fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			   startActivity(fac_intent);
 		   }
 	   });
@@ -51,6 +52,7 @@ public class EleccionFactura extends Activity {
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",3);
+			   fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			   startActivity(fac_intent);
 		   
 		   }
@@ -65,6 +67,7 @@ public class EleccionFactura extends Activity {
 				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 				fac_intent.putExtra("tipo",2);
+				fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 				startActivity(fac_intent);
 		   
 		   }
