@@ -86,7 +86,8 @@ public class VisitaActivity extends Activity  {
 			
 			@Override
 			public void onClick(View v) {
-				
+				((Button)v).setActivated(true);
+				findViewById(R.id.ProgressBarVisita).setVisibility(View.VISIBLE);
 				
 				nueva_visita= new Visita(c,u,auto.getSelectedItem().toString(),descripcion.getText().toString()); 
 			
@@ -105,6 +106,8 @@ public class VisitaActivity extends Activity  {
 						String respuesta = (String) async.get();
 						JSONObject json = new JSONObject(respuesta);
 						Toast.makeText(VisitaActivity.this,respuesta,10).show();
+						((Button)v).setActivated(false);
+						findViewById(R.id.ProgressBarVisita).setVisibility(View.INVISIBLE);
 					}
 				  catch(Exception e)
 				  {

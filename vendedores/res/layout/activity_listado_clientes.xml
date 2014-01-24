@@ -23,7 +23,7 @@
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#6699FF" >
+        android:background="@drawable/button_style" >
 
         <ImageView
             android:id="@+id/imageView1"
@@ -40,7 +40,8 @@
             android:background="#6699FF"
             android:ems="6"
             android:maxLines="1"
-            android:textSize="30sp" >
+            android:textSize="30sp" 
+            android:completionThreshold="1">
         </AutoCompleteTextView>
     </LinearLayout>
 
@@ -68,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/linearLayout1"
         android:layout_alignParentBottom="true"
-        android:background="#6699FF"
+        android:background="@drawable/button_style"
         android:onClick="clientes_sin_visitar"
         android:text="@string/text_btn_clientes_sin_visitar"
         android:textAlignment="center"

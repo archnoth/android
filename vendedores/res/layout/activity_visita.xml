@@ -37,7 +37,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/editTextVisitaDEscripcion"
         android:layout_marginTop="26dp"
-        android:background="#6699FF"
+        android:background="@drawable/button_style"
         android:text="Registrar Visita"
         android:textAlignment="center"
         android:textColor="#ffffff"
@@ -56,5 +56,13 @@
 
         <requestFocus />
     </EditText>
+
+    <ProgressBar
+        android:id="@+id/ProgressBarVisita"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
 
 </RelativeLayout>

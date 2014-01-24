@@ -21,7 +21,8 @@ public class EleccionFactura extends Activity {
 	btn_contado.setOnClickListener(new View.OnClickListener() {
 	   
 		   public void onClick(View v) {
-		   
+			   ((Button)v).setActivated(true);
+			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -34,7 +35,8 @@ public class EleccionFactura extends Activity {
 	btn_credito.setOnClickListener(new View.OnClickListener() {
 	   
 		   public void onClick(View v) {
-		   
+			   ((Button)v).setActivated(true);
+			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -47,7 +49,8 @@ public class EleccionFactura extends Activity {
 	btn_dev_credito.setOnClickListener(new View.OnClickListener() {
 	   
 		   public void onClick(View v) {
-			 
+			   ((Button)v).setActivated(true);
+			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -62,7 +65,8 @@ public class EleccionFactura extends Activity {
 	btn_dev_contado.setOnClickListener(new View.OnClickListener() {
 	   
 		   public void onClick(View v) {
-			   
+			   ((Button)v).setActivated(true);
+			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
 			    Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -78,7 +82,8 @@ public class EleccionFactura extends Activity {
 	visita.setOnClickListener(new View.OnClickListener() {
 	   
 		   public void onClick(View v) {
-			    
+			   ((Button)v).setActivated(true);
+			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
 			   Intent fac_intent = new Intent(getApplicationContext(),VisitaActivity.class); 
 				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -92,5 +97,15 @@ public class EleccionFactura extends Activity {
 	
 	}//onCreate
 	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.INVISIBLE);
+		((Button)findViewById(R.id.btn_factura_credito)).setActivated(false);
+		((Button)findViewById(R.id.btn_factura_contado)).setActivated(false);
+		((Button)findViewById(R.id.btn_visita)).setActivated(false);
+		((Button)findViewById(R.id.btn_nota_contado)).setActivated(false);
+		((Button)findViewById(R.id.btn_nota_credito)).setActivated(false);
+	}
 }
 	

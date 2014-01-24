@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
             android:layout_marginTop="250dp"
-            android:background="#6699FF"
+            android:background="@drawable/button_style"
             android:onClick="post"
             android:text="@string/text_btn_ingresar"
             android:textAlignment="center"

@@ -133,6 +133,7 @@ public class Login extends Activity {
 	public void post(View view) {
     	Button b = (Button)findViewById(R.id.btn_ingresar);
 		b.setClickable(false);
+		b.setActivated(true);
 		findViewById(R.id.LoginSeekBar).setVisibility(View.VISIBLE);
 		new LongRunningGetIO().execute();
     }
@@ -149,7 +150,7 @@ public class Login extends Activity {
 	protected void onResume(){
 		super.onResume();
 		findViewById(R.id.LoginConectado).setVisibility(View.INVISIBLE);
-		
+		((Button)findViewById(R.id.btn_ingresar)).setActivated(false);
 	}
 	
 	private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
@@ -176,7 +177,7 @@ public class Login extends Activity {
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
 
-             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","",registrationID);
+             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","","");//registrationID);
         	 Gson gson = new Gson();
              String dataString = gson.toJson(usuario_login, usuario_login.getClass()).toString();
              
@@ -266,6 +267,7 @@ public class Login extends Activity {
 			}
 			findViewById(R.id.LoginSeekBar).setVisibility(View.INVISIBLE);
 			Button b = (Button)findViewById(R.id.btn_ingresar);
+			b.setActivated(false);
 			b.setClickable(true);
 		}
     }
