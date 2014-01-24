@@ -78,8 +78,7 @@ public class VisitaActivity extends Activity  {
 
 		final Spinner auto=(Spinner)findViewById(R.id.autoCompleteMotivoNota);
 		final EditText descripcion=(EditText)findViewById(R.id.editTextVisitaDEscripcion);
-		ArrayAdapter<String> adapter=  new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item, lista) ;
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<String> adapter=  new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item, lista) ;
 		auto.setAdapter(adapter);
 		
 		Button b=(Button)findViewById(R.id.btn_RegistrarVisita);

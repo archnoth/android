@@ -16,9 +16,10 @@ public class Venta implements Parcelable{
  private Double monto;
  private ArrayList<Nota> lista_notas;
  private int tipo;
+ private Double monto_sin_descuentos;
  
  
- public Venta(Usuario usuario, Cliente cliente, Calendar fecha,Double monto,int tipo)
+ public Venta(Usuario usuario, Cliente cliente, Calendar fecha,Double monto,int tipo,Double monto_sin_descuentos)
  {
 	 this.usuario=usuario;
 	 this.cliente=cliente;
@@ -27,6 +28,7 @@ public class Venta implements Parcelable{
 	 this.productos=new ArrayList<ProductoVenta>();
 	 this.setLista_notas(new ArrayList<Nota>());
 	 this.tipo=tipo;
+	 this.setMonto_sin_descuentos(monto_sin_descuentos);
 	 
 	 
  } 
@@ -90,6 +92,7 @@ private Venta(Parcel in) {
 	usuario = in.readParcelable(Usuario.class.getClassLoader());
 	productos = in.createTypedArrayList(ProductoVenta.CREATOR);
 	tipo=in.readInt();
+	setMonto_sin_descuentos(in.readDouble());
 }
 
 @Override
@@ -107,7 +110,15 @@ public void writeToParcel(Parcel dest, int flags) {
 	dest.writeParcelable(usuario,flags);
 	dest.writeTypedList(productos);
 	dest.writeInt(tipo);
-	
+	dest.writeDouble(monto_sin_descuentos);
+}
+
+public Double getMonto_sin_descuentos() {
+	return monto_sin_descuentos;
+}
+
+public void setMonto_sin_descuentos(Double monto_sin_descuentos) {
+	this.monto_sin_descuentos = monto_sin_descuentos;
 }
 
 public static final Parcelable.Creator<Venta> CREATOR

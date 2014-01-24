@@ -65,8 +65,8 @@ public class Producto implements Parcelable{
 		
 		nombre=in.readString();
 		precio_cliente_final=new BigDecimal(in.readString());
-		precio_distribuidor=new BigDecimal(in.readDouble());
-		precio_mayorista=new BigDecimal(in.readDouble());
+		precio_distribuidor=new BigDecimal(in.readString());
+		precio_mayorista=new BigDecimal(in.readString());
 		codigo=in.readString();
 		descripcion=in.readString();
 		

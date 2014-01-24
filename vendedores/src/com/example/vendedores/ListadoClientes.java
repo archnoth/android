@@ -130,7 +130,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 			ArrayList<Cliente> lista = null;
 			HttpClient httpClient = new DefaultHttpClient();
 			 HttpContext localContext = new BasicHttpContext();
-	         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/clientes/sin_visitar/"+usuario.getKey()+"/?mes="+(Calendar.getInstance().get(Calendar.MONTH)+1));
+	         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/clientes/sin_visitar/?key="+usuario.getKey()+"&mes="+(Calendar.getInstance().get(Calendar.MONTH)+1));
 	           
 	  
 	             // Execute HTTP GET Request

@@ -72,12 +72,13 @@ public class Factura extends Activity {
 	private EditText last_text_cantidad;
 	private JSONObject json;
 	private Gson gson;
-	private int descuento_contado_porcentaje;
-	private BigDecimal descuento_contado_monto;
+	private int descuento_contado_porcentaje=0;
+	//private BigDecimal descuento_contado_monto=BigDecimal.ZERO;
 	private int tipo;
 	private int descuento_producto = 0;
 	private Menu menu;
 	private View context_view;
+	private BigDecimal monto_factura_sin_descuento=BigDecimal.ZERO;
 	
 	
 	@Override
@@ -112,8 +113,7 @@ public class Factura extends Activity {
 
 		Venta ultima_venta = null;
 		try {
-			ultima_venta = (Venta) getIntent().getExtras().getParcelable(
-					"venta");
+			ultima_venta = (Venta) getIntent().getExtras().getParcelable("venta");
 		} catch (Exception e) {
 
 		}
@@ -123,9 +123,7 @@ public class Factura extends Activity {
 			addRowToTableProductos(null);
 		}
 		EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
-		DecimalFormat formatter = new DecimalFormat("##0.0######");
-
-		monto_value.setText(formatter.format(this.monto_factura.doubleValue()));
+		monto_value.setText(monto_factura.toString());
 
 	}
 
@@ -279,42 +277,43 @@ public class Factura extends Activity {
 
 	private void ActualizarFilaFactura(TableRow row, Boolean sumar) {
 		try {
-			AutoCompleteTextView auto = (AutoCompleteTextView) row.getChildAt(2);
-			EditText cant = (EditText) row.getChildAt(0);
-			String codigo = "";
-			codigo = auto.getText().toString().split("\\s - \\s")[1];
-			int signo = 1;
-			if (!sumar) signo = -1;
-			 BigDecimal precio_uso = BigDecimal.ZERO;
-			   if((Integer)row.getTag(R.id.sin_cargo)==0){
-			    switch (((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo()) {
-			     case 0:
-			       precio_uso =  (diccionarioProductos.get(codigo)).getPrecio_cliente_final();
-			     case 1:
-			       precio_uso = (diccionarioProductos.get(codigo)).getPrecio_mayorista();
-			     case 2:
-			       precio_uso = (diccionarioProductos.get(codigo)).getPrecio_distribuidor();
-			    }
+			 AutoCompleteTextView auto = (AutoCompleteTextView) row.getChildAt(2);
+			   EditText cant = (EditText) row.getChildAt(0);
+			   String codigo = "";
+			   codigo = auto.getText().toString().split("\\s - \\s")[1];
+			   int signo = 1;
+			   BigDecimal descuento_contado_monto=BigDecimal.ZERO;
+			   if (!sumar) signo = -1;
+			   BigDecimal precio_uso = BigDecimal.ZERO;
+			      if((Integer)row.getTag(R.id.sin_cargo)==0){
+			       switch (((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo()) {
+			        case 0:
+			          precio_uso =  (diccionarioProductos.get(codigo)).getPrecio_cliente_final();
+			        case 1:
+			          precio_uso = (diccionarioProductos.get(codigo)).getPrecio_mayorista();
+			        case 2:
+			          precio_uso = (diccionarioProductos.get(codigo)).getPrecio_distribuidor();
+			       }
+			      }
+			      
+			      precio_uso = precio_uso.multiply(new BigDecimal(cant.getText().toString().replaceAll("\\s+", ""))); 
+			      this.monto_factura_sin_descuento = this.monto_factura_sin_descuento.add(new BigDecimal(signo).multiply(precio_uso));
+			      BigDecimal descuento = BigDecimal.ZERO;
+			      descuento = precio_uso.multiply(new BigDecimal(row.getTag(R.id.descuento).toString()).divide(new BigDecimal("100.0")));
+			     
+			     if (descuento_contado_porcentaje !=0 && tipo==0) {
+			         descuento_contado_monto = precio_uso.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
 			   }
-			   BigDecimal descuento = BigDecimal.ZERO;
-			   descuento = precio_uso.multiply(new BigDecimal(row.getTag(R.id.descuento).toString()).divide(new BigDecimal("100.0")));
-			   precio_uso = new BigDecimal(signo).multiply(precio_uso.subtract(descuento));
-			   this.monto_factura = this.monto_factura.add(precio_uso.multiply(new BigDecimal(cant.getText().toString().replaceAll("\\s+", ""))));
-			   
-			   //this.monto_factura = this.monto_factura + signo *(precio_uso-descuento) * Integer.parseInt(cant.getText().toString().replaceAll("\\s+", ""));
+			   BigDecimal descuento_cliente = BigDecimal.ZERO;
+			   if(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()!=0)
+			   {
+			    descuento_cliente= precio_uso.multiply(new BigDecimal(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()).divide(new BigDecimal("100.0")));
+			   }
+			   descuento = descuento.add(descuento_cliente.add(descuento_contado_monto));
+			   precio_uso = precio_uso.subtract(descuento);
+			   this.monto_factura = this.monto_factura.add(new BigDecimal(signo).multiply(precio_uso));
 			   EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
-			 
-			
-				if (descuento_contado_porcentaje !=0 && tipo==0) {
-					descuento_contado_monto = monto_factura.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
-					monto_factura =monto_factura.subtract(descuento_contado_monto);
-				}
-				if(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()!=0)
-				{
-					BigDecimal descuento_cliente= monto_factura.multiply(new BigDecimal(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()).divide(new BigDecimal("100.0")));
-					monto_factura =monto_factura.subtract(descuento_cliente);
-				}
-				monto_value.setText(monto_factura.toString());
+			   monto_value.setText(monto_factura.toString());
 		
 		} catch (Exception e) {
 		}
@@ -333,7 +332,7 @@ public class Factura extends Activity {
 		Calendar fecha = Calendar.getInstance();
 		//Double monto = 0.0;
 		TableLayout tbl = (TableLayout) this.findViewById(R.id.tablaProductos);
-		nueva_venta = new Venta(vendedor, cliente, fecha, monto_factura.doubleValue(), tipo);
+		nueva_venta = new Venta(vendedor, cliente, fecha, monto_factura.doubleValue(), tipo,monto_factura_sin_descuento.doubleValue());
 
 		for (int i = 0; i < tbl.getChildCount();) {
 			TableRow tr = (TableRow) tbl.getChildAt(i);
@@ -392,7 +391,7 @@ public class Factura extends Activity {
 			gson = new Gson();
 			venta_original = new Venta(nueva_venta.getUsuario(),
 					nueva_venta.getCliente(), nueva_venta.getFecha(),
-					nueva_venta.getMonto(), nueva_venta.getTipo());
+					nueva_venta.getMonto(), nueva_venta.getTipo(),monto_factura_sin_descuento.doubleValue());
 			venta_original.setProductos(nueva_venta.getProductos());
 
 			String mensaje = "Advertencia!";
@@ -461,7 +460,7 @@ public class Factura extends Activity {
 				
 				if (!item.isChecked())
 		    	{
-					descuento_contado_monto = monto_factura.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
+					BigDecimal descuento_contado_monto = monto_factura_sin_descuento.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
 					monto_factura = monto_factura.subtract(descuento_contado_monto);
 		    	}
 				tipo=0;
@@ -476,6 +475,8 @@ public class Factura extends Activity {
 	    		//if(this.menu.findItem(R.id.contado_radio_button).isChecked())
 		    	if (!item.isChecked())
 	    		{
+
+		    		BigDecimal descuento_contado_monto = monto_factura_sin_descuento.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
 					monto_factura = monto_factura.add(descuento_contado_monto);	
 	    		}
 		    	tipo=1;
@@ -974,7 +975,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 				nueva_venta.setProductos(nuevaListaProductos);
 				
 				if (descuento_contado_porcentaje != 0 && tipo==0) {
-					descuento_contado_monto= mnt.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
+					BigDecimal descuento_contado_monto= mnt.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
 					mnt = mnt.subtract(descuento_contado_monto) ;
 					nueva_venta.setMonto(mnt.doubleValue());
 				} else {
@@ -1040,7 +1041,8 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 				tbl.removeViewAt(tbl.getChildCount() - 1);
 			}
 		}
-		this.monto_factura =new BigDecimal( ultima_venta.getMonto().toString());
+		this.monto_factura_sin_descuento=new BigDecimal(ultima_venta.getMonto_sin_descuentos().toString());
+		this.monto_factura =new BigDecimal(ultima_venta.getMonto().toString());
 		this.tipo=ultima_venta.getTipo();
 
 	}
