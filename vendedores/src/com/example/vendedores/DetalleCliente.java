@@ -46,6 +46,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
 
 public class DetalleCliente extends Activity {
 	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
@@ -112,9 +113,13 @@ public class DetalleCliente extends Activity {
 	protected void onResume(){
 		super.onResume();
 		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.INVISIBLE);
+		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(false);
+		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(false);
+		((Button)findViewById(R.id.btn_historico)).setActivated(false);
 	}
 	
 	public void to_factura_activity(View view){
+		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
 		Intent fac_intent = new Intent(getApplicationContext(),EleccionFactura.class); 
 		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
@@ -124,6 +129,7 @@ public class DetalleCliente extends Activity {
 	}
 	
 	public void to_factura_activity_con_venta(View view){
+		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
 		GetUltimaVenta thred=new GetUltimaVenta();//llamo un proceso en backgroud para realizar la venta
     	
@@ -155,7 +161,7 @@ public class DetalleCliente extends Activity {
 	
 	
 public void to_historico_activity(View view){
-		
+		((Button)findViewById(R.id.btn_historico)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
 		GetHistorico thread=new GetHistorico();//llamo un proceso en backgroud para realizar la estadistica
     	

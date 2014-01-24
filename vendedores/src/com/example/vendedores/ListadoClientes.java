@@ -17,15 +17,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.example.dominio.Cliente;
 import com.example.dominio.Usuario;
+import com.example.vendedores.R.color;
 
 import android.R.integer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Notification.Action;
 import android.content.Intent;
 import android.graphics.Color;
+import android.sax.TextElementListener;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.View;
+import android.view.textservice.TextInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -33,6 +38,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 public class ListadoClientes extends Activity {
@@ -49,8 +55,7 @@ public class ListadoClientes extends Activity {
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
 		adaptador_lista = new ArrayAdapter<Cliente>(this.getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
 		set_lista_clientesAdapter(adaptador_lista);
-	
-
+		
 		final Button b = (Button) findViewById(R.id.btn_clientes_sin_visitar);
 		   b.setOnClickListener(new View.OnClickListener() {
 		   public void onClick(View v) {
@@ -105,7 +110,6 @@ public class ListadoClientes extends Activity {
 	protected void onResume(){
 		super.onResume();
 		((ProgressBar)findViewById(R.id.ListadoClientesprogressBar)).setVisibility(View.INVISIBLE);
-		
 	}
 	
 	
@@ -245,7 +249,6 @@ private void set_lista_clientesAdapter(ArrayAdapter<Cliente> adaptador_lista)
 			        loc.putExtra("usuario",usuario);
 			        loc.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			        startActivity(loc);
-					
 			  }
 		});
 	}

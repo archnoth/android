@@ -117,6 +117,7 @@ public class NotaActivity extends Activity {
             
             public void onClick(View v) {
                 // Show the DatePickerDialog
+            	btnSelectDate.setActivated(true);
                  showDialog(DATE_DIALOG_ID);
             }
         });
@@ -126,6 +127,7 @@ public class NotaActivity extends Activity {
             
             public void onClick(View v) {
                 // Show the TimePickerDialog
+            	btnSelectTimeInit.setActivated(true);
                  showDialog(TIME_INIT_DIALOG_ID);
             }
         });
@@ -135,6 +137,7 @@ public class NotaActivity extends Activity {
             
             public void onClick(View v) {
                 // Show the TimePickerDialog
+            	btnSelectTimeEnd.setActivated(true);
                  showDialog(TIME_END_DIALOG_ID);
             }
         });
@@ -144,6 +147,7 @@ public class NotaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				((Button)findViewById(R.id.btn_ingresar)).setActivated(true);
 				findViewById(R.id.progressBarNotaLayout).setVisibility(View.VISIBLE);
 				findViewById(R.id.scrollViewNota).setFocusable(false);
 				EditText txt=(EditText)findViewById(R.id.editTextRedaccionNota);
@@ -208,7 +212,7 @@ public class NotaActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				((Button)findViewById(R.id.btn_ingresar)).setActivated(false);
 				findViewById(R.id.progressBarNotaLayout).setVisibility(View.INVISIBLE);
 				findViewById(R.id.scrollViewNota).setFocusable(true);
 			}
@@ -225,6 +229,7 @@ public class NotaActivity extends Activity {
                                   day = dayOfMonth;
                                   // Set the Selected Date in Select date Button
                                   btnSelectDate.setText("Fecha elegida : "+day+"-"+month+"-"+year);
+                                  btnSelectDate.setActivated(false);
                                   datePicked = true;
                                }
                            };
@@ -237,6 +242,7 @@ public class NotaActivity extends Activity {
                                        minuteInit = min;
                                        // Set the Selected Date in Select date Button
                                        btnSelectTimeInit.setText("Hora elegida :"+hourInit+"-"+minuteInit);
+                                       btnSelectTimeInit.setActivated(false);
                                        initTime = true;
                                      }
                                };
@@ -247,6 +253,7 @@ public class NotaActivity extends Activity {
                                                   minuteEnd = min;
                                                   // Set the Selected Date in Select date Button
                                                   btnSelectTimeEnd.setText("Hora elegida :"+hourEnd+"-"+minuteEnd);
+                                                  btnSelectTimeEnd.setActivated(true);
                                                   endTime = true;
                                                 }
                                           };

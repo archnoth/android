@@ -4,15 +4,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" >
 
-    <ProgressBar
-        android:id="@+id/progressBarDetalleAFactura"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible" />
-
     <Button
         android:id="@+id/btn_visita"
         android:layout_width="match_parent"
@@ -20,7 +11,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="40dp"
-        android:background="#6699FF"
+        android:background="@drawable/button_style"
         android:onClick="to_factura_activity"
         android:text="@string/text_btn_visita"
         android:textAlignment="center"
@@ -34,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_nota_contado"
         android:layout_alignParentLeft="true"
-        android:background="#6699FF"
+        android:background="@drawable/button_style"
         android:onClick="to_historico_activity"
         android:text="@string/text_btn_factura_contado"
         android:textAlignment="center"
@@ -48,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_factura_contado"
         android:layout_alignParentLeft="true"
-        android:background="#6699FF"
+        android:background="@drawable/button_style"
         android:onClick="to_factura_activity_con_venta"
         android:text="@string/text_btn_factura_credito"
         android:textAlignment="center"
@@ -62,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_visita"
         android:layout_alignParentLeft="true"
-        android:background="#6699FF"
+        android:background="@drawable/button_style"
         android:onClick="to_factura_activity"
         android:text="@string/text_btn_nota_credito"
         android:textAlignment="center"
@@ -76,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_nota_credito"
         android:layout_alignParentLeft="true"
-        android:background="#6699FF"
+        android:background="@drawable/button_style"
         android:onClick="to_factura_activity"
         android:text="@string/text_btn_nota_contado"
         android:textAlignment="center"
@@ -95,5 +86,13 @@
 
         <requestFocus />
     </EditText>
+
+    <ProgressBar
+        android:id="@+id/progressBarDetalleAFactura"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
 
 </RelativeLayout>

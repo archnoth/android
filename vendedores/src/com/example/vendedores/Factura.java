@@ -55,6 +55,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -320,9 +321,10 @@ public class Factura extends Activity {
 }
 
 	public void Facturar(View view) throws JSONException {
-
-		//Button b = (Button) findViewById(R.id.Facturar);
-		boolean error_formato_monto = false;
+		((Button)findViewById(R.id.Facturar)).setActivated(true);
+		findViewById(R.id.progressFacturaLayout).setVisibility(View.VISIBLE);
+		findViewById(R.id.scrollViewVenta).setFocusable(false);
+		boolean error = false;
 		Usuario vendedor = new Usuario("", "", ((Usuario) getIntent()
 				.getExtras().getParcelable("usuario")).getNombreUsuario(), "",
 				"",((Usuario) getIntent().getExtras().getParcelable("usuario"))	.getKey(), "");
@@ -343,6 +345,11 @@ public class Factura extends Activity {
 			try {
 				codigo = auto.getText().toString().split("\\s - \\s")[1];
 			} catch (Exception e) {
+				error=true;
+				((Button)findViewById(R.id.Facturar)).setActivated(false);
+				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
+				findViewById(R.id.scrollViewVenta).setFocusable(true);
+				break;
 			}
 			for (int j = 0; j < auto.getAdapter().getCount(); j++) {
 
@@ -374,7 +381,7 @@ public class Factura extends Activity {
 								new ProductoVenta((Producto) auto.getAdapter().getItem(j), Integer.parseInt(cant.getText().toString().replaceAll("\\s+", "")),(Integer)tr.getTag(R.id.descuento),(Integer)tr.getTag(R.id.sin_cargo)));
 
 					/*} catch (NumberFormatException e) {
-						error_formato_monto = true;
+						error = true;
 						Toast.makeText(
 								Factura.this,
 								"El campo cantidad solo acepta valores numéricos",
@@ -386,7 +393,7 @@ public class Factura extends Activity {
 			i = i + 1;
 		}
 
-		if (!error_formato_monto) {
+		if (!error) {
 			json = new JSONObject();
 			gson = new Gson();
 			venta_original = new Venta(nueva_venta.getUsuario(),
@@ -408,7 +415,9 @@ public class Factura extends Activity {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									dialog.cancel();
-
+									((Button)findViewById(R.id.Facturar)).setActivated(false);
+									findViewById(R.id.progressFacturaLayout).setVisibility(
+											View.INVISIBLE);
 								}
 							})
 					.setPositiveButton("Aceptar",
@@ -427,7 +436,6 @@ public class Factura extends Activity {
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
-
 	}
 
 	@Override
@@ -467,7 +475,8 @@ public class Factura extends Activity {
 				item.setChecked(true);
 	            this.menu.findItem(R.id.credito_radio_button).setChecked(false);
 	            monto_value = (EditText) (findViewById(R.id.MontoValue));
-	    		monto_value.setText(monto_factura.toString());Toast.makeText(Factura.this,"COMPRA AL CONTADO", Toast.LENGTH_LONG).show();
+	    		monto_value.setText(monto_factura.toString());
+	    		Toast.makeText(Factura.this,"COMPRA AL CONTADO", Toast.LENGTH_LONG).show();
 		        return true;
 		        
 		    case R.id.credito_radio_button:
@@ -732,8 +741,6 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 	}
 
 	public void VentaRecursiva() throws JSONException {
-		findViewById(R.id.progressFacturaLayout).setVisibility(View.VISIBLE);
-		findViewById(R.id.scrollViewVenta).setFocusable(false);
 		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass())
 				.toString(); // venta tentativa espera confirmacion
 		JSONObject aux_fecha = new JSONObject(dataString); // venta tentativa
@@ -847,6 +854,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 				}
 				findViewById(R.id.progressFacturaLayout).setVisibility(
 						View.INVISIBLE);
+				((Button)findViewById(R.id.Facturar)).setActivated(false);
 				String mensaje = "Venta exitosa!";
 				DecimalFormat formatter = new DecimalFormat("##0.0######");
 
@@ -983,6 +991,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 				}
 				findViewById(R.id.progressFacturaLayout).setVisibility(
 						View.INVISIBLE);
+				((Button)findViewById(R.id.Facturar)).setActivated(false);
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(
 						this.getApplicationContext(),
@@ -1021,6 +1030,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 			if(json.getString("response").toString().equalsIgnoreCase("Devolucion creada"))
 			{
 				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
+				((Button)findViewById(R.id.Facturar)).setActivated(false);
 				Toast.makeText(Factura.this,"devolucion creada ", Toast.LENGTH_LONG).show();
 				
 			}
