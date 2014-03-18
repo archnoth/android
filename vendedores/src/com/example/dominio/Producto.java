@@ -60,7 +60,7 @@ public class Producto implements Parcelable{
 	}
 
 	
-	private Producto(Parcel in) {
+	protected Producto(Parcel in) {
 		
 		
 		nombre=in.readString();

@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.dominio.Cliente;
+import com.example.dominio.Cubierta;
 import com.example.dominio.Producto;
 import com.example.dominio.ProductoVenta;
 import com.example.dominio.Usuario;
@@ -612,15 +613,45 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 					JSONArray jarray = (JSONArray) jsonObject.get("objects");
 					lista = new ArrayList<Producto>();
 					for (int i = 0; i < jarray.length(); i++) {
+						
 						JSONObject dic_producto = jarray.getJSONObject(i);
-						Producto prod = new Producto(
-								dic_producto.getString("nombre"),
-								new BigDecimal(dic_producto.getDouble("precio_cliente_final")),
-								new BigDecimal(dic_producto.getDouble("precio_distribuidor")),
-								new BigDecimal(dic_producto.getDouble("precio_mayorista")),
-								dic_producto.getString("codigo"),
-								dic_producto.getString("descripcion"));
-						lista.add(prod);
+						String tipo_producto= dic_producto.getString("tipo");
+						
+						if(tipo_producto.equals("Cubierta"))
+						{
+							Cubierta c= new Cubierta(dic_producto.getString("nombre"),new BigDecimal(dic_producto.getDouble("precio_cliente_final")),
+									new BigDecimal(dic_producto.getDouble("precio_distribuidor")),
+									new BigDecimal(dic_producto.getDouble("precio_mayorista")),
+									dic_producto.getString("codigo"),
+									dic_producto.getString("descripcion"));
+							
+							JSONObject obj = new JSONObject(dic_producto.getString("datos_especificos"));
+							c.setAncho(new BigDecimal(obj.getDouble("ancho")));
+							c.setCamara(obj.getString("camara"));
+							c.setCarga(obj.getInt("carga"));
+							c.setDel_tras(obj.getString("del_tras"));
+							c.setDimension(obj.getString("dimension"));
+							c.setGama(obj.getString("gama"));
+							c.setLlanta(obj.getInt("llanta"));
+							c.setMarca(obj.getString("marca"));
+							c.setSerie(new BigDecimal(obj.getDouble("serie")));
+							c.setVehiculo(obj.getString("vehiculo"));
+							c.setVelocidad(obj.getString("velocidad"));
+							c.setTipo(obj.getString("tipo"));
+							lista.add(c);
+								
+						}else{
+							Producto prod = new Producto(
+							dic_producto.getString("nombre"),
+							new BigDecimal(dic_producto.getDouble("precio_cliente_final")),
+							new BigDecimal(dic_producto.getDouble("precio_distribuidor")),
+							new BigDecimal(dic_producto.getDouble("precio_mayorista")),
+							dic_producto.getString("codigo"),
+							dic_producto.getString("descripcion"));
+							lista.add(prod);
+						}	
+						
+						
 					}
 
 				} catch (JSONException e) {
