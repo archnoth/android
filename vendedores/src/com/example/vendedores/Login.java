@@ -177,7 +177,7 @@ public class Login extends Activity {
         	 EditText username = (EditText)findViewById(R.id.editText1);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
 
-             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","","");//registrationID);
+             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","",registrationID);
         	 Gson gson = new Gson();
              String dataString = gson.toJson(usuario_login, usuario_login.getClass()).toString();
              

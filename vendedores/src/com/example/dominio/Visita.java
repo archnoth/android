@@ -8,10 +8,10 @@ public class Visita {
 	
 	private Cliente cliente;
 	private Usuario usuario;
-	private String motivo;
+	private Integer motivo;
 	private String descripcion;
 	
-	public Visita(Cliente cliente, Usuario vendedor, String motivo, String descripcion)
+	public Visita(Cliente cliente, Usuario vendedor, Integer motivo, String descripcion)
 	{
 		this.cliente=cliente;
 		this.usuario=vendedor;
@@ -31,10 +31,10 @@ public class Visita {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	public String getMotivo() {
+	public Integer getMotivo() {
 		return motivo;
 	}
-	public void setMotivo(String motivo) {
+	public void setMotivo(Integer motivo) {
 		this.motivo = motivo;
 	}
 	public String getDescripcion() {
@@ -51,7 +51,7 @@ public class Visita {
 	private Visita(Parcel in) {
 		cliente = in.readParcelable(Cliente.class.getClassLoader());
 		usuario = in.readParcelable(Usuario.class.getClassLoader());
-		motivo=in.readString();
+		motivo=in.readInt();
 		descripcion=in.readString();
 	}
 
@@ -66,7 +66,7 @@ public class Visita {
 		
 		dest.writeParcelable(cliente,flags);
 		dest.writeParcelable(usuario,flags);
-		dest.writeString(motivo);
+		dest.writeInt(motivo);
 		dest.writeString(descripcion);
 		
 	}

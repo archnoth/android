@@ -147,7 +147,7 @@ public class NotaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				((Button)findViewById(R.id.btn_ingresar)).setActivated(true);
+				((Button)findViewById(R.id.btn_registrar_nota)).setActivated(true);
 				findViewById(R.id.progressBarNotaLayout).setVisibility(View.VISIBLE);
 				findViewById(R.id.scrollViewNota).setFocusable(false);
 				EditText txt=(EditText)findViewById(R.id.editTextRedaccionNota);
@@ -212,7 +212,7 @@ public class NotaActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				((Button)findViewById(R.id.btn_ingresar)).setActivated(false);
+				((Button)findViewById(R.id.btn_registrar_nota)).setActivated(false);
 				findViewById(R.id.progressBarNotaLayout).setVisibility(View.INVISIBLE);
 				findViewById(R.id.scrollViewNota).setFocusable(true);
 			}
