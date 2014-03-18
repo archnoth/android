@@ -3,6 +3,7 @@ package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -53,6 +54,7 @@ public class VisitaActivity extends Activity  {
 	private Cliente c;
 	private Usuario u;
 	ArrayList<String> lista = new ArrayList<String>();
+	HashMap<String,Integer> motivos= new HashMap< String,Integer>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,7 @@ public class VisitaActivity extends Activity  {
 				((Button)v).setActivated(true);
 				findViewById(R.id.ProgressBarVisita).setVisibility(View.VISIBLE);
 				
-				nueva_visita= new Visita(c,u,auto.getSelectedItem().toString(),descripcion.getText().toString()); 
+				nueva_visita= new Visita(c,u,motivos.get(auto.getSelectedItem().toString()),descripcion.getText().toString()); 
 			
 				Gson gson = new Gson();
 				String dataString = gson.toJson(nueva_visita, nueva_visita.getClass()).toString();
@@ -167,6 +169,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<String> > {
 					for (int i = 0; i < jarray.length(); i++) {
 						JSONObject motivo = jarray.getJSONObject(i);
 						lista.add(motivo.getString("descripcion"));
+						motivos.put(motivo.getString("descripcion"),Integer.parseInt(motivo.getString("valor")));
 					}
 					
 				} catch (JSONException e) {

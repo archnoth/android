@@ -61,6 +61,7 @@ public class ListadoClientes extends Activity {
 		   public void onClick(View v) {
 		    	if(ver_todos)
 		    	{
+		    		((Button)v).setActivated(false);
 		    		try {
 		    			
 		    			LongRunningGetIO thred=new LongRunningGetIO();
@@ -80,6 +81,7 @@ public class ListadoClientes extends Activity {
 		    	}
 		    	else
 		    	{
+		    		((Button)v).setActivated(true);
 		    		adaptador_lista = new ArrayAdapter<Cliente>(getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
 		    		set_lista_clientesAdapter(adaptador_lista);
 		    		ver_todos=true;

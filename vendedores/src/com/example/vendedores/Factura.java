@@ -346,48 +346,22 @@ public class Factura extends Activity {
 			try {
 				codigo = auto.getText().toString().split("\\s - \\s")[1];
 			} catch (Exception e) {
-				error=true;
-				((Button)findViewById(R.id.Facturar)).setActivated(false);
-				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
-				findViewById(R.id.scrollViewVenta).setFocusable(true);
-				break;
+				if( tr == tbl.getChildAt(tbl.getChildCount() - 1 ) && (tbl.getChildCount() == 1 ))
+				{
+					error=true;
+					((Button)findViewById(R.id.Facturar)).setActivated(false);
+					findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
+					findViewById(R.id.scrollViewVenta).setFocusable(true);
+					break;
+				}
 			}
 			for (int j = 0; j < auto.getAdapter().getCount(); j++) {
 
 				if (((Producto) auto.getAdapter().getItem(j)).getCodigo()
 						.equals(codigo)) {
-					/*try {
-						switch (nueva_venta.getCliente().getTipo()) {
-						case 0:
-							monto = monto
-									+ ((Producto) auto.getAdapter().getItem(j))
-											.getPrecio_cliente_final()
-									* Integer.parseInt(cant.getText()
-											.toString().replaceAll("\\s+", ""));
-						case 1:
-							monto = monto
-									+ ((Producto) auto.getAdapter().getItem(j))
-											.getPrecio_mayorista()
-									* Integer.parseInt(cant.getText()
-											.toString().replaceAll("\\s+", ""));
-						case 2:
-							monto = monto
-									+ ((Producto) auto.getAdapter().getItem(j))
-											.getPrecio_distribuidor()
-									* Integer.parseInt(cant.getText()
-											.toString().replaceAll("\\s+", ""));
-
-						}*/
+					
 						nueva_venta.getProductos().add(
 								new ProductoVenta((Producto) auto.getAdapter().getItem(j), Integer.parseInt(cant.getText().toString().replaceAll("\\s+", "")),(Integer)tr.getTag(R.id.descuento),(Integer)tr.getTag(R.id.sin_cargo)));
-
-					/*} catch (NumberFormatException e) {
-						error = true;
-						Toast.makeText(
-								Factura.this,
-								"El campo cantidad solo acepta valores numéricos",
-								Toast.LENGTH_LONG).show();
-					}*/
 				}
 			}
 
