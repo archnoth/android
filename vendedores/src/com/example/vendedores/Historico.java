@@ -41,7 +41,8 @@ public class Historico extends Activity {
 	ArrayAdapter<Venta> adapter ;
 	private Usuario usuario;
 	private Cliente cliente;
-	private HashMap<Integer, Double> producto_porcentaje;
+	private HashMap<String, Double> producto_porcentaje;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,18 +51,23 @@ public class Historico extends Activity {
 		setupActionBar();
 		usuario=(Usuario)getIntent().getExtras().getParcelable("usuario"); 
 		cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
-		producto_porcentaje=(HashMap<Integer, Double>)getIntent().getExtras().getSerializable("dict");
+		producto_porcentaje=(HashMap<String, Double>)getIntent().getExtras().getSerializable("dict");
 		
-		 Iterator<Integer> iterador = producto_porcentaje.keySet().iterator();
+		 Iterator<String> iterador = producto_porcentaje.keySet().iterator();
 		 Double mayor=0.0; 
 		 while(iterador.hasNext())
 		  {
 		   
-		   Integer codigo = iterador.next();
+		   String codigo = iterador.next();
 		   if(producto_porcentaje.get(codigo) > mayor){
 			    mayor = producto_porcentaje.get(codigo);
 		   }
-		   
+		  }
+		 Iterator<String> iter = producto_porcentaje.keySet().iterator();
+		 while(iter.hasNext())
+		  {
+			 
+		   String codigo = iter.next();
 		   LinearLayout linear=new LinearLayout(getApplicationContext());
 		   LinearLayout .LayoutParams layoutParams= new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 
 		   LinearLayout.LayoutParams.WRAP_CONTENT);

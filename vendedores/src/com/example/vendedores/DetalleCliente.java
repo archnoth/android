@@ -166,11 +166,11 @@ public void to_historico_activity(View view){
 		GetHistorico thread=new GetHistorico();//llamo un proceso en backgroud para realizar la estadistica
     	
     	//inicia el proceso de cargar estadisticas del cliente
-        AsyncTask<Void, Void, HashMap<Integer,Double>> async=thread.execute();	     
-        HashMap<Integer, Double> respuesta=null;
+        AsyncTask<Void, Void, HashMap<String,Double>> async=thread.execute();	     
+        HashMap<String, Double> respuesta=null;
         try {				
 			//obtengo la respuesta asincrona
-			respuesta=(HashMap<Integer,Double>)async.get();
+			respuesta=(HashMap<String,Double>)async.get();
 			
 		}catch(Exception e){}
 		
@@ -289,7 +289,7 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 
 
 
-private class GetHistorico extends AsyncTask <Void, Void, HashMap<Integer, Double> > {
+private class GetHistorico extends AsyncTask <Void, Void, HashMap<String, Double> > {
 	
 	 
 	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
@@ -305,9 +305,9 @@ private class GetHistorico extends AsyncTask <Void, Void, HashMap<Integer, Doubl
     }
 	
 	@Override
-	protected  HashMap<Integer, Double>  doInBackground(Void... params) {
+	protected  HashMap<String, Double>  doInBackground(Void... params) {
 		
-		HashMap<Integer, Double> retorno=null;
+		HashMap<String, Double> retorno=null;
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpContext localContext = new BasicHttpContext();
 		 
@@ -331,12 +331,12 @@ private class GetHistorico extends AsyncTask <Void, Void, HashMap<Integer, Doubl
         	 if(!text.contains("Error"))
         	 {			
 				try {
-					retorno = new HashMap<Integer, Double>();
+					retorno = new HashMap<String, Double>();
 					JSONArray jarray =new JSONArray(text);
 					for(int i=0;i<jarray.length();i++)
 					{
 						JSONArray aux =(JSONArray)jarray.get(i);
-						retorno.put(Integer.parseInt(aux.get(0).toString()), Double.parseDouble(aux.get(1).toString()));
+						retorno.put(aux.get(0).toString(), Double.parseDouble(aux.get(1).toString()));
 						//Toast.makeText(DetalleCliente.this,retorno.toString(), Toast.LENGTH_LONG).show();
 					}
 				
