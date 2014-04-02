@@ -46,5 +46,6 @@
 	<string name="credito">Credito</string>
 	<string name="contado">Contado</string>
 	<string name="porcentaje">%</string>
+	<string name="ver_mapa">Ver Mapa</string>
 	
 </resources>

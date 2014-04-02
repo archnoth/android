@@ -18,10 +18,10 @@ public class Cliente implements Parcelable{
 	private String celular;
 	private String email;
 	private String web;
-	private Integer latitud=0;
-	private Integer longitud=0;
+	private String latitud;
+	private String longitud;
 	private String url_imagen;
-	private Integer dia_de_entrega=0;//
+	private Integer dia_de_entrega=null;//
 	private Calendar hora_de_entrega_desde=Calendar.getInstance();//
 	private Calendar hora_de_entrega_hasta=Calendar.getInstance();//
 	private Integer tipo;
@@ -29,11 +29,13 @@ public class Cliente implements Parcelable{
 	
 	
 	public Cliente(String nombre,String direccion,String rut,String url_imagen,String dia_entrega,String hora_de_entrega_desde,String minuto_de_entrega_desde,
-			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,Integer descuento)
+			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,Integer descuento,String latitud,String longitud)
 	{
 		this.nombre=nombre;//
 		this.direccion=direccion;//
 		this.rut=rut;//
+		this.latitud=latitud;
+		this.longitud=longitud;
 		
 		if(dia_entrega!=null&&dia_entrega!="")
 			this.dia_de_entrega=Integer.parseInt(dia_entrega);
@@ -62,8 +64,6 @@ public class Cliente implements Parcelable{
 		this.celular=celular;
 		this.web=web;
 		this.url_imagen=url_imagen;
-		latitud=0;
-		longitud=0;
 		this.email=email;
 		this.lugar_entrega=lugarEntrega;
 		this.setTipo(tipo);
@@ -106,7 +106,7 @@ public class Cliente implements Parcelable{
 		dest.writeString(email);
 		dest.writeString(web);
 		
-		/*if(latitud!=null)
+		if(latitud!= null)
 			dest.writeString(latitud.toString());
 		else
 			dest.writeString("");
@@ -114,7 +114,7 @@ public class Cliente implements Parcelable{
 		if(longitud!=null)
 			dest.writeString(longitud.toString());
 		else
-			dest.writeString("");*/
+			dest.writeString("");
 		
 		
 		dest.writeString(url_imagen);
@@ -162,21 +162,12 @@ public class Cliente implements Parcelable{
 		email = in.readString();
 		web = in.readString();
 		
-		String aux;
-		/*aux=in.readString();
-		if(!aux.equals("")&& aux!=null)
-			latitud = in.readInt();
-		else latitud=null; 
-		
-		
-		aux=in.readString();
-		if(!aux.equals("")&& aux!=null)
-			longitud = in.readInt();
-		else longitud=null; */
+		latitud = in.readString();
+		longitud = in.readString();
 		
 		url_imagen=in.readString();
 		
-		aux=in.readString();
+		String aux = in.readString();
 		if(!aux.equals("")&& aux!=null)
 			dia_de_entrega=Integer.parseInt(aux);
 		else dia_de_entrega=null; 
@@ -242,16 +233,16 @@ public class Cliente implements Parcelable{
 	public void setWeb(String web) {
 		this.web = web;
 	}
-	public Integer getLatitud() {
+	public String getLatitud() {
 		return latitud;
 	}
-	public void setLatitud(Integer latitud) {
+	public void setLatitud(String latitud) {
 		this.latitud = latitud;
 	}
-	public Integer getLongitud() {
+	public String getLongitud() {
 		return longitud;
 	}
-	public void setLongitud(Integer longitud) {
+	public void setLongitud(String longitud) {
 		this.longitud = longitud;
 	}
 	public String getLugar_entrega() {

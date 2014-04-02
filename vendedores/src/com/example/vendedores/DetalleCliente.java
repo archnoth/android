@@ -40,6 +40,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.ImageView;
@@ -108,7 +109,24 @@ public class DetalleCliente extends Activity {
 		getMenuInflater().inflate(R.menu.detalle_cliente, menu);
 		return true;
 	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		// Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.ver_mapa:
+	        	Intent fac_intent = new Intent(getApplicationContext(),MapaActivity.class); 
+	    		//fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+	    		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+	    		//fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
+	    	    startActivity(fac_intent);
+	            return true;
+	        case R.id.action_settings:
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	
+	}
 	@Override
 	protected void onResume(){
 		super.onResume();
