@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
+
     </RelativeLayout>
 
     <ScrollView
@@ -68,17 +69,40 @@
                 android:focusable="false"
                 android:background="@color/white" />
 
+            <EditText
+                android:id="@+id/SaldoTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/MontoTag"
+                android:background="@color/white"
+                android:focusable="false"
+                android:text="@string/saldo_tag" >
+                <requestFocus android:layout_width="match_parent" />
+			</EditText>
             <Button
                 android:id="@+id/Facturar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/MontoValue"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/SaldoTag"
                 android:background="@drawable/button_style"
                 android:onClick="Facturar"
                 android:text="@string/btn_text_registrar_venta"
                 android:textAlignment="center"
                 android:textColor="#ffffff"
                 android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/SaldoValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/MontoValue"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/MontoTag"
+                android:background="@color/white"
+                android:ems="10"
+                android:focusable="false" />
 
         </RelativeLayout>
     </ScrollView>

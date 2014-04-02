@@ -80,6 +80,7 @@ public class Factura extends Activity {
 	private Menu menu;
 	private View context_view;
 	private BigDecimal monto_factura_sin_descuento=BigDecimal.ZERO;
+	private BigDecimal saldo_cliente=new BigDecimal("0.00");
 	
 	
 	@Override
@@ -90,6 +91,7 @@ public class Factura extends Activity {
 
 		descuento_contado_porcentaje = getIntent().getExtras().getInt("descuento_contado");
 		 tipo=getIntent().getExtras().getInt("tipo");
+		 
 
 		LongRunningGetIO thred = new LongRunningGetIO();// llamo un proceso en
 														// backgroud para cargar
@@ -111,7 +113,6 @@ public class Factura extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		Venta ultima_venta = null;
 		try {
 			ultima_venta = (Venta) getIntent().getExtras().getParcelable("venta");
@@ -123,6 +124,39 @@ public class Factura extends Activity {
 		} else {
 			addRowToTableProductos(null);
 		}
+		if(tipo!=0)
+		{
+		
+			JSONObject rut_cliente = null;
+			try {
+				rut_cliente = new JSONObject("{rut:+"+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut()+"}");
+			} catch (JSONException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			SaldoCliente thread_saldo=new SaldoCliente();//llamo al consultar saldo;
+			AsyncTask<JSONObject, Void, String> async_method = thread_saldo.execute(rut_cliente);
+			try {
+				
+				saldo_cliente=new BigDecimal(async_method.get());
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			//EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
+			//monto_value.setText(monto_factura.toString());
+			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
+    		saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+		}
+		else{
+			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
+    		saldo_value.setText("---");
+			}
 		EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
 		monto_value.setText(monto_factura.toString());
 
@@ -315,6 +349,11 @@ public class Factura extends Activity {
 			   this.monto_factura = this.monto_factura.add(new BigDecimal(signo).multiply(precio_uso));
 			   EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
 			   monto_value.setText(monto_factura.toString());
+			   if(tipo!=0)
+			   {
+				   EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
+				   saldo_value.setText((saldo_cliente.add(monto_factura)).toString());
+			   }
 		
 		} catch (Exception e) {
 		}
@@ -436,6 +475,7 @@ public class Factura extends Activity {
 		
 		
 		EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
+		EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
 		switch (item.getItemId()) {
 		
 			case R.id.contado_radio_button:
@@ -467,6 +507,10 @@ public class Factura extends Activity {
 		    	this.menu.findItem(R.id.contado_radio_button).setChecked(false);
 		    	monto_value = (EditText) (findViewById(R.id.MontoValue));
 	    		monto_value.setText(monto_factura.toString());
+	    		monto_value = (EditText) (findViewById(R.id.MontoValue));
+	    		monto_value.setText(monto_factura.toString());
+	    		saldo_value = (EditText) (findViewById(R.id.SaldoValue));
+	    		saldo_value.setText(saldo_cliente.add(monto_factura).toString());
 		    	Toast.makeText(Factura.this,"COMPRA A CREDITO", Toast.LENGTH_LONG).show();
 		        
 		    	return true;
@@ -606,6 +650,64 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
 		}
 
 	}
+
+private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
+
+	protected String getASCIIContentFromEntity(HttpEntity entity)
+			throws IllegalStateException, IOException {
+		InputStream in = entity.getContent();
+		StringBuffer out = new StringBuffer();
+		int n = 1;
+		while (n > 0) {
+			byte[] b = new byte[4096];
+			n = in.read(b);
+			if (n > 0)
+				out.append(new String(b, 0, n));
+		}
+		return out.toString();
+	}
+	
+	@Override
+	protected String doInBackground(JSONObject... params) {
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpContext localContext = new BasicHttpContext();
+		Usuario usuario=getIntent().getExtras().getParcelable("usuario");
+		HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/clientes/saldo/?key="+usuario.getKey());
+		// Execute HTTP Post Request
+		String text = null;
+		try {
+			StringEntity se = new StringEntity(params[0].toString(), "UTF8");
+			se.setContentType("application/json");
+			httpPost.setEntity(se);
+			HttpResponse response = httpClient.execute(httpPost,
+					localContext);
+			HttpEntity entity = response.getEntity();
+
+			text = getASCIIContentFromEntity(entity);
+			
+
+		} catch (Exception e) {
+		}
+		if (text != null) {
+
+			JSONObject jsonObject;
+			try {
+				jsonObject = new JSONObject(text);
+
+				text=jsonObject.getString("saldo");
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+		}
+		return text;
+	}
+
+	
+	
+}
+
 
 	private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 
