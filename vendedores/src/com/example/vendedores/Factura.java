@@ -81,7 +81,7 @@ public class Factura extends Activity {
 	private View context_view;
 	private BigDecimal monto_factura_sin_descuento=BigDecimal.ZERO;
 	private BigDecimal saldo_cliente=new BigDecimal("0.00");
-	
+	private Venta  ultima_venta;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,7 @@ public class Factura extends Activity {
 		setContentView(R.layout.activity_factura);
 
 		descuento_contado_porcentaje = getIntent().getExtras().getInt("descuento_contado");
-		 tipo=getIntent().getExtras().getInt("tipo");
+		tipo=getIntent().getExtras().getInt("tipo");
 		 
 
 		LongRunningGetIO thred = new LongRunningGetIO();// llamo un proceso en
@@ -113,7 +113,7 @@ public class Factura extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Venta ultima_venta = null;
+		ultima_venta = null;
 		try {
 			ultima_venta = (Venta) getIntent().getExtras().getParcelable("venta");
 		} catch (Exception e) {
@@ -455,7 +455,12 @@ public class Factura extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.factura, menu);
+		
+		if(ultima_venta!=null){
+		menu.findItem(R.id.mas_info).setVisible(true);
 
+		}
+		
 		this.menu = menu;
 		if(tipo==0){
 			menu.findItem(R.id.contado_radio_button).setChecked(true);
@@ -476,6 +481,8 @@ public class Factura extends Activity {
 		
 		EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
 		EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
+		
+		
 		switch (item.getItemId()) {
 		
 			case R.id.contado_radio_button:
@@ -514,6 +521,13 @@ public class Factura extends Activity {
 		    	Toast.makeText(Factura.this,"COMPRA A CREDITO", Toast.LENGTH_LONG).show();
 		        
 		    	return true;
+		    
+		    case R.id.mas_info:
+		    	Intent detalle_venta= new Intent(getApplicationContext(),Datos_ultima_venta.class);
+		    	detalle_venta.putExtra("venta",ultima_venta);
+		    	startActivity(detalle_venta);
+		    	return true;
+		    	
 		    default:
 		    	
 	            return super.onOptionsItemSelected(item); 
@@ -1127,6 +1141,7 @@ private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
 				tbl.removeViewAt(tbl.getChildCount() - 1);
 			}
 		}
+		
 		this.monto_factura_sin_descuento=new BigDecimal(ultima_venta.getMonto_sin_descuentos().toString());
 		this.monto_factura =new BigDecimal(ultima_venta.getMonto().toString());
 		this.tipo=ultima_venta.getTipo();

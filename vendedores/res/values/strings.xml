@@ -47,5 +47,7 @@
 	<string name="contado">Contado</string>
 	<string name="porcentaje">%</string>
 	<string name="ver_mapa">Ver Mapa</string>
+	<string name="mas_info_venta">Ver mas datos de la venta</string>
+	<string name="datos_ultima_venta">Datos Venta</string>
 	
 </resources>
