@@ -20,6 +20,8 @@ public class Cliente implements Parcelable{
 	private String web;
 	private String latitud;
 	private String longitud;
+	private String latitud_entrega;
+	private String longitud_entrega;
 	private String url_imagen;
 	private Integer dia_de_entrega=null;//
 	private Calendar hora_de_entrega_desde=Calendar.getInstance();//
@@ -29,13 +31,15 @@ public class Cliente implements Parcelable{
 	
 	
 	public Cliente(String nombre,String direccion,String rut,String url_imagen,String dia_entrega,String hora_de_entrega_desde,String minuto_de_entrega_desde,
-			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,Integer descuento,String latitud,String longitud)
+			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,Integer descuento,String latitud,String longitud,String latitud_entrega,String longitud_entrega)
 	{
 		this.nombre=nombre;//
 		this.direccion=direccion;//
 		this.rut=rut;//
 		this.latitud=latitud;
 		this.longitud=longitud;
+		this.setLatitud_entrega(latitud_entrega);
+		this.setLongitud_entrega(longitud_entrega);
 		
 		if(dia_entrega!=null&&dia_entrega!="")
 			this.dia_de_entrega=Integer.parseInt(dia_entrega);
@@ -116,6 +120,16 @@ public class Cliente implements Parcelable{
 		else
 			dest.writeString("");
 		
+		if(latitud_entrega!= null)
+			dest.writeString(latitud_entrega.toString());
+		else
+			dest.writeString("");
+		
+		if(longitud_entrega!=null)
+			dest.writeString(longitud_entrega.toString());
+		else
+			dest.writeString("");
+		
 		
 		dest.writeString(url_imagen);
 		
@@ -164,6 +178,8 @@ public class Cliente implements Parcelable{
 		
 		latitud = in.readString();
 		longitud = in.readString();
+		latitud_entrega = in.readString();
+		longitud_entrega = in.readString();
 		
 		url_imagen=in.readString();
 		
@@ -280,6 +296,18 @@ public class Cliente implements Parcelable{
 	}
 	public void setDescuento_cliente(Integer descuento_cliente) {
 		this.descuento_cliente = descuento_cliente;
+	}
+	public String getLatitud_entrega() {
+		return latitud_entrega;
+	}
+	public void setLatitud_entrega(String latitud_entrega) {
+		this.latitud_entrega = latitud_entrega;
+	}
+	public String getLongitud_entrega() {
+		return longitud_entrega;
+	}
+	public void setLongitud_entrega(String longitud_entrega) {
+		this.longitud_entrega = longitud_entrega;
 	}
 	
 }
