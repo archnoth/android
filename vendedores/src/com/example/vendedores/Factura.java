@@ -369,7 +369,7 @@ public class Factura extends Activity {
 				"",((Usuario) getIntent().getExtras().getParcelable("usuario"))	.getKey(), "");
 		Cliente cliente = new Cliente(((Cliente) getIntent().getExtras()
 				.getParcelable("cliente")).getNombre(), "",((Cliente) getIntent().getExtras().getParcelable("cliente")).getRut(),
-				"", "", "", "", "", "", "", "", "", "", "","",((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo(),((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente(),"","","","");
+				"", "", "", "", "", "", "", "", "", "", "","",((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo(),((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente(),"","","","",false);
 		Calendar fecha = Calendar.getInstance();
 		//Double monto = 0.0;
 		TableLayout tbl = (TableLayout) this.findViewById(R.id.tablaProductos);

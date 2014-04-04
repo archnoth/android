@@ -46,14 +46,14 @@ public class ListadoClientes extends Activity {
 	private Usuario usuario;
 	private boolean ver_todos=true;
 	private ListView listaClientes;
-	private ArrayAdapter<Cliente> adaptador_lista;
+	private ClienteAdapter adaptador_lista;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_listado_clientes);
 		usuario=getIntent().getExtras().getParcelable("usuario");
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
-		adaptador_lista = new ArrayAdapter<Cliente>(this.getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
+		adaptador_lista = new ClienteAdapter(this.getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
 		set_lista_clientesAdapter(adaptador_lista);
 		
 		final Button b = (Button) findViewById(R.id.btn_clientes_sin_visitar);
@@ -61,12 +61,12 @@ public class ListadoClientes extends Activity {
 		   public void onClick(View v) {
 		    	if(ver_todos)
 		    	{
-		    		((Button)v).setActivated(false);
+		    		((Button)v).setActivated(true);
 		    		try {
 		    			
 		    			LongRunningGetIO thred=new LongRunningGetIO();
 		    			AsyncTask <Void, Void, List<Cliente> >  async=thred.execute();
-		    			adaptador_lista = new ArrayAdapter<Cliente>(getApplicationContext(), R.layout.lista_text_view , (ArrayList<Cliente>)async.get());
+		    			adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.lista_text_view , (ArrayList<Cliente>)async.get());
 		    			set_lista_clientesAdapter(adaptador_lista);
 		    			ver_todos=false;
 		    			b.setText("Ver todos los clientes");
@@ -81,8 +81,8 @@ public class ListadoClientes extends Activity {
 		    	}
 		    	else
 		    	{
-		    		((Button)v).setActivated(true);
-		    		adaptador_lista = new ArrayAdapter<Cliente>(getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
+		    		((Button)v).setActivated(false);
+		    		adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
 		    		set_lista_clientesAdapter(adaptador_lista);
 		    		ver_todos=true;
 		    		b.setText("Ver clientes sin visitar");
@@ -182,6 +182,7 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 						String longitud="";
 						String latitud_entrega="";
 						String longitud_entrega="";
+						Boolean tiene_mensajes=false;
 						
 						if(dic_cliente.has("nombre")&& dic_cliente.getString("nombre")!= null)direccion =dic_cliente.getString("nombre");
 						
@@ -219,14 +220,16 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 						
 						if(dic_cliente.has("longitud")&&dic_cliente.getString("longitud")!=null)longitud=dic_cliente.getString("longitud");
 						
-						if(dic_cliente.has("latitud_entrega")&&dic_cliente.getString("latitud_entrega")!=null)latitud_entrega=dic_cliente.getString("latitud");
+						if(dic_cliente.has("latitud_entrega")&&dic_cliente.getString("latitud_entrega")!=null)latitud_entrega=dic_cliente.getString("latitud_entrega");
 						
-						if(dic_cliente.has("longitud_enterga")&&dic_cliente.getString("longitud_entrega")!=null)longitud_entrega=dic_cliente.getString("longitud");
+						if(dic_cliente.has("longitud_enterga")&&dic_cliente.getString("longitud_entrega")!=null)longitud_entrega=dic_cliente.getString("longitud_entrega");
+						
+						if(dic_cliente.has("tiene_mensajes")&&dic_cliente.getString("tiene_mensajes")!=null)tiene_mensajes=dic_cliente.getBoolean("tiene_mensajes");
 						
 						Cliente cli= new Cliente(dic_cliente.getString("nombre"),direccion,rut,"",dia_entrega.toString(),
 								hora_entrega_desde.toString(),minuto_entrega_desde.toString(),
 								hora_entrega_hasta.toString(),minuto_entrega_hasta.toString(),tel,tel2,
-								celular,email,web,lugar_entrega,tipo,descuento,latitud,longitud,latitud_entrega,longitud_entrega);
+								celular,email,web,lugar_entrega,tipo,descuento,latitud,longitud,latitud_entrega,longitud_entrega,tiene_mensajes);
 						lista.add(cli);
 						
 					}
