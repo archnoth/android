@@ -16,6 +16,7 @@ public class Producto implements Parcelable{
 	private String descripcion;
 	
 	
+	public Producto(){};
 	public Producto(String nombre, BigDecimal precio_cliente_final,BigDecimal precio_distribuidor,BigDecimal precio_mayorista, String codigo,String descripcion)
 	{
 		this.nombre=nombre;

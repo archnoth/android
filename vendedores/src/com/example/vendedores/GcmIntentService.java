@@ -12,6 +12,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -37,7 +38,10 @@ public class GcmIntentService extends IntentService{
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(arg0);
 
-        if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
+        if (!extras.isEmpty()) {  
+        	
+        	 Log.i("ACA LLAMO AL SERVICE", "ACA LLAMO AL SERVICE");
+        	// has effect of unparcelling Bundle
             /*
              * Filter messages based on message type. Since it is likely that GCM
              * will be extended in the future with new message types, just ignore
@@ -54,6 +58,11 @@ public class GcmIntentService extends IntentService{
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+            	
+            	//IntentService servicio_mensajes=new ServicioMensajes(""); 
+            	//servicio_mensajes.
+            	Intent servicio_mensajes = new Intent(this, ServicioMensajes.class);
+            	startService(servicio_mensajes);
             	
             	switch(Integer.parseInt(extras.get("tipo").toString()))
             	{

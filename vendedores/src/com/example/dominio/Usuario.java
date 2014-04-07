@@ -3,10 +3,11 @@ package com.example.dominio;
 
 import java.util.ArrayList;
 
+import android.app.Application;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Usuario implements Parcelable {
+public class Usuario  implements Parcelable  {
 	
 	private String nombre;
 	private String apellido;
@@ -17,6 +18,7 @@ public class Usuario implements Parcelable {
 	private String device_id;
 	
 	private ArrayList<Cliente> listaClientes;
+	private ArrayList<Mensaje> listaMensajes;
 	public Usuario(String nom,String apell,String nomUsu,String pas,String emai,String k,String device_id)
 	{
 		this.nombre=nom;
@@ -27,6 +29,7 @@ public class Usuario implements Parcelable {
 		this.key=k;
 		this.device_id=device_id;
 		this.listaClientes=new ArrayList<Cliente>();
+		this.setListaMensajes(new ArrayList<Mensaje>());
 
 	}
 	
@@ -122,6 +125,14 @@ private Usuario(Parcel in) {
 	key = in.readString();
 	listaClientes = in.createTypedArrayList(Cliente.CREATOR);
 	device_id=in.readString();
+}
+
+public ArrayList<Mensaje> getListaMensajes() {
+	return listaMensajes;
+}
+
+public void setListaMensajes(ArrayList<Mensaje> listaMensajes) {
+	this.listaMensajes = listaMensajes;
 }
 
 	

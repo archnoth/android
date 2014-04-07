@@ -1,11 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <item android:id="@+id/notificacion"
+          android:icon="@drawable/ic_buscar"
+          android:title="@string/todo" 
+          android:showAsAction ="ifRoom"
+          android:visible="false"
+          />
+    
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/mas_info"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/mas_info_venta"
+        android:visible="false"/>
 	
+    
 	<item android:id="@+id/submenu_modo_de_pago"
 	          android:title="@string/modo_de_pago">
 	        <menu>

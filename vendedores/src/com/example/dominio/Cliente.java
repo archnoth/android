@@ -30,6 +30,9 @@ public class Cliente implements Parcelable{
 	private Integer descuento_cliente;
 	
 	
+	public Cliente(){
+		
+	};
 	public Cliente(String nombre,String direccion,String rut,String url_imagen,String dia_entrega,String hora_de_entrega_desde,String minuto_de_entrega_desde,
 			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,Integer descuento,String latitud,String longitud,String latitud_entrega,String longitud_entrega)
 	{
@@ -75,6 +78,18 @@ public class Cliente implements Parcelable{
 		
 		
 	}
+	
+	
+	 public boolean equals(Object obj) {
+		
+		 try {
+			 return this.rut.equals(((Cliente)obj).getRut());
+		} catch (Exception e) {
+	
+		}
+		return false;
+	 }
+	
 	public String getNombre() {
 		return nombre;
 	}

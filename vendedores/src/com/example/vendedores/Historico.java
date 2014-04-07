@@ -26,12 +26,14 @@ import com.example.dominio.Venta;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.annotation.TargetApi;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 
@@ -108,7 +110,10 @@ public class Historico extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.ventas_historico, menu);
+		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
 		return true;
 	}
+
 
 }

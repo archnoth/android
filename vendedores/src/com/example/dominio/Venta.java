@@ -18,6 +18,7 @@ public class Venta implements Parcelable{
  private int tipo;
  private Double monto_sin_descuentos;
  
+
  
  public Venta(Usuario usuario, Cliente cliente, Calendar fecha,Double monto,int tipo,Double monto_sin_descuentos)
  {

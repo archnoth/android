@@ -18,17 +18,20 @@ import org.json.JSONObject;
 import com.example.dominio.Cliente;
 import com.example.dominio.Usuario;
 import com.example.vendedores.R.color;
-
+import com.example.vendedores.notificationReceiver;
 import android.R.integer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.Notification.Action;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.sax.TextElementListener;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.textservice.TextInfo;
 import android.widget.AdapterView;
@@ -55,6 +58,8 @@ public class ListadoClientes extends Activity {
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
 		adaptador_lista = new ArrayAdapter<Cliente>(this.getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
 		set_lista_clientesAdapter(adaptador_lista);
+		
+		
 		
 		final Button b = (Button) findViewById(R.id.btn_clientes_sin_visitar);
 		   b.setOnClickListener(new View.OnClickListener() {
@@ -99,14 +104,37 @@ public class ListadoClientes extends Activity {
 		buscador.setAdapter(adaptador_lista);
 		buscador.setDropDownHeight(0);
 		buscador.setTextColor(Color.LTGRAY);
+		
+		
 	}
+	
+   
+	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		
 		getMenuInflater().inflate(R.menu.listado_clientes, menu);
+		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		
 		return true;
+		
 	}
+	public boolean onOptionsItemSelected(MenuItem item)
+		{
+			switch (item.getItemId()) {
+			
+				case R.id.notificacion:
+					Intent notificaciones= new Intent(getApplicationContext(),Notificaciones.class);
+			    	startActivity(notificaciones);
+			    	return true;
+					
+				default:
+					return true;
+			}
+		}
 	
 	@Override
 	protected void onResume(){
