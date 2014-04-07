@@ -25,6 +25,7 @@ import com.example.dominio.Venta;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
@@ -50,6 +51,8 @@ public class Historico extends Activity {
 		setContentView(R.layout.activity_ventas_historico);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
 		usuario=(Usuario)getIntent().getExtras().getParcelable("usuario"); 
 		cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
 		producto_porcentaje=(HashMap<Integer, Double>)getIntent().getExtras().getSerializable("dict");

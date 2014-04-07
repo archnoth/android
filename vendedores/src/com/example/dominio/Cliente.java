@@ -28,13 +28,15 @@ public class Cliente implements Parcelable{
 	private Calendar hora_de_entrega_hasta=Calendar.getInstance();//
 	private Integer tipo;
 	private Integer descuento_cliente;
+	private Boolean tiene_mensajes;
 	
 	
 	public Cliente(){
 		
 	};
 	public Cliente(String nombre,String direccion,String rut,String url_imagen,String dia_entrega,String hora_de_entrega_desde,String minuto_de_entrega_desde,
-			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,Integer descuento,String latitud,String longitud,String latitud_entrega,String longitud_entrega)
+			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,
+			Integer descuento,String latitud,String longitud,String latitud_entrega,String longitud_entrega, Boolean tiene_mensajes)
 	{
 		this.nombre=nombre;//
 		this.direccion=direccion;//
@@ -75,7 +77,7 @@ public class Cliente implements Parcelable{
 		this.lugar_entrega=lugarEntrega;
 		this.setTipo(tipo);
 		this.descuento_cliente=descuento;
-		
+		this.setTiene_mensajes(tiene_mensajes);
 		
 	}
 	
@@ -164,8 +166,10 @@ public class Cliente implements Parcelable{
 			dest.writeString("");
 		
 		dest.writeInt(tipo);
-		
 		dest.writeInt(descuento_cliente);
+		boolean[] m = new boolean[1];
+		m[0]=tiene_mensajes;
+		dest.writeBooleanArray(m);
 		
 	}
 	public static final Parcelable.Creator<Cliente> CREATOR
@@ -220,8 +224,10 @@ public class Cliente implements Parcelable{
 		else hora_de_entrega_hasta=null; 
 		
 		tipo = in.readInt();
-		
 		descuento_cliente = in.readInt();
+		boolean[] m = new boolean[1];
+		in.readBooleanArray(m);
+		tiene_mensajes = m[0];
 	}
 	
 	@Override
@@ -323,6 +329,12 @@ public class Cliente implements Parcelable{
 	}
 	public void setLongitud_entrega(String longitud_entrega) {
 		this.longitud_entrega = longitud_entrega;
+	}
+	public Boolean getTiene_mensajes() {
+		return tiene_mensajes;
+	}
+	public void setTiene_mensajes(Boolean tiene_mensajes) {
+		this.tiene_mensajes = tiene_mensajes;
 	}
 	
 }

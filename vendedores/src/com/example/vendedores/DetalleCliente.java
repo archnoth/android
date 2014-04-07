@@ -39,6 +39,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -62,6 +63,8 @@ public class DetalleCliente extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_detalle_cliente);
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
 		final Cliente cliente=getIntent().getExtras().getParcelable("cliente");
 		TextView nombre=(TextView)findViewById(R.id.editTextNombreCliente);
 		TextView rut=(TextView)findViewById(R.id.editTextRutCliente);

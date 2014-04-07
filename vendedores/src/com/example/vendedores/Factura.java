@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -91,7 +92,9 @@ public class Factura extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_factura);
-
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
+	    
 		descuento_contado_porcentaje = getIntent().getExtras().getInt("descuento_contado");
 		tipo=getIntent().getExtras().getInt("tipo");
 		 
@@ -373,7 +376,7 @@ public class Factura extends Activity {
 				"",((Usuario) getIntent().getExtras().getParcelable("usuario"))	.getKey(), "");
 		Cliente cliente = new Cliente(((Cliente) getIntent().getExtras()
 				.getParcelable("cliente")).getNombre(), "",((Cliente) getIntent().getExtras().getParcelable("cliente")).getRut(),
-				"", "", "", "", "", "", "", "", "", "", "","",((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo(),((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente(),"","","","");
+				"", "", "", "", "", "", "", "", "", "", "","",((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo(),((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente(),"","","","",false);
 		Calendar fecha = Calendar.getInstance();
 		//Double monto = 0.0;
 		TableLayout tbl = (TableLayout) this.findViewById(R.id.tablaProductos);

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import com.example.dominio.Cliente;
 import com.example.dominio.Venta;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -16,7 +17,8 @@ public class Datos_ultima_venta extends Activity{
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.datos_ultima_venta);
-		
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
 		Venta v=(Venta)getIntent().getExtras().getParcelable("venta");
 		((EditText)findViewById(R.id.editTextCliente_ultima_venta)).setText(v.getCliente().toString());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
