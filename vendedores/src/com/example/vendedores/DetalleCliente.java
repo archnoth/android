@@ -42,7 +42,9 @@ import android.os.Message;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -227,6 +229,29 @@ public class DetalleCliente extends Activity {
 		
 		
 	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu){
+		getMenuInflater().inflate(R.menu.detalle_cliente, menu);
+		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		return true;
+		
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		
+			case R.id.notificacion:
+				Intent notificaciones= new Intent(getApplicationContext(),Notificaciones.class);
+		    	startActivity(notificaciones);
+		    	return true;
+				
+			default:
+				return true;
+		}
+	}
+
 	
 	@Override
 	protected void onResume(){
@@ -241,7 +266,7 @@ public class DetalleCliente extends Activity {
 		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
 		Intent fac_intent = new Intent(getApplicationContext(),EleccionFactura.class); 
-		fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+		fac_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 		fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 	    startActivity(fac_intent);
@@ -265,7 +290,7 @@ public class DetalleCliente extends Activity {
         {
         	((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
         	Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-			fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+			fac_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
 			fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			fac_intent.putExtra("venta",respuesta);
@@ -296,7 +321,7 @@ public void to_historico_activity(View view){
         if(respuesta!=null)
         {
         	Intent hist_intent = new Intent(getApplicationContext(),Historico.class);  
-        	hist_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+        	hist_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
         	hist_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
         	Bundle extras = new Bundle();
         	extras.putSerializable("dict", (Serializable) respuesta);
@@ -340,8 +365,8 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 				 HttpContext localContext = new BasicHttpContext();
 				 
 				 //http://ventas.jm-ga.com/api/ventas/ultima/?nombre=luis&rut=123132&key=39b212ca41d9564d917bf7a9748746d52ffe28c9
-
-		         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/estadisticas/ventas/ultima/?nombre="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getNombreUsuario()+"&key="+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"&rut="+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut());
+				 Sistema sys=(Sistema)getApplicationContext();
+		         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/estadisticas/ventas/ultima/?nombre="+sys.getUsu().getNombreUsuario()+"&key="+sys.getUsu().getKey()+"&rut="+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut());
 		           
 		  
 		             // Execute HTTP Post Request
@@ -371,7 +396,7 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 							fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("minute")));
 							fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("second")));
 							
-							venta=new Venta((Usuario)getIntent().getExtras().getParcelable("usuario"),(Cliente)getIntent().getExtras().getParcelable("cliente"),fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()),Integer.parseInt(jsonObject.get("tipo").toString()),Double.parseDouble(jsonObject.get("precio_sin_descuento").toString()));
+							venta=new Venta(sys.getUsu(),(Cliente)getIntent().getExtras().getParcelable("cliente"),fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()),Integer.parseInt(jsonObject.get("tipo").toString()),Double.parseDouble(jsonObject.get("precio_sin_descuento").toString()));
 							
 							JSONArray jarray =(JSONArray)jsonObject.get("productos");
 							lista= new ArrayList<ProductoVenta>();

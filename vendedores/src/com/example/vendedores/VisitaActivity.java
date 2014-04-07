@@ -32,8 +32,11 @@ import com.google.gson.Gson;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -124,6 +127,14 @@ public class VisitaActivity extends Activity  {
 			});
 		
 		
+	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.ventas_historico, menu);
+		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		return true;
 	}
 
 //carga los tipo de motivos de una visita.
@@ -233,6 +244,7 @@ private class PostNuevaVisita extends AsyncTask <String, Void, String > {
 	protected void onPostExecute(String results) {
 		//((ProgressBar)findViewById(R.id.progressBarFactura)).setVisibility(View.INVISIBLE);
 	}
+	
 
 }
 

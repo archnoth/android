@@ -20,6 +20,7 @@
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
 
     <application
+        android:name="com.example.vendedores.Sistema"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -39,7 +40,9 @@
         </receiver>
 
         <service android:name="com.example.vendedores.GcmIntentService" />
-
+		 <service
+            android:name=".ServicioMensajes"
+            android:exported="false"/>
         <activity
             android:name="com.example.vendedores.Login"
             android:label="@string/app_name"
@@ -100,6 +103,14 @@
         	android:name="com.example.vendedores.Datos_ultima_venta"
             android:label="@string/datos_ultima_venta"
             android:parentActivityName="com.example.vendedores.ListadoClientes" >
+        </activity>
+        <activity
+            android:name="com.example.vendedores.Datos_ultima_venta"
+            android:label="@string/datos_ultima_venta" >
+        </activity>
+         <activity
+            android:name="com.example.vendedores.Notificaciones"
+            android:label="@string/notificaciones" >
         </activity>
     </application>
 

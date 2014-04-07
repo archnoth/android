@@ -41,7 +41,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.InputFilter;
@@ -60,6 +62,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import android.widget.Toast;
 
@@ -221,14 +224,15 @@ public class Factura extends Activity {
 
 	private void addRowToTableProductos(ProductoVenta pv) {
 
-		AutoCompleteTextView autocomplete = Factura.this.generarAutocomplete();
-		EditText text_cant = Factura.this.generarEditText();
+		
 		TableRow tbr = new TableRow(getApplicationContext());
 		EditText divider = Factura.this.generarEditText();
 		divider.setBackgroundColor(Color.BLACK);
 		divider.setWidth(2);
 		divider.setInputType(android.text.InputType.TYPE_NULL);
 		//Button cruz = Factura.this.generarCruz();
+		AutoCompleteTextView autocomplete = Factura.this.generarAutocomplete();
+		EditText text_cant = Factura.this.generarEditText();
 		tbr.addView(text_cant, ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		tbr.addView(divider);
@@ -271,33 +275,33 @@ public class Factura extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				
-				ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
+				//ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
 				
 			}
 		
 		});
 		auto_gen.addTextChangedListener(new TextWatcher() {
-
+			
+			float text_size=0;
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
+				
+				if(getCurrentFocus()!=null)
+					ActualizarFilaFactura((TableRow)(getCurrentFocus().getParent()), true);
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				try {
-					//ActualizarFilaFactura((TableRow)getCurrentFocus().getParent(), true);
-				} catch (Exception e) {
-				}
+				
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				try {
-					//ActualizarFilaFactura((TableRow) getCurrentFocus().getParent(), false);
-				} catch (Exception e) {
-				}
+				
+				if(getCurrentFocus()!=null)
+					ActualizarFilaFactura((TableRow)(getCurrentFocus().getParent()), false);
 			}
 		});
 		return auto_gen;
@@ -458,6 +462,9 @@ public class Factura extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.factura, menu);
+		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		
 		
 		if(ultima_venta!=null){
 		menu.findItem(R.id.mas_info).setVisible(true);
@@ -834,6 +841,7 @@ private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
 	}
 
 	public void VentaRecursiva() throws JSONException {
+		
 		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass())
 				.toString(); // venta tentativa espera confirmacion
 		JSONObject aux_fecha = new JSONObject(dataString); // venta tentativa

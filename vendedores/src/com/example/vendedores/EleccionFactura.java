@@ -2,7 +2,10 @@ package com.example.vendedores;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
@@ -108,6 +111,15 @@ public class EleccionFactura extends Activity {
 		((Button)findViewById(R.id.btn_visita)).setActivated(false);
 		((Button)findViewById(R.id.btn_nota_contado)).setActivated(false);
 		((Button)findViewById(R.id.btn_nota_credito)).setActivated(false);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.factura, menu);
+		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		return true;
 	}
 }
 	

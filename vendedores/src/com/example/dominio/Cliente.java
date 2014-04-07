@@ -31,6 +31,9 @@ public class Cliente implements Parcelable{
 	private Boolean tiene_mensajes;
 	
 	
+	public Cliente(){
+		
+	};
 	public Cliente(String nombre,String direccion,String rut,String url_imagen,String dia_entrega,String hora_de_entrega_desde,String minuto_de_entrega_desde,
 			String hora_de_entrega_hasta,String minuto_de_entrega_hasta,String tel,String tel2,String celular,String email,String web,String lugarEntrega,Integer tipo,
 			Integer descuento,String latitud,String longitud,String latitud_entrega,String longitud_entrega, Boolean tiene_mensajes)
@@ -77,6 +80,18 @@ public class Cliente implements Parcelable{
 		this.setTiene_mensajes(tiene_mensajes);
 		
 	}
+	
+	
+	 public boolean equals(Object obj) {
+		
+		 try {
+			 return this.rut.equals(((Cliente)obj).getRut());
+		} catch (Exception e) {
+	
+		}
+		return false;
+	 }
+	
 	public String getNombre() {
 		return nombre;
 	}

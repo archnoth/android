@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -72,14 +74,14 @@ public class Login extends Activity {
 	GoogleCloudMessaging gcm;
 	String SENDER_ID = "354046703161";
 
-	private Context context;
+	private Sistema context;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		context = getApplicationContext();
-		 EditText username = (EditText)findViewById(R.id.editText1);
+		context = (Sistema)getApplicationContext();
+		 EditText username = (EditText)findViewById(R.id.editTextCMontoLabel);
     	 EditText password = (EditText)findViewById(R.id.editTextPassword);
     	 username.setHint("Nombre de usuario");
     	 password.setHint("Contraseña");
@@ -174,12 +176,17 @@ public class Login extends Activity {
              HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/login/");
              
              // Add your data
-        	 EditText username = (EditText)findViewById(R.id.editText1);
+        	 EditText username = (EditText)findViewById(R.id.editTextCMontoLabel);
         	 EditText password = (EditText)findViewById(R.id.editTextPassword);
 
              Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","",registrationID);
-        	 Gson gson = new Gson();
-             String dataString = gson.toJson(usuario_login, usuario_login.getClass()).toString();
+             HashMap<String, String> dic_usu=new HashMap<String, String>();
+             dic_usu.put("nombreUsuario", usuario_login.getNombreUsuario());
+             dic_usu.put("password", usuario_login.getPassword());
+             dic_usu.put("device_id", registrationID);
+             //String dataString="{\"nombreUsuario\":\""+usuario_login.getNombreUsuario()+"\",\"password\":\""+usuario_login.getPassword()+"\",\"device_id\":\""+registrationID+"\"}";
+             Gson gson = new Gson();
+             String dataString = gson.toJson(dic_usu).toString();
              
              // Execute HTTP Post Request
              String text = null;
@@ -227,7 +234,8 @@ public class Login extends Activity {
 					
 					String jsonClientes=jsonObject.getString("user_clients");
 					JSONArray jarray=new JSONArray(jsonClientes);
-					usuario = new Usuario("", "", username, "", "", api_key,""/*device_id*/);
+					context.setUsu(new Usuario("", "", username, "","", api_key, registrationID));
+					usuario=context.getUsu();
 					((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(10);
 					int porcentaje_progreso=0;
 					if(jarray.length()>0)
@@ -266,6 +274,7 @@ public class Login extends Activity {
 					System.out.println(e.getCause());
 				}	
 			}
+			
 			findViewById(R.id.LoginSeekBar).setVisibility(View.INVISIBLE);
 			Button b = (Button)findViewById(R.id.btn_ingresar);
 			b.setActivated(false);
