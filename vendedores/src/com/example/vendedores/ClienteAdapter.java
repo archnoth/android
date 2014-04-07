@@ -27,10 +27,10 @@ public class ClienteAdapter extends ArrayAdapter<Cliente> {
 	    public View getView(int position, View convertView, ViewGroup parent) {
 	    	if (convertView == null) {
 		        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		        convertView = inflater.inflate(R.layout.cliente_adapter, null);
+		        convertView = inflater.inflate(R.layout.mensajes_adapter, null);
 	        }
 	        
-	        ((TextView)convertView.findViewById(R.id.mensaje_text)).setText(clientes.get(position).getNombre());
+	        ((TextView)convertView.findViewById(R.id.label)).setText(clientes.get(position).getNombre());
 	        
 	        /*
 	        if (clientes.get(position).getTiene_mensajes()) {
