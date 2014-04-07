@@ -1,2 +1,2 @@
-vendedores/bin/
-vendedores/gen/
+vendedores/bin/*
+vendedores/gen/*
