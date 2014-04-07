@@ -7,7 +7,7 @@
         android:title="@string/action_settings"/>
     
        <item android:id="@+id/notificacion"
-          android:icon="@drawable/ic_buscar"
+          android:icon="@drawable/ic_envelop"
           android:title="@string/todo" 
           android:visible="false"
           android:showAsAction ="ifRoom"/>
