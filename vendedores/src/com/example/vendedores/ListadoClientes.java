@@ -53,7 +53,7 @@ public class ListadoClientes extends Activity {
 		setContentView(R.layout.activity_listado_clientes);
 		usuario=getIntent().getExtras().getParcelable("usuario");
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
-		adaptador_lista = new ClienteAdapter(this.getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
+		adaptador_lista = new ClienteAdapter(this.getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
 		set_lista_clientesAdapter(adaptador_lista);
 		
 		final Button b = (Button) findViewById(R.id.btn_clientes_sin_visitar);
@@ -66,7 +66,7 @@ public class ListadoClientes extends Activity {
 		    			
 		    			LongRunningGetIO thred=new LongRunningGetIO();
 		    			AsyncTask <Void, Void, List<Cliente> >  async=thred.execute();
-		    			adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.lista_text_view , (ArrayList<Cliente>)async.get());
+		    			adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , (ArrayList<Cliente>)async.get());
 		    			set_lista_clientesAdapter(adaptador_lista);
 		    			ver_todos=false;
 		    			b.setText("Ver todos los clientes");
@@ -82,7 +82,7 @@ public class ListadoClientes extends Activity {
 		    	else
 		    	{
 		    		((Button)v).setActivated(false);
-		    		adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.lista_text_view , usuario.getListaClientes());
+		    		adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
 		    		set_lista_clientesAdapter(adaptador_lista);
 		    		ver_todos=true;
 		    		b.setText("Ver clientes sin visitar");

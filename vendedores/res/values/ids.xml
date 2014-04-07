@@ -2,4 +2,5 @@
 <resources>
     <item type="id" name="descuento" />
     <item type="id" name="sin_cargo" />
+    <item type="id" name="mas_info"/>
 </resources>

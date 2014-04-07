@@ -6,11 +6,14 @@ import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.example.dominio.Cliente;
+import com.google.android.gms.drive.internal.r;
 
 public class ClienteAdapter extends ArrayAdapter<Cliente> {
 	    private ArrayList<Cliente> clientes = new ArrayList<Cliente>();
@@ -19,17 +22,23 @@ public class ClienteAdapter extends ArrayAdapter<Cliente> {
 	        super(context, resource, data);
 	        clientes = data;
 	    }
-
+	    	    
 	    @Override
 	    public View getView(int position, View convertView, ViewGroup parent) {
-	        View v = super.getView(position, convertView, parent);
-
-	        if (clientes.get(position).getTiene_mensajes()) {
-	            v.setBackgroundColor(Color.rgb(0, 179, 30));
-	        } else {
-	            v.setBackgroundColor(Color.WHITE); //or whatever was original
+	    	if (convertView == null) {
+		        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		        convertView = inflater.inflate(R.layout.cliente_adapter, null);
 	        }
-
-	        return v;
+	        
+	        ((TextView)convertView.findViewById(R.id.mensaje_text)).setText(clientes.get(position).getNombre());
+	        
+	        /*
+	        if (clientes.get(position).getTiene_mensajes()) {
+	        	convertView.findViewById(R.id.mensaje_icon).setVisibility(View.VISIBLE);
+	        } else {
+	        	convertView.findViewById(R.id.mensaje_icon).setVisibility(View.INVISIBLE);
+	        }
+	         */
+	        return convertView;
 	    }
 	}

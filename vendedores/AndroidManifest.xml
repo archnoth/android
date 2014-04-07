@@ -58,26 +58,29 @@
         <activity
             android:name="com.example.vendedores.DetalleCliente"
             android:label="@string/title_activity_detalle_cliente"
+            android:parentActivityName="com.example.vendedores.ListadoClientes"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="com.example.vendedores.Factura"
             android:label="@string/title_activity_factura"
+            android:parentActivityName="com.example.vendedores.ListadoClientes"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="com.example.vendedores.Historico"
             android:label="@string/title_activity_ventas_historico"
-            android:parentActivityName="com.example.vendedores.DetalleCliente"
+            android:parentActivityName="com.example.vendedores.ListadoClientes"
             android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.vendedores.DetalleCliente" />
+                android:value="com.example.vendedores.ListadoClientes" />
         </activity>
         <activity
             android:name="com.example.vendedores.NotaActivity"
-            android:label="@string/title_activity_nota" >
+            android:label="@string/title_activity_nota"
+            android:parentActivityName="com.example.vendedores.ListadoClientes" >
         </activity>
         <activity
             android:name="com.example.vendedores.GCMActivity"
@@ -85,11 +88,18 @@
         </activity>
         <activity
             android:name="com.example.vendedores.EleccionFactura"
-            android:label="@string/eleccion_factura_activity" >
+            android:label="@string/eleccion_factura_activity"
+            android:parentActivityName="com.example.vendedores.ListadoClientes" >
         </activity>
         <activity
             android:name="com.example.vendedores.VisitaActivity"
-            android:label="@string/title_activity_visita" >
+            android:label="@string/title_activity_visita"
+            android:parentActivityName="com.example.vendedores.ListadoClientes" >
+        </activity>
+        <activity
+        	android:name="com.example.vendedores.Datos_ultima_venta"
+            android:label="@string/datos_ultima_venta"
+            android:parentActivityName="com.example.vendedores.ListadoClientes" >
         </activity>
     </application>
 

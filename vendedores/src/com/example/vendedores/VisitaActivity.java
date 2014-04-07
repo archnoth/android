@@ -29,6 +29,7 @@ import com.example.dominio.Visita;
 
 import com.google.gson.Gson;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -61,7 +62,9 @@ public class VisitaActivity extends Activity  {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_visita);
-		
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
+	    
 		//AutoCompleteTextView auto=(AutoCompleteTextView)findViewById(R.id.autoCompleteMotivoNota);
 		c=(Cliente)getIntent().getExtras().getParcelable("cliente");
 		u =(Usuario)getIntent().getExtras().getParcelable("usuario");

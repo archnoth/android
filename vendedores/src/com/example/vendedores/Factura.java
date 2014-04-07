@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -88,7 +89,9 @@ public class Factura extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_factura);
-
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
+	    
 		descuento_contado_porcentaje = getIntent().getExtras().getInt("descuento_contado");
 		tipo=getIntent().getExtras().getInt("tipo");
 		 

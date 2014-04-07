@@ -1,24 +1,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-	
-	<item android:id="@+id/submenu_modo_de_pago"
-	          android:title="@string/modo_de_pago">
-	        <menu>
-	            <group android:checkableBehavior="single"
-	                android:id = "@+id/grupo_modo_de_pago">
-			        <item android:id="@+id/contado_radio_button"
-			            android:checkable="true"
-			            android:checked="true"
-			              android:title="@string/contado"/>
-			        <item android:id="@+id/credito_radio_button"
-			            android:checkable="true"
-			              android:title="@string/credito"/>
-			    </group>
-	        </menu>
-	    </item>
+	<item
+	  android:id="@+id/mas_info"
+	  android:orderInCategory="100"
+	  android:showAsAction="never"
+	  android:title="@string/mas_info_venta"
+	  android:visible="false"/>
+ 
+	<item 
+	    android:id="@+id/submenu_modo_de_pago"
+	    android:title="@string/modo_de_pago">
+        <menu>
+	        <group 	android:checkableBehavior="single"
+	            	android:id = "@+id/grupo_modo_de_pago">
+		      <item android:id="@+id/contado_radio_button"
+		          	android:checkable="true"
+		          	android:checked="true"
+		            android:title="@string/contado"/>
+		      <item android:id="@+id/credito_radio_button"
+		          	android:checkable="true"
+		            android:title="@string/credito"/>
+	  		</group>
+        </menu>
+     </item>
 </menu>
