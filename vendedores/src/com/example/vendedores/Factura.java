@@ -370,7 +370,7 @@ public class Factura extends Activity {
 		((Button)findViewById(R.id.Facturar)).setActivated(true);
 		findViewById(R.id.progressFacturaLayout).setVisibility(View.VISIBLE);
 		findViewById(R.id.scrollViewVenta).setFocusable(false);
-		boolean error = false;
+		String error = null;
 		Usuario vendedor = new Usuario("", "", ((Usuario) getIntent()
 				.getExtras().getParcelable("usuario")).getNombreUsuario(), "",
 				"",((Usuario) getIntent().getExtras().getParcelable("usuario"))	.getKey(), "");
@@ -387,13 +387,21 @@ public class Factura extends Activity {
 			AutoCompleteTextView auto = (AutoCompleteTextView) tr.getChildAt(2);
 			EditText cant = (EditText) tr.getChildAt(0);
 			String codigo = "";
-
+			if(auto.getText()== null ||auto.getText().toString().equals("") || cant.getText()== null || cant.getText().toString().equals(""))
+			{
+				error="Producto o cantidad no seteada en la fila: "+i;
+				((Button)findViewById(R.id.Facturar)).setActivated(false);
+				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
+				findViewById(R.id.scrollViewVenta).setFocusable(true);
+				break;
+			}
 			try {
 				codigo = auto.getText().toString().split("\\s - \\s")[1];
 			} catch (Exception e) {
+				error="Error en el código del producto";
 				if( tr == tbl.getChildAt(tbl.getChildCount() - 1 ) && (tbl.getChildCount() == 1 ))
 				{
-					error=true;
+					error="Error, no hay productos para vender";
 					((Button)findViewById(R.id.Facturar)).setActivated(false);
 					findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
 					findViewById(R.id.scrollViewVenta).setFocusable(true);
@@ -413,7 +421,7 @@ public class Factura extends Activity {
 			i = i + 1;
 		}
 
-		if (!error) {
+		if (error==null) {
 			json = new JSONObject();
 			gson = new Gson();
 			venta_original = new Venta(nueva_venta.getUsuario(),
@@ -455,7 +463,8 @@ public class Factura extends Activity {
 							});
 			AlertDialog alert = builder.create();
 			alert.show();
-		}
+		}else Toast.makeText(getApplicationContext(),error, Toast.LENGTH_LONG).show();
+		
 	}
 
 	@Override

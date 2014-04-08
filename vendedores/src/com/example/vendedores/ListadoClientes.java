@@ -102,10 +102,7 @@ public class ListadoClientes extends Activity {
 		    }});
 
 		   
-		buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		buscador.setAdapter(clientes_para_buscador);
-		buscador.setDropDownHeight(0);
-		buscador.setTextColor(Color.LTGRAY);
+		
 		
 		
 
