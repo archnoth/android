@@ -57,7 +57,7 @@ public class ListadoClientes extends Activity {
 		setContentView(R.layout.activity_listado_clientes);
 		usuario=((Sistema)getApplicationContext()).getUsu();
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
-		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,usuario.getListaClientes());
+		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.lista_text_view,usuario.getListaClientes());
 		adaptador_lista = new ClienteAdapter(this.getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
 		set_lista_clientesAdapter(adaptador_lista);
 		
@@ -74,10 +74,11 @@ public class ListadoClientes extends Activity {
 		    			LongRunningGetIO thred=new LongRunningGetIO();
 		    			AsyncTask <Void, Void, List<Cliente> >  async=thred.execute();
 		    			adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , (ArrayList<Cliente>)async.get());
-		    			clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,(ArrayList<Cliente>)async.get());
+		    			clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.lista_text_view,(ArrayList<Cliente>)async.get());
 		    			set_lista_clientesAdapter(adaptador_lista);
 		    			ver_todos=false;
 		    			b.setText("Ver todos los clientes");
+		    			
 		    			AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
 		    			buscador.setAdapter(clientes_para_buscador);
 		    			buscador.setDropDownHeight(0);
@@ -94,7 +95,7 @@ public class ListadoClientes extends Activity {
 		    		set_lista_clientesAdapter(adaptador_lista);
 		    		ver_todos=true;
 		    		b.setText("Ver clientes sin visitar");
-		    		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,usuario.getListaClientes());
+		    		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.lista_text_view,usuario.getListaClientes());
 	    			
 		    		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
 		    		buscador.setAdapter(clientes_para_buscador);
@@ -104,7 +105,9 @@ public class ListadoClientes extends Activity {
 		    }});
 
 		
-		
+		   
+		   
+		   
 		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
 		buscador.setAdapter(clientes_para_buscador);
 		buscador.setDropDownHeight(0);
