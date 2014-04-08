@@ -27,7 +27,11 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -281,10 +285,28 @@ public class NotaActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.nota, menu);
-		return true;
+			getMenuInflater().inflate(R.menu.nota, menu);
+			menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
+			notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+			LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+			RespuestasAsincronasReceiver ra=new RespuestasAsincronasReceiver();
+			LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ra,new IntentFilter("respuestaAsincrona"));
+			return true;
 	}
-	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		
+			case R.id.notificacion:
+				Intent notificaciones= new Intent(getApplicationContext(),Notificaciones.class);
+		    	startActivity(notificaciones);
+		    	return true;
+				
+			default:
+				return true;
+		}
+	}
 	
 	private class PostRegistrarNota extends AsyncTask <String, Void, String > {
 		

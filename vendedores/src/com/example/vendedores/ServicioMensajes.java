@@ -108,15 +108,20 @@ public class ServicioMensajes extends IntentService  {
 						if( list.get(j).equals(c))
 						{
 							c=list.get(j);
+							break;
 						}
-						Mensaje m = new Mensaje(c,p,dic_mensaje.getInt("cantidad"),Calendar.getInstance(),dic_mensaje.getBoolean("recibido")); 
-						usu.getListaMensajes().add(m);
+						
 					}
+					try{
+						Mensaje m = new Mensaje(c,p,dic_mensaje.getInt("cantidad"),Calendar.getInstance(),dic_mensaje.getBoolean("recibido")); 
+						m.setId_mensajeVendedor(dic_mensaje.getInt("id"));
+						m.setMensaje(dic_mensaje.getString("mensaje"));
+						usu.getListaMensajes().add(m);
+					}catch(Exception e){}
 				}
 				Intent notification=new Intent("notificacion");
 				LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(notification);
-				//Log.i("LOG LISTA MENSAJES",usu.getListaMensajes().toString());
-				//((Sistema)getApplicationContext()).setNotification(true);
+				
 				
 			
 				

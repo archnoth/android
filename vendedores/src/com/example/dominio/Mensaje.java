@@ -10,6 +10,8 @@ public class Mensaje {
 	private Integer cantidad;
 	private Calendar fecha;
 	private Boolean	recibido;
+	private String mensaje;
+	private int	id_mensajeVendedor;   //el id de la base de datos en el server
 	
 	public Mensaje(Cliente cli,Producto pro,Integer cant,Calendar fecha,Boolean recibido)
 	{
@@ -60,4 +62,25 @@ public class Mensaje {
 		this.recibido = recibido;
 	}
 
+	public int getId_mensajeVendedor() {
+		return id_mensajeVendedor;
+	}
+
+	public void setId_mensajeVendedor(int id_mensajeVendedor) {
+		this.id_mensajeVendedor = id_mensajeVendedor;
+	}
+
+	public String getMensaje() {
+		return mensaje;
+	}
+
+	public void setMensaje(String mensaje) {
+		this.mensaje = mensaje;
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.getMensaje();
+	}
 }

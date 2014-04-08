@@ -66,6 +66,7 @@ public class DetalleCliente extends Activity {
 		ActionBar actionBar = getActionBar();
 	    actionBar.setDisplayHomeAsUpEnabled(true);
 		final Cliente cliente=getIntent().getExtras().getParcelable("cliente");
+		
 		TextView nombre=(TextView)findViewById(R.id.editTextNombreCliente);
 		TextView rut=(TextView)findViewById(R.id.editTextRutCliente);
 		final TextView direccion=(TextView)findViewById(R.id.editDireccionCliente);
@@ -232,9 +233,13 @@ public class DetalleCliente extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
 		getMenuInflater().inflate(R.menu.detalle_cliente, menu);
+		
+		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		
 		return true;
+		
 		
 	}
 	@Override
@@ -268,7 +273,7 @@ public class DetalleCliente extends Activity {
 		Intent fac_intent = new Intent(getApplicationContext(),EleccionFactura.class); 
 		fac_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-		fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
+		fac_intent.putExtra("descuento_contado",((Sistema)getApplicationContext()).getDescuento_contado());
 	    startActivity(fac_intent);
 	}
 	

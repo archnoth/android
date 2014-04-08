@@ -43,7 +43,7 @@
             android:textSize="30sp"/>
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/editTextCMontoLabel"
             android:layout_width="fill_parent"
             android:layout_height="44dp"
             android:layout_marginTop="90dp"

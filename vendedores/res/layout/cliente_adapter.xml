@@ -24,6 +24,6 @@
         android:contentDescription="Mensaje sin leer"
         android:gravity="center"
         android:src="@drawable/ic_envelop"
-        android:visibility="visible" />
+        android:visibility="invisible" />
 
 </RelativeLayout>

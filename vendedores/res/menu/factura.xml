@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item android:id="@+id/notificacion"
-          android:icon="@drawable/ic_envelop"
+          android:icon="@drawable/ic_action_notificacion"
           android:title="@string/todo" 
           android:showAsAction ="ifRoom"
           android:visible="false"

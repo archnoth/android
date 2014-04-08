@@ -12,28 +12,28 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.dominio.Cliente;
+import com.example.dominio.Mensaje;
 import com.google.android.gms.drive.internal.r;
 
-public class ClienteAdapter extends ArrayAdapter<Cliente> {
-	    private ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+public class MensajeAdapter extends ArrayAdapter<Mensaje> {
+	    private ArrayList<Mensaje> Mensajes = new ArrayList<Mensaje>();
 	    
-	    public ClienteAdapter(Context context, int resource, ArrayList<Cliente> data) {
+	    public MensajeAdapter(Context context, int resource, ArrayList<Mensaje> data) {
 	        super(context, resource, data);
-	        clientes = data;
+	        Mensajes = data;
 	    }
 	    	    
 	    @Override
 	    public View getView(int position, View convertView, ViewGroup parent) {
 	    	if (convertView == null) {
 		        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		        convertView = inflater.inflate(R.layout.cliente_adapter, null);
+		        convertView = inflater.inflate(R.layout.mensajes_adapter, null);
 	        }
 	        
-	        ((TextView)convertView.findViewById(R.id.cliente_text)).setText(clientes.get(position).getNombre());
+	        ((TextView)convertView.findViewById(R.id.label)).setText(Mensajes.get(position).getMensaje());
 	        
 	        /*
-	        if (clientes.get(position).getTiene_mensajes()) {
+	        if (Mensajes.get(position).getTiene_mensajes()) {
 	        	convertView.findViewById(R.id.mensaje_icon).setVisibility(View.VISIBLE);
 	        } else {
 	        	convertView.findViewById(R.id.mensaje_icon).setVisibility(View.INVISIBLE);

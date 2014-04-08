@@ -124,12 +124,12 @@ public class Login extends Activity {
 
 
 	
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.login, menu);
 		return true;
-	}
+	}*/
 	
 	
 	public void post(View view) {
@@ -219,7 +219,11 @@ public class Login extends Activity {
 					String username=jsonObject.getString("username");
 					
 					String jsonConfigs=jsonObject.getString("configuraciones");
+					
 					JSONArray jarrayConfgs=new JSONArray(jsonConfigs);
+					
+					boolean notificaciones = jsonObject.getBoolean("notificaciones");
+					((Sistema)getApplicationContext()).setNotification(notificaciones);
 					
 					for(int i=0;i<jarrayConfgs.length();i++)
 					{
@@ -227,7 +231,7 @@ public class Login extends Activity {
 						
 						if(conf.get("clave").toString().equals("contado"))
 						{
-							decuento_contado= Integer.parseInt(conf.get("valor").toString());
+							((Sistema)getApplicationContext()).setDescuento_contado( Integer.parseInt(conf.get("valor").toString()));
 						}
 				
 					}

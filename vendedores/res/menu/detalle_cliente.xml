@@ -2,7 +2,7 @@
     
     
     <item android:id="@+id/notificacion"
-          android:icon="@drawable/ic_buscar"
+          android:icon="@drawable/ic_action_notificacion"
           android:title="@string/todo" 
           android:visible="false"
           android:showAsAction ="ifRoom"/>

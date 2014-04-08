@@ -50,12 +50,14 @@ public class ListadoClientes extends Activity {
 	private boolean ver_todos=true;
 	private ListView listaClientes;
 	private ClienteAdapter adaptador_lista;
+	ArrayAdapter<Cliente> clientes_para_buscador;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_listado_clientes);
-		usuario=getIntent().getExtras().getParcelable("usuario");
+		usuario=((Sistema)getApplicationContext()).getUsu();
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
+		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,usuario.getListaClientes());
 		adaptador_lista = new ClienteAdapter(this.getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
 		set_lista_clientesAdapter(adaptador_lista);
 		
@@ -72,11 +74,12 @@ public class ListadoClientes extends Activity {
 		    			LongRunningGetIO thred=new LongRunningGetIO();
 		    			AsyncTask <Void, Void, List<Cliente> >  async=thred.execute();
 		    			adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , (ArrayList<Cliente>)async.get());
+		    			clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,(ArrayList<Cliente>)async.get());
 		    			set_lista_clientesAdapter(adaptador_lista);
 		    			ver_todos=false;
 		    			b.setText("Ver todos los clientes");
 		    			AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		    			buscador.setAdapter(adaptador_lista);
+		    			buscador.setAdapter(clientes_para_buscador);
 		    			buscador.setDropDownHeight(0);
 		    			buscador.setTextColor(Color.LTGRAY);
 		    			
@@ -91,8 +94,10 @@ public class ListadoClientes extends Activity {
 		    		set_lista_clientesAdapter(adaptador_lista);
 		    		ver_todos=true;
 		    		b.setText("Ver clientes sin visitar");
+		    		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,usuario.getListaClientes());
+	    			
 		    		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		    		buscador.setAdapter(adaptador_lista);
+		    		buscador.setAdapter(clientes_para_buscador);
 		    		buscador.setDropDownHeight(0);
 		    		buscador.setTextColor(Color.LTGRAY);
 		    	}
@@ -101,7 +106,7 @@ public class ListadoClientes extends Activity {
 		
 		
 		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		buscador.setAdapter(adaptador_lista);
+		buscador.setAdapter(clientes_para_buscador);
 		buscador.setDropDownHeight(0);
 		buscador.setTextColor(Color.LTGRAY);
 		
@@ -116,8 +121,12 @@ public class ListadoClientes extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		
 		getMenuInflater().inflate(R.menu.listado_clientes, menu);
+		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		
+		RespuestasAsincronasReceiver ra=new RespuestasAsincronasReceiver();
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ra,new IntentFilter("respuestaAsincrona"));
 		
 		return true;
 		
@@ -291,8 +300,6 @@ private void set_lista_clientesAdapter(ArrayAdapter<Cliente> adaptador_lista)
 					Cliente seleccionado = (Cliente)parent.getItemAtPosition(position);
 					Intent loc = new Intent(getApplicationContext(),DetalleCliente.class); 
 			        loc.putExtra("cliente",seleccionado);
-			        loc.putExtra("usuario",usuario);
-			        loc.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			        startActivity(loc);
 			  }
 		});

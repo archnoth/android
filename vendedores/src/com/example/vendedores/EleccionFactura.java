@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -117,9 +118,25 @@ public class EleccionFactura extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.factura, menu);
+		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
 		return true;
+		
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		
+			case R.id.notificacion:
+				Intent notificaciones= new Intent(getApplicationContext(),Notificaciones.class);
+		    	startActivity(notificaciones);
+		    	return true;
+				
+			default:
+				return true;
+		}
 	}
 }
 	

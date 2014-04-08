@@ -462,8 +462,13 @@ public class Factura extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.factura, menu);
+		
+		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
+		
+		RespuestasAsincronasReceiver ra=new RespuestasAsincronasReceiver();
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ra,new IntentFilter("respuestaAsincrona"));
 		
 		
 		if(ultima_venta!=null){
@@ -537,6 +542,11 @@ public class Factura extends Activity {
 		    	detalle_venta.putExtra("venta",ultima_venta);
 		    	startActivity(detalle_venta);
 		    	return true;
+		   
+		    case R.id.notificacion:
+				Intent notificaciones= new Intent(getApplicationContext(),Notificaciones.class);
+		    	startActivity(notificaciones);
+		    	return true;	
 		    	
 		    default:
 		    	

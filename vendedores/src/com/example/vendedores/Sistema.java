@@ -8,7 +8,7 @@ public class Sistema extends Application{
 
 	private Usuario usu;
 	private Boolean notification=false;
-
+	private Integer descuento_contado;
 	public Usuario getUsu() {
 		return usu;
 	}
@@ -23,6 +23,14 @@ public class Sistema extends Application{
 
 	public void setNotification(Boolean notification) {
 		this.notification = notification;
+	}
+
+	public Integer getDescuento_contado() {
+		return descuento_contado;
+	}
+
+	public void setDescuento_contado(Integer descuento_contado) {
+		this.descuento_contado = descuento_contado;
 	}
 	
 }
