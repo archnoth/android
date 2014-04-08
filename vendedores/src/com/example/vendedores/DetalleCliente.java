@@ -57,7 +57,7 @@ import android.widget.Toast;
 import android.widget.Button;
 
 public class DetalleCliente extends Activity {
-	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
+	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Mi�rcoles","Jueves","Viernes","S�bado"}; 
 	private Venta venta;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +80,13 @@ public class DetalleCliente extends Activity {
 		TextView hora_entrega_desde=(TextView)findViewById(R.id.editHora_de_entrega_desde);
 		TextView hora_entrega_hasta=(TextView)findViewById(R.id.editHora_de_entrega_hasta);
 		
-		if(cliente.getNombre()!=null) nombre.setText("Nombre:\n"+cliente.getNombre());
+		if(cliente.getNombre()!=null) nombre.setText(cliente.getNombre());
 		else nombre.setVisibility(View.GONE);
-		if(cliente.getRut()!=null) rut.setText("Rut:\n"+cliente.getRut());
+		if(cliente.getRut()!=null) rut.setText(cliente.getRut());
 		else rut.setVisibility(View.GONE);
 		
 		if(cliente.getDireccion()!=null){ 
-			direccion.setText("Dir:\n"+cliente.getDireccion());
+			direccion.setText(cliente.getDireccion());
 			if (cliente.getLatitud()!=null & cliente.getLatitud()!=null)
 			direccion.setTextColor(getResources().getColor(color.azul));
 			direccion.setOnClickListener(new OnClickListener() {
@@ -110,7 +110,7 @@ public class DetalleCliente extends Activity {
 		if(cliente.getTel()!=null)
 		{
 			tel.setTextColor(getResources().getColor(R.color.azul));
-			tel.setText("Tel:\n"+	cliente.getTel());
+			tel.setText(cliente.getTel());
 			tel.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -126,7 +126,7 @@ public class DetalleCliente extends Activity {
 		if(cliente.getTel2()!=null)
 		{
 			tel2.setTextColor(getResources().getColor(R.color.azul));
-			tel2.setText("Tel2:\n"+cliente.getTel2());
+			tel2.setText(cliente.getTel2());
 			
 			tel2.setOnClickListener(new OnClickListener() {
 				
@@ -143,7 +143,7 @@ public class DetalleCliente extends Activity {
 		if(cliente.getCelular()!=null)
 		{
 			celular.setTextColor(getResources().getColor(R.color.azul));
-			celular.setText("Celular:\n"+	cliente.getCelular());
+			celular.setText(cliente.getCelular());
 			celular.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -160,7 +160,7 @@ public class DetalleCliente extends Activity {
 		{
 	
 			email.setTextColor(getResources().getColor(R.color.azul));
-			email.setText("Email:\n"+cliente.getEmail());
+			email.setText(cliente.getEmail());
 			email.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -181,7 +181,7 @@ public class DetalleCliente extends Activity {
 		if(cliente.getWeb()!=null)
 		{
 			web.setTextColor(getResources().getColor(R.color.azul));
-			web.setText("Web:\n"+cliente.getWeb());
+			web.setText(cliente.getWeb());
 			web.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -199,7 +199,7 @@ public class DetalleCliente extends Activity {
 			if (cliente.getLatitud_entrega()!=null & cliente.getLatitud_entrega()!=null)
 				lugar_entrega.setTextColor(getResources().getColor(color.azul));
 			
-			lugar_entrega.setText("Dirección de entrega:\n"+cliente.getLugar_entrega());
+			lugar_entrega.setText(cliente.getLugar_entrega());
 			lugar_entrega.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -215,11 +215,11 @@ public class DetalleCliente extends Activity {
 			});
 		}
 		else lugar_entrega.setVisibility(View.GONE);
-		if(cliente.getDia_de_entrega()!=null)dia_entrega.setText("Día de entrega:\n"+dias_de_semana[cliente.getDia_de_entrega()]);
+		if(cliente.getDia_de_entrega()!=null)dia_entrega.setText(dias_de_semana[cliente.getDia_de_entrega()]);
 		else dia_entrega.setVisibility(View.GONE);
-		if(cliente.getHora_de_entrega_desde()!=null)hora_entrega_desde.setText("\nHora de entrega:\n\ndesde: " +cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_desde().get(Calendar.MINUTE) + "hs.");
+		if(cliente.getHora_de_entrega_desde()!=null)hora_entrega_desde.setText(cliente.getHora_de_entrega_desde().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_desde().get(Calendar.MINUTE) + "hs.");
 		else hora_entrega_desde.setVisibility(View.GONE);
-		if(cliente.getHora_de_entrega_hasta()!=null)hora_entrega_hasta.setText(	"hasta: " +	cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
+		if(cliente.getHora_de_entrega_hasta()!=null)hora_entrega_hasta.setText(cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
 	
 		
 		//ImageView mainImageView = (ImageView) findViewById(R.id.imageView);

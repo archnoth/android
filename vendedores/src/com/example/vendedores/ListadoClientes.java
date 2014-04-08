@@ -57,11 +57,13 @@ public class ListadoClientes extends Activity {
 		setContentView(R.layout.activity_listado_clientes);
 		usuario=((Sistema)getApplicationContext()).getUsu();
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
-		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,usuario.getListaClientes());
 		adaptador_lista = new ClienteAdapter(this.getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
 		set_lista_clientesAdapter(adaptador_lista);
-		
-		
+		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
+		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,usuario.getListaClientes());
+		buscador.setAdapter(adaptador_lista);
+		buscador.setDropDownHeight(250);
+		buscador.setTextColor(Color.LTGRAY);
 		
 		final Button b = (Button) findViewById(R.id.btn_clientes_sin_visitar);
 		   b.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +81,7 @@ public class ListadoClientes extends Activity {
 		    			ver_todos=false;
 		    			b.setText("Ver todos los clientes");
 		    			AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		    			buscador.setAdapter(clientes_para_buscador);
+		    			buscador.setAdapter(adaptador_lista);
 		    			buscador.setDropDownHeight(0);
 		    			buscador.setTextColor(Color.LTGRAY);
 		    			
@@ -97,20 +99,11 @@ public class ListadoClientes extends Activity {
 		    		clientes_para_buscador=new ArrayAdapter<Cliente>(getApplicationContext(),R.layout.array_adapter_clientes,usuario.getListaClientes());
 	    			
 		    		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		    		buscador.setAdapter(clientes_para_buscador);
+		    		buscador.setAdapter(adaptador_lista);
 		    		buscador.setDropDownHeight(0);
 		    		buscador.setTextColor(Color.LTGRAY);
 		    	}
 		    }});
-
-		
-		
-		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		buscador.setAdapter(clientes_para_buscador);
-		buscador.setDropDownHeight(0);
-		buscador.setTextColor(Color.LTGRAY);
-		
-		
 	}
 	
    
