@@ -2,7 +2,6 @@ package com.example.vendedores;
 
 import java.text.SimpleDateFormat;
 
-import com.example.dominio.Cliente;
 import com.example.dominio.Venta;
 
 import android.app.ActionBar;

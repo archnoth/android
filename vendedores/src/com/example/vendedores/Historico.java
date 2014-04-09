@@ -1,37 +1,24 @@
 package com.example.vendedores;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Random;
 
 import com.example.dominio.Cliente;
 import com.example.dominio.Usuario;
 import com.example.dominio.Venta;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
-import android.view.WindowManager.LayoutParams;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.annotation.TargetApi;
 import android.content.IntentFilter;
@@ -58,43 +45,69 @@ public class Historico extends Activity {
 		producto_porcentaje=(HashMap<Integer, Double>)getIntent().getExtras().getSerializable("dict");
 		
 		 Iterator<Integer> iterador = producto_porcentaje.keySet().iterator();
-		 Double mayor=0.0; 
+		 Double mayor=0.0;
 		 while(iterador.hasNext())
-		  {
-		   
+		  { 
 		   Integer codigo = iterador.next();
 		   if(producto_porcentaje.get(codigo) > mayor){
 			    mayor = producto_porcentaje.get(codigo);
 		   }
+		  }
+		 iterador = producto_porcentaje.keySet().iterator();
+		 LinearLayout grafica = (LinearLayout) findViewById(R.id.tabla_historico);
+		 ((FrameLayout.LayoutParams)grafica.getLayoutParams()).setMargins(0,0,0,10);
+		 Random id_generator = new Random();
+		 while(iterador.hasNext())
+		 {
+		   Integer codigo = iterador.next();
+		   RelativeLayout barra=new RelativeLayout(getApplicationContext());
+		   RelativeLayout.LayoutParams layoutParams= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		   barra.setLayoutParams(layoutParams);
 		   
-		   LinearLayout linear=new LinearLayout(getApplicationContext());
-		   LinearLayout .LayoutParams layoutParams= new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 
-		   LinearLayout.LayoutParams.WRAP_CONTENT);
-		   layoutParams.setMargins(0, 0, 0, 20);
-		   linear.setLayoutParams(layoutParams);
 		   
-		                      
+		   TextView text_codigo=new TextView(getApplicationContext());
+		   text_codigo.setText(codigo.toString());
+		   text_codigo.setBackgroundColor(getResources().getColor(R.color.white));
+		   text_codigo.setTextSize(20);
+		   text_codigo.setTextColor(Color.BLACK);
+		   text_codigo.setId(Math.abs(id_generator.nextInt()));
+		   barra.addView(text_codigo);
+		   RelativeLayout.LayoutParams text_codigo_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,45);
+		   text_codigo_params.topMargin=5;
+		   text_codigo_params.bottomMargin=5;
+		   text_codigo_params.leftMargin=5;
+		   text_codigo.setLayoutParams(text_codigo_params);
+		   text_codigo.setWidth(70);
+		   
 		   TextView text_barra_porcentaje=new TextView(getApplicationContext());
-		   text_barra_porcentaje.setText(codigo.toString());
 		   text_barra_porcentaje.setTextColor(Color.BLACK);
 		   text_barra_porcentaje.setTextSize(20);
 		   text_barra_porcentaje.setSingleLine(true);
 		   text_barra_porcentaje.setBackgroundColor(getResources().getColor(R.color.blue));
 		   text_barra_porcentaje.setWidth((int)(producto_porcentaje.get(codigo)*260/mayor));
-		   text_barra_porcentaje.setHeight(45);
-		   linear.addView(text_barra_porcentaje);
-		   
+		   text_barra_porcentaje.setId(id_generator.nextInt());
+		   barra.addView(text_barra_porcentaje);
+		   RelativeLayout.LayoutParams text_barra_porcentaje_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,45);
+		   text_barra_porcentaje_params.topMargin=5;
+		   text_barra_porcentaje_params.bottomMargin=5;
+		   text_barra_porcentaje_params.leftMargin=5;
+		   text_barra_porcentaje_params.addRule(RelativeLayout.RIGHT_OF, text_codigo.getId());
+		   text_barra_porcentaje.setLayoutParams(text_barra_porcentaje_params);
+		 
 		   TextView text_porcentaje=new TextView(getApplicationContext());
 		   text_porcentaje.setText(producto_porcentaje.get(codigo).toString()+"%");
-		   text_porcentaje.setBackgroundColor(getResources().getColor(R.color.white));
-		   text_porcentaje.setWidth(60);
-		   text_porcentaje.setHeight(45);
-		   text_barra_porcentaje.setTextSize(20);
+		   text_porcentaje.setTextSize(20);
 		   text_porcentaje.setTextColor(Color.BLACK);
-		   linear.addView(text_porcentaje);
+		   barra.addView(text_porcentaje);
+		   RelativeLayout.LayoutParams text_porcentaje_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,45);
+		   text_porcentaje_params.topMargin=5;
+		   text_porcentaje_params.bottomMargin=5;
+		   text_porcentaje_params.leftMargin=5;
+		   text_porcentaje_params.addRule(RelativeLayout.RIGHT_OF, text_barra_porcentaje.getId());
+		   text_porcentaje.setLayoutParams(text_porcentaje_params);
+		   text_porcentaje.setWidth(70);
 		   
-		   android.widget.LinearLayout grafica = (LinearLayout) findViewById(R.id.lista_historico_grafica);
-		   grafica.addView(linear);
+		   grafica.addView(barra);
 		  }
 		  
 		}

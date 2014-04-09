@@ -75,17 +75,18 @@
         android:textSize="20sp" 
         android:layout_marginTop="10sp"/>
 
-    <EditText
+    <TextView
         android:id="@+id/titulo_eleccion_facura"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_factura_credito"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="28dp"
-        android:text="@string/titulo_eleccion_facura" >
+        android:text="@string/titulo_eleccion_facura" 
+        android:textSize="20sp">
 
         <requestFocus />
-    </EditText>
+    </TextView>
 
     <ProgressBar
         android:id="@+id/progressBarDetalleAFactura"
