@@ -4,13 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,37 +22,29 @@ import org.json.JSONObject;
 import com.example.dominio.Cliente;
 import com.example.dominio.Producto;
 import com.example.dominio.ProductoVenta;
-import com.example.dominio.Usuario;
 import com.example.dominio.Venta;
 import com.example.vendedores.R.color;
-import com.google.android.gms.internal.bj;
-
-
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
 public class DetalleCliente extends Activity {
-	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miï¿½rcoles","Jueves","Viernes","Sï¿½bado"}; 
+	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
 	private Venta venta;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -365,7 +352,6 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 			@Override
 			protected  Venta doInBackground(Void... params) {
 				venta=null;
-				ArrayList<ProductoVenta> lista = null;
 				HttpClient httpClient = new DefaultHttpClient();
 				 HttpContext localContext = new BasicHttpContext();
 				 
@@ -404,7 +390,6 @@ private class GetUltimaVenta extends AsyncTask <Void, Void, Venta > {
 							venta=new Venta(sys.getUsu(),(Cliente)getIntent().getExtras().getParcelable("cliente"),fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()),Integer.parseInt(jsonObject.get("tipo").toString()),Double.parseDouble(jsonObject.get("precio_sin_descuento").toString()));
 							
 							JSONArray jarray =(JSONArray)jsonObject.get("productos");
-							lista= new ArrayList<ProductoVenta>();
 							for(int i=0;i<jarray.length();i++)
 							{
 								JSONObject jsonPvp=(JSONObject)((JSONObject)jarray.get(i)).get("producto");

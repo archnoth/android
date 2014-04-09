@@ -50,7 +50,7 @@ public class ListadoClientes extends Activity {
 		setContentView(R.layout.activity_listado_clientes);
 		
 		
-		Intent servicio_datos = new Intent(this, ServicioCargarDatos.class);
+		Intent servicio_datos = new Intent(this, ServicioCargaProductos.class);
     	servicio_datos.putExtra("accion", "productos");
 		startService(servicio_datos);
 		

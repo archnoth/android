@@ -1,7 +1,4 @@
 package com.example.vendedores;
-import java.util.ArrayList;
-
-import com.example.dominio.Producto;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -21,8 +18,6 @@ import android.widget.TextView;
 
 public class EleccionFactura extends Activity {
 	
-	private ArrayList<Producto> lista_productos=null;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,11 +28,8 @@ public class EleccionFactura extends Activity {
 	    //quedo escuchando la carga de productos
 	    CargaDatosReceiver productosReceiver=new CargaDatosReceiver((TextView)findViewById(R.id.progressText));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(productosReceiver,new IntentFilter("cargaProductos"));
-		
 	    
-	    lista_productos=((Sistema)getApplicationContext()).getLista_productos();
-	    
-	    checkearProductos();
+		checkearProductos();
 	    
 	//buttons listeners
 	final Button btn_contado = (Button) findViewById(R.id.btn_factura_contado);  
@@ -139,7 +131,11 @@ public class EleccionFactura extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		
+		((Button)findViewById(R.id.btn_factura_credito)).setActivated(false);	
+		((Button)findViewById(R.id.btn_factura_contado)).setActivated(false);
+		((Button)findViewById(R.id.btn_visita)).setActivated(false);
+		((Button)findViewById(R.id.btn_nota_contado)).setActivated(false);
+		((Button)findViewById(R.id.btn_nota_credito)).setActivated(false);
 		checkearProductos();
 	}
 	
@@ -170,7 +166,7 @@ public class EleccionFactura extends Activity {
 	
 	private void checkearProductos()
 	{
-		if(((TextView)findViewById(R.id.progressText)).getText().toString().contains("100"))
+		if(((Sistema)getApplicationContext()).getTotal_productos() == ((Sistema)getApplicationContext()).getLista_productos().size())
 		{
 			findViewById(R.id.progressText).setVisibility(View.INVISIBLE);
 			((Button)findViewById(R.id.btn_factura_credito)).setEnabled(true);	

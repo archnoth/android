@@ -13,6 +13,8 @@ public class Sistema extends Application{
 	private Boolean notification=false;
 	private Integer descuento_contado;
 	private ArrayList<Producto> lista_productos= new ArrayList<Producto>();
+	private Integer total_productos = 0;
+	private String registration_id = "";
 	
 	public Usuario getUsu() {
 		return usu;
@@ -44,6 +46,22 @@ public class Sistema extends Application{
 
 	public void setLista_productos(ArrayList<Producto> lista_productos) {
 		this.lista_productos = lista_productos;
+	}
+
+	public Integer getTotal_productos() {
+		return total_productos;
+	}
+
+	public void setTotal_productos(Integer total_productos) {
+		this.total_productos = total_productos;
+	}
+
+	public String getRegistration_id() {
+		return registration_id;
+	}
+
+	public void setRegistration_id(String registration_id) {
+		this.registration_id = registration_id;
 	}
 	
 }

@@ -66,9 +66,6 @@ public class Login extends Activity {
 	//for GCM
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	public static final String PROPERTY_REG_ID = "registration_id";
-	private static final String PROPERTY_APP_VERSION = "appVersion";
-	private GCMActivity googleGCMClient;
-	private Integer decuento_contado;
 	
 	String registrationID;
 	GoogleCloudMessaging gcm;
@@ -84,9 +81,9 @@ public class Login extends Activity {
 		 EditText username = (EditText)findViewById(R.id.editTextCMontoLabel);
     	 EditText password = (EditText)findViewById(R.id.editTextPassword);
     	 username.setHint("Nombre de usuario");
-    	 password.setHint("ContraseÃ±a");
+    	 password.setHint("Contraseña");
     	 
-    	 try{//checkeo si vengo de una notificacion
+    	 /*try{//checkeo si vengo de una notificacion
 	    	 if(getIntent().getExtras().getString("mensaje")!=null)
 	    	 {
 	    		 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -112,17 +109,29 @@ public class Login extends Activity {
     	 }catch(Exception e)
     	 {
     		 
-    	 }
+    	 }*/
     	 
     	 if (checkPlayServices()) {
  	        // If this check succeeds, proceed with normal processing.
  	        // Otherwise, prompt user to get valid Play Services APK.
-    		 registerInBackground();//llamo un proceso en backgroud para cargar los productos de la empresa
-    		 
+    		startService(new Intent(this, ServicioGoogleRegister.class));
  	    }
 	}
 
-
+	public boolean checkPlayServices() {
+	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+	    if (resultCode != ConnectionResult.SUCCESS) {
+	        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+	        	GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+	                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
+	        } else {
+	         
+	            finish();
+	        }
+	        return false;
+	    }
+	    return true;
+	}
 	
 	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,7 +146,23 @@ public class Login extends Activity {
 		b.setClickable(false);
 		b.setActivated(true);
 		findViewById(R.id.LoginSeekBar).setVisibility(View.VISIBLE);
-		new LongRunningGetIO().execute();
+		Intent login_service_intent = new Intent(this,ServicioLogin.class);
+		login_service_intent.putExtra("nombreUsuario", ((EditText)findViewById(R.id.editTextCMontoLabel)).getText().toString());
+		login_service_intent.putExtra("password", ((EditText)findViewById(R.id.editTextPassword)).getText().toString());
+		startService(login_service_intent);
+		
+		
+		// Luego de intentar logearse
+		if(usuario.getNombreUsuario()!=null)
+		{
+			findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
+			Intent loc = new Intent(getApplicationContext(),ListadoClientes.class); 
+	        loc.putExtra("usuario",usuario); 
+	        loc.putExtra("descuento_contado",context.getDescuento_contado());
+	        startActivity(loc);
+		}
+		b.setActivated(false);
+		b.setClickable(true);
     }
 	
 	@Override
@@ -154,213 +179,5 @@ public class Login extends Activity {
 		findViewById(R.id.LoginConectado).setVisibility(View.INVISIBLE);
 		((Button)findViewById(R.id.btn_ingresar)).setActivated(false);
 	}
-	
-	private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
-		
-		protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-	       InputStream in = entity.getContent();
-	         StringBuffer out = new StringBuffer();
-	         int n = 1;
-	         while (n>0) {
-	             byte[] b = new byte[4096];
-	             n =  in.read(b);
-	             if (n>0) out.append(new String(b, 0, n));
-	         }
-	         return out.toString();
-	    }
-		
-		@Override
-		protected String doInBackground(Void... params) {
-			 HttpClient httpClient = new DefaultHttpClient();
-			 HttpContext localContext = new BasicHttpContext();
-             HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/login/");
-             
-             // Add your data
-        	 EditText username = (EditText)findViewById(R.id.editTextCMontoLabel);
-        	 EditText password = (EditText)findViewById(R.id.editTextPassword);
-
-             Usuario usuario_login = new Usuario("","",username.getText().toString(),password.getText().toString(),"","",registrationID);
-             HashMap<String, String> dic_usu=new HashMap<String, String>();
-             dic_usu.put("nombreUsuario", usuario_login.getNombreUsuario());
-             dic_usu.put("password", usuario_login.getPassword());
-             dic_usu.put("device_id", "");//registrationID);
-             //String dataString="{\"nombreUsuario\":\""+usuario_login.getNombreUsuario()+"\",\"password\":\""+usuario_login.getPassword()+"\",\"device_id\":\""+registrationID+"\"}";
-             Gson gson = new Gson();
-             String dataString = gson.toJson(dic_usu).toString();
-             
-             // Execute HTTP Post Request
-             String text = null;
-             try {
-            	 StringEntity se = new StringEntity(dataString);
-            	 se.setContentEncoding("UTF-8");
-            	 se.setContentType("application/json");
-            	 httpPost.setEntity(se);
-            	 ((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(10);
-            	 HttpResponse response = httpClient.execute(httpPost, localContext);
-            	 ((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(40);
-            	 HttpEntity entity = response.getEntity();
-                   
-                   text = getASCIIContentFromEntity(entity);
-                   
-             } catch (Exception e) {
-            	 return e.getLocalizedMessage();
-             }
-             return text; 
-        
-	}	
-		
-		protected void onPostExecute(String results) {
-			if (results!=null) {			
-				JSONObject jsonObject;
-				try {
-					jsonObject = new JSONObject(results);				
-					String api_key = jsonObject.getString("api_key");
-					//String device_id=jsonObject.getString("device_id");
-					String username=jsonObject.getString("username");
-					
-					String jsonConfigs=jsonObject.getString("configuraciones");
-					
-					JSONArray jarrayConfgs=new JSONArray(jsonConfigs);
-					
-					boolean notificaciones = jsonObject.getBoolean("notificaciones");
-					((Sistema)getApplicationContext()).setNotification(notificaciones);
-					
-					for(int i=0;i<jarrayConfgs.length();i++)
-					{
-						JSONObject conf= jarrayConfgs.getJSONObject(i);
-						
-						if(conf.get("clave").toString().equals("contado"))
-						{
-							((Sistema)getApplicationContext()).setDescuento_contado( Integer.parseInt(conf.get("valor").toString()));
-						}
-				
-					}
-					
-					String jsonClientes=jsonObject.getString("user_clients");
-					JSONArray jarray=new JSONArray(jsonClientes);
-					context.setUsu(new Usuario("", "", username, "","", api_key, registrationID));
-					usuario=context.getUsu();
-					((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(10);
-					int porcentaje_progreso=0;
-					if(jarray.length()>0)
-					{
-						porcentaje_progreso = 60 + (40/jarray.length());
-						for(int i=0;i<jarray.length();i++)
-						{
-							JSONObject dic_cliente= jarray.getJSONObject(i);
-							
-							Cliente cli= new Cliente(dic_cliente.getString("nombre"),dic_cliente.getString("direccion"),
-									dic_cliente.getString("rut"),"",dic_cliente.getString("dia_entrega"),dic_cliente.getString("hora_entrega_desde"),dic_cliente.getString("minuto_entrega_desde"),
-									dic_cliente.getString("hora_entrega_hasta"),dic_cliente.getString("minuto_entrega_hasta"),dic_cliente.getString("tel"),dic_cliente.getString("tel2"),
-									dic_cliente.getString("celular"),dic_cliente.getString("email"),dic_cliente.getString("web"),
-									dic_cliente.getString("lugar_entrega"),dic_cliente.getInt("tipo"),dic_cliente.getInt("descuento"),dic_cliente.getString("latitud"),dic_cliente.getString("longitud"),
-									dic_cliente.getString("latitud_entrega"),dic_cliente.getString("longitud_entrega"),dic_cliente.getBoolean("tiene_mensajes"));
-							
-							usuario.getListaClientes().add(cli);
-							((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(porcentaje_progreso);
-						}
-						
-					}else ((SeekBar)findViewById(R.id.LoginSeekBar)).setProgress(100);
-					
-					if(usuario.getNombreUsuario()!=null)
-					{
-						findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
-						Intent loc = new Intent(getApplicationContext(),ListadoClientes.class); 
-				        loc.putExtra("usuario",usuario); 
-				        loc.putExtra("descuento_contado",decuento_contado);
-				        startActivity(loc);
-					}
-					
-				} catch (JSONException e) {
-					Toast.makeText(Login.this,results, Toast.LENGTH_LONG).show();
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.out.println(e.getCause());
-				}	
-			}
-			
-			findViewById(R.id.LoginSeekBar).setVisibility(View.INVISIBLE);
-			Button b = (Button)findViewById(R.id.btn_ingresar);
-			b.setActivated(false);
-			b.setClickable(true);
-		}
-    }
-    
-	
-	public boolean checkPlayServices() {
-	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-	    if (resultCode != ConnectionResult.SUCCESS) {
-	        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-	            GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-	                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
-	        } else {
-	         
-	            finish();
-	        }
-	        return false;
-	    }
-	    return true;
-	}
-	private static int getAppVersion(Context context) {
-	    try {
-	        PackageInfo packageInfo = context.getPackageManager()
-	                .getPackageInfo(context.getPackageName(), 0);
-	        return packageInfo.versionCode;
-	    } catch (NameNotFoundException e) {
-	        // should never happen
-	        throw new RuntimeException("Could not get package name: " + e);
-	    }
-	}
-	private SharedPreferences getGCMPreferences(Context context) {
-	    // This sample app persists the registration ID in shared preferences, but
-	    // how you store the regID in your app is up to you.
-	    return getSharedPreferences(GCMActivity.class.getSimpleName(),
-	            Context.MODE_PRIVATE);
-	}
-	private void storeRegistrationId(Context context, String regId) {
-	    final SharedPreferences prefs = getGCMPreferences(context);
-	    int appVersion = getAppVersion(context);
-	  
-	    SharedPreferences.Editor editor = prefs.edit();
-	    editor.putString(PROPERTY_REG_ID, regId);
-	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
-	    editor.commit();
-	}
-	
-
-	
-	private void registerInBackground(){
-		
-		 new AsyncTask() {
-
-			@Override
-			protected String doInBackground(Object... params) {
-				
-	            try {
-	                if (gcm == null) {
-	                    gcm = GoogleCloudMessaging.getInstance(context);
-	                }
-	                registrationID = gcm.register(SENDER_ID);
-	                
-	                //sendRegistrationIdToBackend();
-	                // Persist the regID - no need to register again.
-	                storeRegistrationId(context, registrationID);
-	            } catch (IOException ex) {
-	            	registrationID = "Error :" + ex.getMessage();
-	                // If there is an error, don't just keep trying to register.
-	                // Require the user to click a button again, or perform
-	                // exponential back-off.
-	            }
-	            return registrationID;
-			}
-			@Override
-	        protected void onPostExecute(Object msg) {
-	           // mDisplay.append(msg.toString() + "\n");
-	        }
-			
-			}.execute(null, null, null);
-	}
-
-
 	
 }

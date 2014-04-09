@@ -41,7 +41,16 @@
 
         <service android:name="com.example.vendedores.GcmIntentService" />
 		 <service
+            android:name=".ServicioGoolgeResister"
+            android:exported="false"/>
+		 <service
+            android:name=".ServicioLogin"
+            android:exported="false"/>
+		 <service
             android:name=".ServicioMensajes"
+            android:exported="false"/>
+		<service
+            android:name=".ServicioCargaProductos"
             android:exported="false"/>
         <activity
             android:name="com.example.vendedores.Login"
@@ -103,10 +112,6 @@
         	android:name="com.example.vendedores.Datos_ultima_venta"
             android:label="@string/datos_ultima_venta"
             android:parentActivityName="com.example.vendedores.ListadoClientes" >
-        </activity>
-        <activity
-            android:name="com.example.vendedores.Datos_ultima_venta"
-            android:label="@string/datos_ultima_venta" >
         </activity>
          <activity
             android:name="com.example.vendedores.Notificaciones"
