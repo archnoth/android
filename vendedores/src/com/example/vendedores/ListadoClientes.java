@@ -17,23 +17,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.example.dominio.Cliente;
 import com.example.dominio.Usuario;
-import com.example.vendedores.R.color;
 import com.example.vendedores.notificationReceiver;
-import android.R.integer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.Notification.Action;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.sax.TextElementListener;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.textservice.TextInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -41,7 +35,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 
 public class ListadoClientes extends Activity {
@@ -61,7 +54,7 @@ public class ListadoClientes extends Activity {
 		set_lista_clientesAdapter(adaptador_lista);
 		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
 		buscador.setAdapter(adaptador_lista);
-		buscador.setDropDownHeight(250);
+		buscador.setDropDownHeight(0);
 		buscador.setTextColor(Color.LTGRAY);
 		
 		final Button b = (Button) findViewById(R.id.btn_clientes_sin_visitar);
@@ -100,11 +93,6 @@ public class ListadoClientes extends Activity {
 		    		buscador.setTextColor(Color.LTGRAY);
 		    	}
 		    }});
-
-		   
-		
-		
-		
 
 	}
 	
