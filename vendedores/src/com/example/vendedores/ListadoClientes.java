@@ -48,6 +48,12 @@ public class ListadoClientes extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_listado_clientes);
+		
+		
+		Intent servicio_datos = new Intent(this, ServicioCargarDatos.class);
+    	servicio_datos.putExtra("accion", "productos");
+		startService(servicio_datos);
+		
 		usuario=((Sistema)getApplicationContext()).getUsu();
 		listaClientes=(ListView)findViewById(R.id.ViewListaVendedores);
 		adaptador_lista = new ClienteAdapter(this.getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
@@ -111,6 +117,7 @@ public class ListadoClientes extends Activity {
 		RespuestasAsincronasReceiver ra=new RespuestasAsincronasReceiver();
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ra,new IntentFilter("respuestaAsincrona"));
 		
+    	
 		return true;
 		
 	}

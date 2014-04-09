@@ -1,19 +1,27 @@
 package com.example.vendedores;
+import java.util.ArrayList;
+
+import com.example.dominio.Producto;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 
 public class EleccionFactura extends Activity {
 	
+	private ArrayList<Producto> lista_productos=null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,14 +29,23 @@ public class EleccionFactura extends Activity {
 		setContentView(R.layout.eleccion_factura_activity);
 		ActionBar actionBar = getActionBar();
 	    actionBar.setDisplayHomeAsUpEnabled(true);
-	
+	    
+	    //quedo escuchando la carga de productos
+	    CargaDatosReceiver productosReceiver=new CargaDatosReceiver((TextView)findViewById(R.id.progressText));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(productosReceiver,new IntentFilter("cargaProductos"));
+		
+	    
+	    lista_productos=((Sistema)getApplicationContext()).getLista_productos();
+	    
+	    checkearProductos();
+	    
 	//buttons listeners
 	final Button btn_contado = (Button) findViewById(R.id.btn_factura_contado);  
 	btn_contado.setOnClickListener(new View.OnClickListener() {
 	   
 		   public void onClick(View v) {
 			   ((Button)v).setActivated(true);
-			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
+			   
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -42,7 +59,7 @@ public class EleccionFactura extends Activity {
 	   
 		   public void onClick(View v) {
 			   ((Button)v).setActivated(true);
-			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
+			   
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -56,7 +73,7 @@ public class EleccionFactura extends Activity {
 	   
 		   public void onClick(View v) {
 			   ((Button)v).setActivated(true);
-			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
+			   
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -72,7 +89,7 @@ public class EleccionFactura extends Activity {
 	   
 		   public void onClick(View v) {
 			   ((Button)v).setActivated(true);
-			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
+			   
 			    Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -89,7 +106,7 @@ public class EleccionFactura extends Activity {
 	   
 		   public void onClick(View v) {
 			   ((Button)v).setActivated(true);
-			   findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.VISIBLE);
+			   
 			   Intent fac_intent = new Intent(getApplicationContext(),VisitaActivity.class); 
 				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -101,17 +118,29 @@ public class EleccionFactura extends Activity {
 	  
 	   });
 	
+	final TextView textoCagaProd = (TextView)findViewById(R.id.progressText);  
+	textoCagaProd.addTextChangedListener(new TextWatcher() {
+		
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {	
+		}
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+		}
+		@Override
+		public void afterTextChanged(Editable s) {
+			checkearProductos();	
+		}
+	});
+	
 	}//onCreate
 	
 	@Override
 	protected void onResume(){
 		super.onResume();
-		findViewById(R.id.progressBarDetalleAFactura).setVisibility(View.INVISIBLE);
-		((Button)findViewById(R.id.btn_factura_credito)).setActivated(false);
-		((Button)findViewById(R.id.btn_factura_contado)).setActivated(false);
-		((Button)findViewById(R.id.btn_visita)).setActivated(false);
-		((Button)findViewById(R.id.btn_nota_contado)).setActivated(false);
-		((Button)findViewById(R.id.btn_nota_credito)).setActivated(false);
+		
+		checkearProductos();
 	}
 	
 	@Override
@@ -136,6 +165,20 @@ public class EleccionFactura extends Activity {
 				
 			default:
 				return true;
+		}
+	}
+	
+	private void checkearProductos()
+	{
+		if(((TextView)findViewById(R.id.progressText)).getText().toString().contains("100"))
+		{
+			findViewById(R.id.progressText).setVisibility(View.INVISIBLE);
+			((Button)findViewById(R.id.btn_factura_credito)).setEnabled(true);	
+			((Button)findViewById(R.id.btn_factura_contado)).setEnabled(true);
+			((Button)findViewById(R.id.btn_visita)).setEnabled(true);
+			((Button)findViewById(R.id.btn_nota_contado)).setEnabled(true);
+			((Button)findViewById(R.id.btn_nota_credito)).setEnabled(true);
+			
 		}
 	}
 }

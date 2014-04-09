@@ -57,7 +57,7 @@ import android.widget.Toast;
 import android.widget.Button;
 
 public class DetalleCliente extends Activity {
-	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
+	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miï¿½rcoles","Jueves","Viernes","Sï¿½bado"}; 
 	private Venta venta;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -261,7 +261,7 @@ public class DetalleCliente extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.INVISIBLE);
+		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.INVISIBLE);
 		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(false);
 		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(false);
 		((Button)findViewById(R.id.btn_historico)).setActivated(false);
@@ -269,7 +269,7 @@ public class DetalleCliente extends Activity {
 	
 	public void to_factura_activity(View view){
 		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(true);
-		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
+		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
 		Intent fac_intent = new Intent(getApplicationContext(),EleccionFactura.class); 
 		fac_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -279,7 +279,7 @@ public class DetalleCliente extends Activity {
 	
 	public void to_factura_activity_con_venta(View view){
 		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(true);
-		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
+		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
 		GetUltimaVenta thred=new GetUltimaVenta();//llamo un proceso en backgroud para realizar la venta
     	
     	//inicia el proceso de cargar la ultima venta
@@ -293,7 +293,7 @@ public class DetalleCliente extends Activity {
 		
         if(respuesta!=null)
         {
-        	((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
+        	((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
         	Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			fac_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
 			fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -304,14 +304,14 @@ public class DetalleCliente extends Activity {
         }else
 	        {
 	        	 Toast.makeText(DetalleCliente.this,"No hay ventas asociadas para este cliente",Toast.LENGTH_LONG).show(); 
-	        	 ((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.INVISIBLE);
+	        	 ((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.INVISIBLE);
 	        }//aca en el else tengo que informar sobre el error al levantar las estadisticas
 	}
 	
 	
 public void to_historico_activity(View view){
 		((Button)findViewById(R.id.btn_historico)).setActivated(true);
-		((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.VISIBLE);
+		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
 		GetHistorico thread=new GetHistorico();//llamo un proceso en backgroud para realizar la estadistica
     	
     	//inicia el proceso de cargar estadisticas del cliente
@@ -336,7 +336,7 @@ public void to_historico_activity(View view){
         else
         {
         	 Toast.makeText(DetalleCliente.this,"No hay ventas asociadas para este cliente",Toast.LENGTH_LONG).show(); 
-        	 ((ProgressBar)findViewById(R.id.progressBarDetalleAFactura)).setVisibility(View.INVISIBLE);
+        	 ((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.INVISIBLE);
         }//aca en el else tengo que informar sobre el error al levantar las estadisticas
 	}
 	

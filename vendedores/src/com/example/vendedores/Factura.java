@@ -97,26 +97,15 @@ public class Factura extends Activity {
 		tipo=getIntent().getExtras().getInt("tipo");
 		 
 
-		LongRunningGetIO thred = new LongRunningGetIO();// llamo un proceso en
-														// backgroud para cargar
-														// los productos de la
-														// empresa
-		AsyncTask<Void, Void, List<Producto>> async = thred.execute();
-		try {
-			lista_productos = (ArrayList<Producto>) async.get();
-			if (lista_productos != null)
-				diccionarioProductos = new HashMap<String, Producto>();
+		lista_productos = ((Sistema)getApplicationContext()).getLista_productos();
+		if (lista_productos.size()>0){
+			diccionarioProductos = new HashMap<String, Producto>();
 			for (int i = 0; i < lista_productos.size(); i++) {
-				diccionarioProductos.put(lista_productos.get(i).getCodigo(),
-						lista_productos.get(i));
+			
+				diccionarioProductos.put(lista_productos.get(i).getCodigo(),lista_productos.get(i));
 			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		}else{Toast.makeText(getApplicationContext(), "MAnejo el tema de la espera",Toast.LENGTH_SHORT).show();}
 		ultima_venta = null;
 		try {
 			ultima_venta = (Venta) getIntent().getExtras().getParcelable("venta");
@@ -627,70 +616,7 @@ public class Factura extends Activity {
 	    }
 	}
 	
-private class LongRunningGetIO extends AsyncTask <Void, Void, List<Producto> > {
-		
-		 
-	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-       InputStream in = entity.getContent();
-         StringBuffer out = new StringBuffer();
-         int n = 1;
-         while (n>0) {
-             byte[] b = new byte[4096];
-             n =  in.read(b);
-             if (n>0) out.append(new String(b, 0, n));
-         }
-         return out.toString();
-    }
-	
-	@Override
-	protected  List<Producto> doInBackground(Void... params) {
-		ArrayList<Producto> lista = null;
-		HttpClient httpClient = new DefaultHttpClient();
-		 HttpContext localContext = new BasicHttpContext();
-         HttpGet httpGet = new HttpGet("http://ventas.jm-ga.com/api/productos/"+((Usuario)getIntent().getExtras().getParcelable("usuario")).getKey()+"/");
-           
-  
-             // Execute HTTP Post Request
-         String text = null;
-         try {
-        	 HttpResponse response = httpClient.execute(httpGet, localContext);
-        	 HttpEntity entity = response.getEntity();
-               
-             text = getASCIIContentFromEntity(entity);
-               
-         } catch (Exception e) {
-        	 
-         }
-			// return text;
-			if (text != null) {
 
-				JSONObject jsonObject;
-				try {
-					jsonObject = new JSONObject(text);
-
-					JSONArray jarray = (JSONArray) jsonObject.get("objects");
-					lista = new ArrayList<Producto>();
-					for (int i = 0; i < jarray.length(); i++) {
-						JSONObject dic_producto = jarray.getJSONObject(i);
-						Producto prod = new Producto(
-								dic_producto.getString("nombre"),
-								new BigDecimal(dic_producto.getDouble("precio_cliente_final")),
-								new BigDecimal(dic_producto.getDouble("precio_distribuidor")),
-								new BigDecimal(dic_producto.getDouble("precio_mayorista")),
-								dic_producto.getString("codigo"),
-								dic_producto.getString("descripcion"));
-						lista.add(prod);
-					}
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-
-			}
-			return lista;
-		}
-
-	}
 
 private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
 

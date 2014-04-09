@@ -51,5 +51,7 @@
 	<string name="datos_ultima_venta">Datos Venta</string>
 	<string name="btn_marcar_leido">Marcar como leídos</string>
 	<string name="notificaciones">Notificaciones</string>
+	<string name="carga_de_productos">carga de productos 0%</string>
+	
 	
 </resources>
