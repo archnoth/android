@@ -41,16 +41,17 @@
 
         <service android:name="com.example.vendedores.GcmIntentService" />
 		 <service
-            android:name=".ServicioGoolgeResister"
+            android:name="com.example.vendedores.LoginReceiver"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="false"/>
 		 <service
-            android:name=".ServicioLogin"
+            android:name="com.example.vendedores.ServicioLogin"
             android:exported="false"/>
 		 <service
-            android:name=".ServicioMensajes"
+            android:name="com.example.vendedores.ServicioMensajes"
             android:exported="false"/>
 		<service
-            android:name=".ServicioCargaProductos"
+            android:name="com.example.vendedores.ServicioCargaProductos"
             android:exported="false"/>
         <activity
             android:name="com.example.vendedores.Login"

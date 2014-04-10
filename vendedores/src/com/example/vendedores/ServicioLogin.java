@@ -24,21 +24,30 @@ import com.google.gson.Gson;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 
 public class ServicioLogin extends IntentService {
-	
+
+	private final LoginBinder lBinder = new LoginBinder();
 	private String username = "";
 	private String password = "";
-	
+	private boolean logueado = false;
+	private boolean deviceIsRegistered = false;
+	private String error = "";
+
 	public ServicioLogin() {
 		super("");
+		// TODO Auto-generated constructor stub
 	}
+	
 
 	@Override
-	protected void onHandleIntent(Intent intento) {
-		username = intento.getStringExtra("nombreUsuario");
-		password = intento.getStringExtra("password");
+	protected void onHandleIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		username = intent.getStringExtra("username");
+		password = intent.getStringExtra("password");
 		boolean retry = true;
 		for(int i = 0; i < 3 && retry; i++) {
 			try{
@@ -56,6 +65,16 @@ public class ServicioLogin extends IntentService {
 	        	retry = false;
 	        }
 		}
+		publishResult();
+		stopSelf();
+	}
+  
+	private void publishResult() {
+		Intent intent = new Intent("login");
+		intent.putExtra("logueado", logueado);
+		intent.putExtra("deviceIsRegistered", deviceIsRegistered);
+		intent.putExtra("error", error);
+		LocalBroadcastManager.getInstance(((Sistema)getApplicationContext())).sendBroadcast(intent);
 	}
 	
 	 protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
@@ -69,13 +88,6 @@ public class ServicioLogin extends IntentService {
 	         }
 	         return out.toString();
 	    }
-	
-  private void progress(Integer progress){
-
-		Intent cargaProductos=new Intent("cargaProductos");
-		cargaProductos.putExtra("progreso", progress);
-		LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(cargaProductos);
-  }
   
   private boolean login() throws Exception
   {
@@ -135,7 +147,6 @@ public class ServicioLogin extends IntentService {
 				String jsonClientes=jsonObject.getString("user_clients");
 				JSONArray jarray=new JSONArray(jsonClientes);
 				Usuario usuario = new Usuario("", "", username, "","", api_key, ((Sistema)getApplicationContext()).getRegistration_id());
-				((Sistema)getApplicationContext()).setUsu(usuario);
 				if(jarray.length()>0)
 				{
 					for(int i=0;i<jarray.length();i++)
@@ -152,14 +163,40 @@ public class ServicioLogin extends IntentService {
 						usuario.getListaClientes().add(cli);
 					}
 					
-				}				
-				
+				}		
+				deviceIsRegistered = jsonObject.getBoolean("device");
+				((Sistema)getApplicationContext()).setUsu(usuario);
 			} catch (JSONException e) {
-				//Toast.makeText(Login.this,results, Toast.LENGTH_LONG).show();
+				error = results;
 				throw e;
 			}	
 		}
+		logueado = true;
 		return false;
 	}
   
+  public class LoginBinder extends Binder {
+	  public ServicioLogin getService() {
+          // Return this instance of LocalService so clients can call public methods
+          return ServicioLogin.this;
+      }
+  }
+	
+  @Override
+  public IBinder onBind(Intent intent) {
+      return lBinder;
+  }
+
+public String getError() {
+	return error;
+}
+
+public boolean isLogueado(){
+	return logueado;
+}
+
+public boolean deviceIsRegistered() {
+	return deviceIsRegistered;
+}
+
 }

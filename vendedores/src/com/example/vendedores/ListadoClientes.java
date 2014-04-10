@@ -35,6 +35,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 public class ListadoClientes extends Activity {
@@ -100,6 +101,7 @@ public class ListadoClientes extends Activity {
 		    	}
 		    }});
 
+		   if(!getIntent().getBooleanExtra("deviceIsRegistered", false)) Toast.makeText(getApplicationContext(), "ESTE DISPOSITIVO NO RECIBIRA MENSAJES. INTENTE VOLVER A INGRESAR", Toast.LENGTH_LONG).show();
 	}
 	
    

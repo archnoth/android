@@ -66,35 +66,30 @@
 
     </FrameLayout>
   </ScrollView>
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp" >
 
-        <SeekBar
-            android:id="@+id/LoginSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
-
         <EditText
             android:id="@+id/LoginConectado"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/LoginConectado"
+            android:layout_centerHorizontal="true"
             android:inputType="none"
             android:textColor="@android:color/white" 
 			android:visibility="invisible" >
             <requestFocus />
         </EditText>
-
         <ProgressBar
-            android:id="@+id/LoginProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
-    </FrameLayout>
+        android:id="@+id/LoginProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+    </RelativeLayout>
 
 </RelativeLayout>

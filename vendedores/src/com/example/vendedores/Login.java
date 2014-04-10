@@ -1,75 +1,38 @@
 package com.example.vendedores;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.example.dominio.Cliente;
-import com.example.dominio.Producto;
-import com.example.dominio.Usuario;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.gson.Gson;
 
-import android.R.menu;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Color;
-import android.support.v4.view.MenuItemCompat;
-import android.text.InputType;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 public class Login extends Activity {
 
-	public Usuario usuario=null;
+	
 	
 	//for GCM
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	public static final String PROPERTY_REG_ID = "registration_id";
+	private static final String PROPERTY_REG_ID = "registration_id";
+	private static final String PROPERTY_APP_VERSION = "appVersion";
 	
-	String registrationID;
-	GoogleCloudMessaging gcm;
-	String SENDER_ID = "354046703161";
+	private String registrationID;
+	private GoogleCloudMessaging gcm;
+	private String SENDER_ID = "354046703161";
 
 	private Sistema context;
 	
@@ -82,7 +45,8 @@ public class Login extends Activity {
     	 EditText password = (EditText)findViewById(R.id.editTextPassword);
     	 username.setHint("Nombre de usuario");
     	 password.setHint("Contraseña");
-    	 
+    	 LoginReceiver receiver = new LoginReceiver((EditText)findViewById(R.id.LoginConectado),(Button)findViewById(R.id.btn_ingresar), (ProgressBar)findViewById(R.id.LoginProgressBar));
+    	 LocalBroadcastManager.getInstance(context).registerReceiver(receiver, new IntentFilter("login"));
     	 /*try{//checkeo si vengo de una notificacion
 	    	 if(getIntent().getExtras().getString("mensaje")!=null)
 	    	 {
@@ -110,12 +74,34 @@ public class Login extends Activity {
     	 {
     		 
     	 }*/
-    	 
-    	 if (checkPlayServices()) {
- 	        // If this check succeeds, proceed with normal processing.
- 	        // Otherwise, prompt user to get valid Play Services APK.
-    		startService(new Intent(this, ServicioGoogleRegister.class));
- 	    }
+	}
+    		
+	private void storeRegistrationId(Context context, String regId) {
+	    final SharedPreferences prefs = getGCMPreferences(context);
+	    int appVersion = getAppVersion(context);
+	  
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putString(PROPERTY_REG_ID, regId);
+	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
+	    editor.commit();
+	}
+
+	
+	private static int getAppVersion(Context context) {
+	    try {
+	        PackageInfo packageInfo = context.getPackageManager()
+	                .getPackageInfo(context.getPackageName(), 0);
+	        return packageInfo.versionCode;
+	    } catch (NameNotFoundException e) {
+	        // should never happen
+	        throw new RuntimeException("Could not get package name: " + e);
+	    }
+	}
+	private SharedPreferences getGCMPreferences(Context context) {
+	    // This sample app persists the registration ID in shared preferences, but
+	    // how you store the regID in your app is up to you.
+	    return getSharedPreferences(GCMActivity.class.getSimpleName(),
+    		            Context.MODE_PRIVATE);
 	}
 
 	public boolean checkPlayServices() {
@@ -142,27 +128,14 @@ public class Login extends Activity {
 	
 	
 	public void post(View view) {
-    	Button b = (Button)findViewById(R.id.btn_ingresar);
+		findViewById(R.id.LoginProgressBar).setVisibility(View.VISIBLE);
+		Button b = (Button)findViewById(R.id.btn_ingresar);
 		b.setClickable(false);
 		b.setActivated(true);
-		findViewById(R.id.LoginSeekBar).setVisibility(View.VISIBLE);
 		Intent login_service_intent = new Intent(this,ServicioLogin.class);
-		login_service_intent.putExtra("nombreUsuario", ((EditText)findViewById(R.id.editTextCMontoLabel)).getText().toString());
-		login_service_intent.putExtra("password", ((EditText)findViewById(R.id.editTextPassword)).getText().toString());
+		login_service_intent.putExtra("username", ((EditText)findViewById(R.id.editTextCMontoLabel)).getText().toString());
+		login_service_intent.putExtra("password",((EditText)findViewById(R.id.editTextPassword)).getText().toString());
 		startService(login_service_intent);
-		
-		
-		// Luego de intentar logearse
-		if(usuario.getNombreUsuario()!=null)
-		{
-			findViewById(R.id.LoginConectado).setVisibility(View.VISIBLE);
-			Intent loc = new Intent(getApplicationContext(),ListadoClientes.class); 
-	        loc.putExtra("usuario",usuario); 
-	        loc.putExtra("descuento_contado",context.getDescuento_contado());
-	        startActivity(loc);
-		}
-		b.setActivated(false);
-		b.setClickable(true);
     }
 	
 	@Override
@@ -177,6 +150,25 @@ public class Login extends Activity {
 	protected void onResume(){
 		super.onResume();
 		findViewById(R.id.LoginConectado).setVisibility(View.INVISIBLE);
+		if (checkPlayServices()) {
+  	        // If this check succeeds, proceed with normal processing.
+  	        // Otherwise, prompt user to get valid Play Services APK.
+	        try {
+	            if (gcm == null) {
+	                gcm = GoogleCloudMessaging.getInstance((Sistema)getApplicationContext());
+	            }
+	            registrationID = gcm.register(SENDER_ID);
+	            
+	            //sendRegistrationIdToBackend();
+	            // Persist the regID - no need to register again.
+	            storeRegistrationId((Sistema)getApplicationContext(), registrationID);
+	        } catch (IOException ex) {
+	        	registrationID = "Error :" + ex.getMessage();
+	        	// If there is an error, don't just keep trying to register.
+	            // Require the user to click a button again, or perform
+	            // exponential back-off.
+	        }
+ 		}
 		((Button)findViewById(R.id.btn_ingresar)).setActivated(false);
 	}
 	
