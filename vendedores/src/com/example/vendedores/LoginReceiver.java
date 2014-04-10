@@ -30,7 +30,7 @@ public class LoginReceiver extends BroadcastReceiver{
 			progressBar.setVisibility(View.INVISIBLE);
 			text.setVisibility(View.VISIBLE);
 			Intent loginIntent = new Intent(context,ListadoClientes.class);
-			loginIntent.getBooleanExtra("deviceIsRegistered",false);
+			loginIntent.putExtra("deviceIsRegistered",intent.getBooleanExtra("deviceIsRegistered",false));
 			loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	        context.startActivity(loginIntent);
 		}
