@@ -183,7 +183,7 @@ public class Login extends Activity {
              HashMap<String, String> dic_usu=new HashMap<String, String>();
              dic_usu.put("nombreUsuario", usuario_login.getNombreUsuario());
              dic_usu.put("password", usuario_login.getPassword());
-             dic_usu.put("device_id", "");//registrationID);
+             dic_usu.put("registration_id", "");//registrationID);
              //String dataString="{\"nombreUsuario\":\""+usuario_login.getNombreUsuario()+"\",\"password\":\""+usuario_login.getPassword()+"\",\"device_id\":\""+registrationID+"\"}";
              Gson gson = new Gson();
              String dataString = gson.toJson(dic_usu).toString();

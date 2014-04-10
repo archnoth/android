@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.example.dominio.Producto;
 import com.example.dominio.Usuario;
+import com.example.dominio.Venta;
 
 import android.app.Application;
 
@@ -15,6 +16,7 @@ public class Sistema extends Application{
 	private Integer descuento_contado;
 	private ArrayList<Producto> lista_productos= new ArrayList<Producto>();
 	private HashMap<Integer, Double> hitorialCompras= new HashMap<Integer, Double>();
+	private Venta ultima_venta=null;
 	
 	public Usuario getUsu() {
 		return usu;
@@ -54,6 +56,14 @@ public class Sistema extends Application{
 
 	public void setHitorialCompras(HashMap<Integer, Double> hitorialCompras) {
 		this.hitorialCompras = hitorialCompras;
+	}
+
+	public Venta getUltima_venta() {
+		return ultima_venta;
+	}
+
+	public void setUltima_venta(Venta ultima_venta) {
+		this.ultima_venta = ultima_venta;
 	}
 	
 }
