@@ -222,10 +222,13 @@ public class DetalleCliente extends Activity {
 		if(cliente.getHora_de_entrega_hasta()!=null)hora_entrega_hasta.setText(cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
 	
 		
-		//ImageView mainImageView = (ImageView) findViewById(R.id.imageView);
-		//ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-		//String imageurl = "http://ventas.jm-ga.com/source/media/"+cliente.getUrl_imagen();
+		Intent servicio_historico = new Intent(this, ServicioCargarHistorico.class);
+		servicio_historico.putExtra("rutCliente", cliente.getRut());
+		startService(servicio_historico);
 		  
+		CargarHistoricoReceiver hr=new CargarHistoricoReceiver(((Button)findViewById(R.id.btn_historico)));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(hr,new IntentFilter("historico"));
+		
 		
 		
 		

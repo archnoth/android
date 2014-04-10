@@ -37,7 +37,7 @@ public class EleccionFactura extends Activity {
 	    
 	    lista_productos=((Sistema)getApplicationContext()).getLista_productos();
 	    
-	    checkearProductos();
+	    //checkearProductos();
 	    
 	//buttons listeners
 	final Button btn_contado = (Button) findViewById(R.id.btn_factura_contado);  

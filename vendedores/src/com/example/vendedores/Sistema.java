@@ -1,6 +1,7 @@
 package com.example.vendedores;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.example.dominio.Producto;
 import com.example.dominio.Usuario;
@@ -13,6 +14,7 @@ public class Sistema extends Application{
 	private Boolean notification=false;
 	private Integer descuento_contado;
 	private ArrayList<Producto> lista_productos= new ArrayList<Producto>();
+	private HashMap<Integer, Double> hitorialCompras= new HashMap<Integer, Double>();
 	
 	public Usuario getUsu() {
 		return usu;
@@ -44,6 +46,14 @@ public class Sistema extends Application{
 
 	public void setLista_productos(ArrayList<Producto> lista_productos) {
 		this.lista_productos = lista_productos;
+	}
+
+	public HashMap<Integer, Double> getHitorialCompras() {
+		return hitorialCompras;
+	}
+
+	public void setHitorialCompras(HashMap<Integer, Double> hitorialCompras) {
+		this.hitorialCompras = hitorialCompras;
 	}
 	
 }
