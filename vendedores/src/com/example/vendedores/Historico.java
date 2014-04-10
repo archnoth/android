@@ -2,20 +2,12 @@ package com.example.vendedores;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
-
-import com.example.dominio.Cliente;
-import com.example.dominio.Usuario;
-import com.example.dominio.Venta;
-
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,10 +19,9 @@ import android.os.Build;
 
 public class Historico extends Activity {
 
-	private static List<Venta> lista_ventas;
-	ArrayAdapter<Venta> adapter ;
-	private Usuario usuario;
-	private Cliente cliente;
+	
+	
+	
 	private HashMap<Integer, Double> producto_porcentaje;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +31,15 @@ public class Historico extends Activity {
 		setupActionBar();
 		ActionBar actionBar = getActionBar();
 	    actionBar.setDisplayHomeAsUpEnabled(true);
-		usuario=(Usuario)getIntent().getExtras().getParcelable("usuario"); 
-		cliente=(Cliente)getIntent().getExtras().getParcelable("cliente");
-		producto_porcentaje=(HashMap<Integer, Double>)getIntent().getExtras().getSerializable("dict");
-		
-		 Iterator<Integer> iterador = producto_porcentaje.keySet().iterator();
-		 Double mayor=0.0;
-		 while(iterador.hasNext())
-		  { 
+		producto_porcentaje=((Sistema)getApplicationContext()).getHitorialCompras();
+		Iterator<Integer> iterador = producto_porcentaje.keySet().iterator();
+		Double mayor=0.0;
+		while(iterador.hasNext()){ 
 		   Integer codigo = iterador.next();
 		   if(producto_porcentaje.get(codigo) > mayor){
 			    mayor = producto_porcentaje.get(codigo);
 		   }
-		  }
+		 }
 		 iterador = producto_porcentaje.keySet().iterator();
 		 LinearLayout grafica = (LinearLayout) findViewById(R.id.tabla_historico);
 		 ((FrameLayout.LayoutParams)grafica.getLayoutParams()).setMargins(0,0,0,10);

@@ -42,7 +42,9 @@
         <service android:name="com.example.vendedores.GcmIntentService" />
 		 <service
             android:name="com.example.vendedores.LoginReceiver"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false"/>
+		 <service
+            android:name="com.example.vendedores.GoogleRegisterService"
             android:exported="false"/>
 		 <service
             android:name="com.example.vendedores.ServicioLogin"
@@ -52,6 +54,12 @@
             android:exported="false"/>
 		<service
             android:name="com.example.vendedores.ServicioCargaProductos"
+            android:exported="false"/>
+		<service
+            android:name=".ServicioCargarHistorico"
+            android:exported="false"/>
+    	<service
+            android:name=".ServicioCargarUltimaVenta"
             android:exported="false"/>
         <activity
             android:name="com.example.vendedores.Login"
