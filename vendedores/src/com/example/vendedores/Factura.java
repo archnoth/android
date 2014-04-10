@@ -374,7 +374,7 @@ public class Factura extends Activity {
 			AutoCompleteTextView auto = (AutoCompleteTextView) tr.getChildAt(2);
 			EditText cant = (EditText) tr.getChildAt(0);
 			String codigo = "";
-			if(auto.getText()== null ||auto.getText().toString().equals("") || cant.getText()== null || cant.getText().toString().equals(""))
+			if((auto.getText()== null ||auto.getText().toString().equals("") || cant.getText()== null || cant.getText().toString().equals("")) &&( tr != tbl.getChildAt(tbl.getChildCount() - 1 )))
 			{
 				error="Producto o cantidad no seteada en la fila: "+i;
 				((Button)findViewById(R.id.Facturar)).setActivated(false);
@@ -383,7 +383,8 @@ public class Factura extends Activity {
 				break;
 			}
 			try {
-				codigo = auto.getText().toString().split("\\s - \\s")[1];
+				if( tr != tbl.getChildAt(tbl.getChildCount() - 1 ))
+					codigo = auto.getText().toString().split("\\s - \\s")[1];
 			} catch (Exception e) {
 				error="Error en el código del producto";
 				if( tr == tbl.getChildAt(tbl.getChildCount() - 1 ) && (tbl.getChildCount() == 1 ))
