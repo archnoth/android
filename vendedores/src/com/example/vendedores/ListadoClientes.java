@@ -50,7 +50,6 @@ public class ListadoClientes extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_listado_clientes);
 		
-		
 		Intent servicio_datos = new Intent(this, ServicioCargaProductos.class);
     	servicio_datos.putExtra("accion", "productos");
 		startService(servicio_datos);
@@ -141,6 +140,7 @@ public class ListadoClientes extends Activity {
 		super.onResume();
 		((ProgressBar)findViewById(R.id.ListadoClientesprogressBar)).setVisibility(View.INVISIBLE);
 		if(!getIntent().getBooleanExtra("deviceIsRegistered", false) && getIntent().getBooleanExtra("desdeLogin", false)) Toast.makeText(getApplicationContext(), "ESTE DISPOSITIVO NO RECIBIRA MENSAJES. INTENTE VOLVER A INGRESAR", Toast.LENGTH_LONG).show();
+		getIntent().putExtra("desdeLogin", false);
 	}
 	
 	

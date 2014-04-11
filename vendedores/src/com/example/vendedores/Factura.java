@@ -95,7 +95,7 @@ public class Factura extends Activity {
 	    
 	    usuario = ((Sistema)getApplicationContext()).getUsu();
 	    cliente = ((Cliente)getIntent().getExtras().getParcelable("cliente"));
-		descuento_contado_porcentaje = getIntent().getExtras().getInt("descuento_contado");
+		descuento_contado_porcentaje = ((Sistema)getApplicationContext()).getDescuento_contado();
 		tipo=getIntent().getExtras().getInt("tipo");
 		lista_productos = ((Sistema)getApplicationContext()).getLista_productos();
 		if (lista_productos.size()>0){

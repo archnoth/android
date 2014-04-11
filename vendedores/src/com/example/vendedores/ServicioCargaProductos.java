@@ -114,6 +114,7 @@ public class ServicioCargaProductos extends IntentService {
 
 					} catch (JSONException e) {
 						e.printStackTrace();
+						throw e;
 					}
 				}
 				
@@ -121,12 +122,11 @@ public class ServicioCargaProductos extends IntentService {
 					next=meta.getString("next");
 					httpGet=new HttpGet("http://ventas.jm-ga.com/"+next);
 				} catch (JSONException e) {
-					next=null;
-					
+					next="null";
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-      }while(next!=null);		
+      }while(!next.equals("null"));		
       return false;
   }
   
