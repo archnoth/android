@@ -37,7 +37,7 @@ public class ServicioCargarHistorico extends IntentService {
 				Intent historico=new Intent("historico");
 				LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(historico);
 			}
-			
+			stopSelf();
 		}
 		
 		 protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {

@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
 
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,9 +32,17 @@ public class Login extends Activity {
 		 EditText username = (EditText)findViewById(R.id.editTextCMontoLabel);
     	 EditText password = (EditText)findViewById(R.id.editTextPassword);
     	 username.setHint("Nombre de usuario");
-    	 password.setHint("Contraseña");
+    	 password.setHint("Contraseï¿½a");
     	 LoginReceiver receiver = new LoginReceiver((EditText)findViewById(R.id.LoginConectado),(Button)findViewById(R.id.btn_ingresar), (ProgressBar)findViewById(R.id.LoginProgressBar));
     	 LocalBroadcastManager.getInstance(context).registerReceiver(receiver, new IntentFilter("login"));
+    	 Display display = getWindowManager().getDefaultDisplay();
+    	 Point size = new Point();
+    	 display.getSize(size);
+    	 int width = size.x;
+    	 int height = size.y;
+    	 ((Sistema)getApplicationContext()).setDevice_width(width);
+    	 ((Sistema)getApplicationContext()).setDevice_height(height);
+    	 
 	}
     
 	/*@Override

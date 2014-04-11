@@ -64,14 +64,14 @@ public class Historico extends Activity {
 		   text_codigo_params.bottomMargin=5;
 		   text_codigo_params.leftMargin=5;
 		   text_codigo.setLayoutParams(text_codigo_params);
-		   text_codigo.setWidth(70);
+		   text_codigo.setWidth(50);
 		   
 		   TextView text_barra_porcentaje=new TextView(getApplicationContext());
 		   text_barra_porcentaje.setTextColor(Color.BLACK);
 		   text_barra_porcentaje.setTextSize(20);
 		   text_barra_porcentaje.setSingleLine(true);
 		   text_barra_porcentaje.setBackgroundColor(getResources().getColor(R.color.blue));
-		   text_barra_porcentaje.setWidth((int)(producto_porcentaje.get(codigo)*260/mayor));
+		   text_barra_porcentaje.setWidth((int)(producto_porcentaje.get(codigo)*(((Sistema)getApplicationContext()).getDevice_width()-150)/mayor));
 		   text_barra_porcentaje.setId(id_generator.nextInt());
 		   barra.addView(text_barra_porcentaje);
 		   RelativeLayout.LayoutParams text_barra_porcentaje_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,45);

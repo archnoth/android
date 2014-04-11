@@ -117,7 +117,7 @@ public class Factura extends Activity {
 		} else {
 			addRowToTableProductos(null);
 		}
-		if(tipo!=0)
+		if(tipo!=0 && tipo!=2)
 		{
 		
 			JSONObject rut_cliente = null;
@@ -139,12 +139,18 @@ public class Factura extends Activity {
 			} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				
 			}
 			
 			//EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
 			//monto_value.setText(monto_factura.toString());
 			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
-    		saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+			switch(tipo){
+				case 1:
+					saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+				case 3:
+					saldo_value.setText(saldo_cliente.subtract(monto_factura).toString());
+			}
 		}
 		else{
 			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
@@ -343,10 +349,16 @@ public class Factura extends Activity {
 			   this.monto_factura = this.monto_factura.add(new BigDecimal(signo).multiply(precio_uso));
 			   EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
 			   monto_value.setText(monto_factura.toString());
-			   if(tipo!=0)
+			   if(tipo!=0&&tipo!=2)
 			   {
 				   EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
-				   saldo_value.setText((saldo_cliente.add(monto_factura)).toString());
+				   switch(tipo){
+					case 1:
+						saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+					case 3:
+						saldo_value.setText(saldo_cliente.subtract(monto_factura).toString());
+				}
+				   
 			   }
 		
 		} catch (Exception e) {

@@ -19,6 +19,8 @@ public class Sistema extends Application{
 	private String registration_id = "";
 	private HashMap<Integer, Double> hitorialCompras= new HashMap<Integer, Double>();
 	private Venta ultima_venta=null;
+	private int device_width;
+	private int device_height;
 	
 	public Usuario getUsu() {
 		return usu;
@@ -82,6 +84,22 @@ public class Sistema extends Application{
 
 	public void setUltima_venta(Venta ultima_venta) {
 		this.ultima_venta = ultima_venta;
+	}
+
+	public int getDevice_width() {
+		return device_width;
+	}
+
+	public void setDevice_width(int device_width) {
+		this.device_width = device_width;
+	}
+
+	public int getDevice_height() {
+		return device_height;
+	}
+
+	public void setDevice_height(int device_height) {
+		this.device_height = device_height;
 	}
 	
 }

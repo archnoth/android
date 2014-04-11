@@ -44,7 +44,7 @@ import android.widget.Toast;
 import android.widget.Button;
 
 public class DetalleCliente extends Activity {
-	private String[] dias_de_semana = {"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"}; 
+	private String[] dias_de_semana = {"Domingo","Lunes","Martes","MiÃ©rcoles","Jueves","Viernes","SÃ¡bado"}; 
 	private Venta venta;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -208,10 +208,15 @@ public class DetalleCliente extends Activity {
 		else hora_entrega_desde.setVisibility(View.GONE);
 		if(cliente.getHora_de_entrega_hasta()!=null)hora_entrega_hasta.setText(cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
 	
+		//limpio los historicos por las dudas de que venga desde otro cliente
+		((Sistema)getApplicationContext()).getHitorialCompras().clear();
+		
 		//escucho los al servicio historico
 		CargarHistoricoReceiver historicoReceiver=new CargarHistoricoReceiver((Button)findViewById(R.id.btn_historico));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(historicoReceiver,new IntentFilter("historico"));
-					
+		
+		//limpio los historicos por las dudas de que venga desde otro cliente
+		((Sistema)getApplicationContext()).setUltima_venta(null);		
 		//escucho los al servicio ultimaVenta
 		CargarUltimaVentaReceiver ultVentaReceiver=new CargarUltimaVentaReceiver((Button)findViewById(R.id.btn_repetir_venta));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ultVentaReceiver,new IntentFilter("ultimaVenta"));
@@ -261,6 +266,7 @@ public class DetalleCliente extends Activity {
 		
 		Intent servicio_historico = new Intent(this, ServicioCargarHistorico.class);
 		servicio_historico.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+		servicio_historico.putExtra("usuario",((Sistema)getApplicationContext()).getUsu());
 		startService(servicio_historico);
 		
 		
