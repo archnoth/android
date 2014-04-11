@@ -104,7 +104,7 @@ public class Factura extends Activity {
 				diccionarioProductos.put(lista_productos.get(i).getCodigo(),lista_productos.get(i));
 			}
 		
-		}else{Toast.makeText(getApplicationContext(), "MAnejo el tema de la espera",Toast.LENGTH_SHORT).show();}
+		}
 		ultima_venta = null;
 		try {
 			ultima_venta = (Venta) getIntent().getExtras().getParcelable("venta");
@@ -147,8 +147,10 @@ public class Factura extends Activity {
 			switch(tipo){
 				case 1:
 					saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+					break;
 				case 3:
 					saldo_value.setText(saldo_cliente.subtract(monto_factura).toString());
+					break;
 			}
 		}
 		else{
@@ -350,8 +352,10 @@ public class Factura extends Activity {
 				   switch(tipo){
 					case 1:
 						saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+						break;
 					case 3:
 						saldo_value.setText(saldo_cliente.subtract(monto_factura).toString());
+						break;
 				}
 				   
 			   }
@@ -1046,14 +1050,17 @@ private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
 						
 							descuento_prod = p.getPrecio_cliente_final().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
 							mnt = mnt.add(p.getPrecio_cliente_final().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							break;
 							
 						case 1:
 							descuento_prod = p.getPrecio_mayorista().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
 							mnt = mnt.add(p.getPrecio_mayorista().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							break;
 							
 						case 2:
 							descuento_prod = p.getPrecio_distribuidor().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
 							mnt = mnt.add(p.getPrecio_distribuidor().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							break;
 							
 					}
 					}

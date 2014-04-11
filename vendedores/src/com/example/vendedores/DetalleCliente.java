@@ -266,7 +266,6 @@ public class DetalleCliente extends Activity {
 		
 		Intent servicio_historico = new Intent(this, ServicioCargarHistorico.class);
 		servicio_historico.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-		servicio_historico.putExtra("usuario",((Sistema)getApplicationContext()).getUsu());
 		startService(servicio_historico);
 		
 		
@@ -278,9 +277,7 @@ public class DetalleCliente extends Activity {
 		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
 		Intent fac_intent = new Intent(getApplicationContext(),EleccionFactura.class); 
-		fac_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-		fac_intent.putExtra("descuento_contado",((Sistema)getApplicationContext()).getDescuento_contado());
 	    startActivity(fac_intent);
 	}
 	
@@ -289,8 +286,6 @@ public class DetalleCliente extends Activity {
 		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
     	Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-		fac_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
-		fac_intent.putExtra("venta",((Sistema)getApplicationContext()).getUltima_venta()); 
 		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 		fac_intent.putExtra("tipo",((Sistema)getApplicationContext()).getUltima_venta().getTipo());
 		
@@ -303,8 +298,7 @@ public class DetalleCliente extends Activity {
 		
 		((Button)findViewById(R.id.btn_historico)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
-    	Intent hist_intent = new Intent(getApplicationContext(),Historico.class);  
-    	hist_intent.putExtra("usuario",((Sistema)getApplicationContext()).getUsu()); 
+    	Intent hist_intent = new Intent(getApplicationContext(),Historico.class);   
     	hist_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
     	startActivity(hist_intent);
      
