@@ -55,8 +55,6 @@ public class ServicioCargarUltimaVenta extends IntentService {
 			Intent ultima_venta=new Intent("ultimaVenta");
 			LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ultima_venta);
 		}
-		stopSelf();
-		
 	}
 	
 	

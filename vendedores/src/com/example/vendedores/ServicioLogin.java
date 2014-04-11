@@ -66,7 +66,7 @@ public class ServicioLogin extends IntentService {
 	        }
 		}
 		publishResult();
-		stopSelf();
+		
 	}
   
 	private void publishResult() {
