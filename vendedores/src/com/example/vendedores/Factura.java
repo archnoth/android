@@ -66,6 +66,8 @@ import android.widget.Toast;
 @SuppressLint("NewApi")
 public class Factura extends Activity {
 
+	private Usuario usuario;
+	private Cliente cliente;
 	private static List<Producto> lista_productos;
 	private static HashMap<String, Producto> diccionarioProductos;
 	private BigDecimal monto_factura = new BigDecimal("0.0");
@@ -75,7 +77,6 @@ public class Factura extends Activity {
 	private JSONObject json;
 	private Gson gson;
 	private int descuento_contado_porcentaje=0;
-	//private BigDecimal descuento_contado_monto=BigDecimal.ZERO;
 	private int tipo;
 	private int descuento_producto = 0;
 	private Menu menu;
@@ -92,10 +93,10 @@ public class Factura extends Activity {
 		ActionBar actionBar = getActionBar();
 	    actionBar.setDisplayHomeAsUpEnabled(true);
 	    
+	    usuario = ((Sistema)getApplicationContext()).getUsu();
+	    cliente = ((Cliente)getIntent().getExtras().getParcelable("cliente"));
 		descuento_contado_porcentaje = getIntent().getExtras().getInt("descuento_contado");
 		tipo=getIntent().getExtras().getInt("tipo");
-		 
-
 		lista_productos = ((Sistema)getApplicationContext()).getLista_productos();
 		if (lista_productos.size()>0){
 			diccionarioProductos = new HashMap<String, Producto>();
@@ -103,34 +104,25 @@ public class Factura extends Activity {
 			
 				diccionarioProductos.put(lista_productos.get(i).getCodigo(),lista_productos.get(i));
 			}
-		
-		}else{Toast.makeText(getApplicationContext(), "MAnejo el tema de la espera",Toast.LENGTH_SHORT).show();}
-		ultima_venta = null;
-		try {
-			ultima_venta = (Venta) getIntent().getExtras().getParcelable("venta");
-		} catch (Exception e) {
-
 		}
-		if (ultima_venta != null) {
+		ultima_venta = ((Sistema)getApplicationContext()).getUltima_venta();
+		if (getIntent().getBooleanExtra("ultima_venta", false)) {
 			cargar_ultima_venta(ultima_venta);
 		} else {
 			addRowToTableProductos(null);
 		}
 		if(tipo!=0 && tipo!=2)
 		{
-		
 			JSONObject rut_cliente = null;
 			try {
-				rut_cliente = new JSONObject("{rut:+"+((Cliente)getIntent().getExtras().getParcelable("cliente")).getRut()+"}");
+				rut_cliente = new JSONObject("{rut:+"+cliente.getRut()+"}");
 			} catch (JSONException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			
 			SaldoCliente thread_saldo=new SaldoCliente();//llamo al consultar saldo;
 			AsyncTask<JSONObject, Void, String> async_method = thread_saldo.execute(rut_cliente);
 			try {
-				
 				saldo_cliente=new BigDecimal(async_method.get());
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -138,17 +130,16 @@ public class Factura extends Activity {
 			} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				
 			}
-			
-			//EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
-			//monto_value.setText(monto_factura.toString());
+
 			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
 			switch(tipo){
 				case 1:
 					saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+					break;
 				case 3:
 					saldo_value.setText(saldo_cliente.subtract(monto_factura).toString());
+					break;
 			}
 		}
 		else{
@@ -314,7 +305,7 @@ public class Factura extends Activity {
 			   BigDecimal descuento_contado_monto=BigDecimal.ZERO;
 			   if (!sumar) signo = -1;
 			   BigDecimal precio_uso = BigDecimal.ZERO;
-		       switch (((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo()) {
+		       switch (cliente.getTipo()) {
 		        case 0:
 		          precio_uso =  (diccionarioProductos.get(codigo)).getPrecio_cliente_final();
 		          break;
@@ -335,9 +326,9 @@ public class Factura extends Activity {
 			         descuento_contado_monto = precio_uso.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
 			   }
 			   BigDecimal descuento_cliente = BigDecimal.ZERO;
-			   if(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()!=0)
+			   if(cliente.getDescuento_cliente()!=0)
 			   {
-			    descuento_cliente= precio_uso.multiply(new BigDecimal(((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente()).divide(new BigDecimal("100.0")));
+			    descuento_cliente= precio_uso.multiply(new BigDecimal(cliente.getDescuento_cliente()).divide(new BigDecimal("100.0")));
 			   }
 			   descuento = descuento.add(descuento_cliente.add(descuento_contado_monto));
 			   precio_uso = precio_uso.subtract(descuento);
@@ -350,8 +341,10 @@ public class Factura extends Activity {
 				   switch(tipo){
 					case 1:
 						saldo_value.setText(saldo_cliente.add(monto_factura).toString());
+						break;
 					case 3:
 						saldo_value.setText(saldo_cliente.subtract(monto_factura).toString());
+						break;
 				}
 				   
 			   }
@@ -365,16 +358,10 @@ public class Factura extends Activity {
 		findViewById(R.id.progressFacturaLayout).setVisibility(View.VISIBLE);
 		findViewById(R.id.scrollViewVenta).setFocusable(false);
 		String error = null;
-		Usuario vendedor = new Usuario("", "", ((Usuario) getIntent()
-				.getExtras().getParcelable("usuario")).getNombreUsuario(), "",
-				"",((Usuario) getIntent().getExtras().getParcelable("usuario"))	.getKey(), "");
-		Cliente cliente = new Cliente(((Cliente) getIntent().getExtras()
-				.getParcelable("cliente")).getNombre(), "",((Cliente) getIntent().getExtras().getParcelable("cliente")).getRut(),
-				"", "", "", "", "", "", "", "", "", "", "","",((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo(),((Cliente) getIntent().getExtras().getParcelable("cliente")).getDescuento_cliente(),"","","","",false);
 		Calendar fecha = Calendar.getInstance();
 		//Double monto = 0.0;
 		TableLayout tbl = (TableLayout) this.findViewById(R.id.tablaProductos);
-		nueva_venta = new Venta(vendedor, cliente, fecha, monto_factura.doubleValue(), tipo,monto_factura_sin_descuento.doubleValue());
+		nueva_venta = new Venta(usuario, cliente, fecha, monto_factura.doubleValue(), tipo,monto_factura_sin_descuento.doubleValue());
 
 		for (int i = 0; i < tbl.getChildCount();) {
 			TableRow tr = (TableRow) tbl.getChildAt(i);
@@ -484,8 +471,6 @@ public class Factura extends Activity {
 		if(tipo==0){
 			menu.findItem(R.id.contado_radio_button).setChecked(true);
 			menu.findItem(R.id.credito_radio_button).setChecked(false);
-			
-			
 		}
 		else{
 			menu.findItem(R.id.credito_radio_button).setChecked(true);
@@ -678,7 +663,6 @@ private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
 	protected String doInBackground(JSONObject... params) {
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpContext localContext = new BasicHttpContext();
-		Usuario usuario=getIntent().getExtras().getParcelable("usuario");
 		HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/clientes/saldo/?key="+usuario.getKey());
 		// Execute HTTP Post Request
 		String text = null;

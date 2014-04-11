@@ -39,10 +39,8 @@ public class EleccionFactura extends Activity {
 			   ((Button)v).setActivated(true);
 			   
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",0);
-			   fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			   startActivity(fac_intent);
 		   }
 	   });
@@ -53,10 +51,8 @@ public class EleccionFactura extends Activity {
 			   ((Button)v).setActivated(true);
 			   
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",1);
-			   fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			   startActivity(fac_intent);
 		   }
 	   });
@@ -67,10 +63,8 @@ public class EleccionFactura extends Activity {
 			   ((Button)v).setActivated(true);
 			   
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-			   fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",3);
-			   fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 			   startActivity(fac_intent);
 		   
 		   }
@@ -82,11 +76,9 @@ public class EleccionFactura extends Activity {
 		   public void onClick(View v) {
 			   ((Button)v).setActivated(true);
 			   
-			    Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
+			    Intent fac_intent = new Intent(getApplicationContext(),Factura.class);  
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 				fac_intent.putExtra("tipo",2);
-				fac_intent.putExtra("descuento_contado",getIntent().getExtras().getInt("descuento_contado"));
 				startActivity(fac_intent);
 		   
 		   }
@@ -100,7 +92,6 @@ public class EleccionFactura extends Activity {
 			   ((Button)v).setActivated(true);
 			   
 			   Intent fac_intent = new Intent(getApplicationContext(),VisitaActivity.class); 
-				fac_intent.putExtra("usuario",getIntent().getExtras().getParcelable("usuario")); 
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 				startActivity(fac_intent);
 		   

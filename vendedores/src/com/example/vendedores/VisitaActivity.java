@@ -71,7 +71,7 @@ public class VisitaActivity extends Activity  {
 	    
 		//AutoCompleteTextView auto=(AutoCompleteTextView)findViewById(R.id.autoCompleteMotivoNota);
 		c=(Cliente)getIntent().getExtras().getParcelable("cliente");
-		u =(Usuario)getIntent().getExtras().getParcelable("usuario");
+		u =((Sistema)getApplicationContext()).getUsu();
 		
 		LongRunningGetIO th= new LongRunningGetIO();
 		AsyncTask<Void, Void, List<String>> async=th.execute();
