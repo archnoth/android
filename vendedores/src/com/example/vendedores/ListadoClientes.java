@@ -101,7 +101,6 @@ public class ListadoClientes extends Activity {
 		    	}
 		    }});
 
-		   if(!getIntent().getBooleanExtra("deviceIsRegistered", false)) Toast.makeText(getApplicationContext(), "ESTE DISPOSITIVO NO RECIBIRA MENSAJES. INTENTE VOLVER A INGRESAR", Toast.LENGTH_LONG).show();
 	}
 	
    
@@ -141,6 +140,7 @@ public class ListadoClientes extends Activity {
 	protected void onResume(){
 		super.onResume();
 		((ProgressBar)findViewById(R.id.ListadoClientesprogressBar)).setVisibility(View.INVISIBLE);
+		if(!getIntent().getBooleanExtra("deviceIsRegistered", false) && getIntent().getBooleanExtra("desdeLogin", false)) Toast.makeText(getApplicationContext(), "ESTE DISPOSITIVO NO RECIBIRA MENSAJES. INTENTE VOLVER A INGRESAR", Toast.LENGTH_LONG).show();
 	}
 	
 	

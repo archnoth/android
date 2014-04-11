@@ -289,8 +289,6 @@ public class NotaActivity extends Activity {
 			menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 			notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
 			LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
-			RespuestasAsincronasReceiver ra=new RespuestasAsincronasReceiver();
-			LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ra,new IntentFilter("respuestaAsincrona"));
 			return true;
 	}
 	@Override
@@ -304,7 +302,7 @@ public class NotaActivity extends Activity {
 		    	return true;
 				
 			default:
-				return true;
+				return super.onOptionsItemSelected(item);
 		}
 	}
 	

@@ -75,6 +75,7 @@ public class Login extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
+		context.clear();
 		findViewById(R.id.LoginConectado).setVisibility(View.INVISIBLE);
 		if (checkPlayServices()) {
 			Intent google_register_intent = new Intent(this,GoogleRegisterService.class);

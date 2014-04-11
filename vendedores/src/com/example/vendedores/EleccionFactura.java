@@ -142,7 +142,7 @@ public class EleccionFactura extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.factura, menu);
+		getMenuInflater().inflate(R.menu.default_menu, menu);
 		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
@@ -160,7 +160,7 @@ public class EleccionFactura extends Activity {
 		    	return true;
 				
 			default:
-				return true;
+				return super.onOptionsItemSelected(item);
 		}
 	}
 	

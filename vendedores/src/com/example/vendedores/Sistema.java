@@ -22,6 +22,17 @@ public class Sistema extends Application{
 	private int device_width;
 	private int device_height;
 	
+	public void clear() {
+		usu = null;
+		notification = false;
+		descuento_contado = 0;
+		lista_productos= new ArrayList<Producto>();
+		total_productos = 0;
+		registration_id = "";
+		hitorialCompras= new HashMap<Integer, Double>();
+		ultima_venta=null;
+	}
+	
 	public Usuario getUsu() {
 		return usu;
 	}
