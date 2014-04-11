@@ -116,7 +116,7 @@ public class Historico extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.ventas_historico, menu);
 		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
-		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
+		notificationReceiver nr=new notificationReceiver(menu.findItem(R.menu.default_menu));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
 
 		return true;

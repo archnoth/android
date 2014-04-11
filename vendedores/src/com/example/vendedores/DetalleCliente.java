@@ -266,7 +266,6 @@ public class DetalleCliente extends Activity {
 		
 		Intent servicio_historico = new Intent(this, ServicioCargarHistorico.class);
 		servicio_historico.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-		servicio_historico.putExtra("usuario",((Sistema)getApplicationContext()).getUsu());
 		startService(servicio_historico);
 		
 		
@@ -299,6 +298,7 @@ public class DetalleCliente extends Activity {
 		
 		((Button)findViewById(R.id.btn_historico)).setActivated(true);
 		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
+
     	Intent hist_intent = new Intent(getApplicationContext(),Historico.class);  
     	hist_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
     	startActivity(hist_intent);

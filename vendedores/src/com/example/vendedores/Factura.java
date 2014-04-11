@@ -501,6 +501,8 @@ public class Factura extends Activity {
 	            this.menu.findItem(R.id.credito_radio_button).setChecked(false);
 	            monto_value = (EditText) (findViewById(R.id.MontoValue));
 	    		monto_value.setText(monto_factura.toString());
+	    		saldo_value = (EditText) (findViewById(R.id.SaldoValue));
+	    		saldo_value.setText("---");
 	    		Toast.makeText(Factura.this,"COMPRA AL CONTADO", Toast.LENGTH_LONG).show();
 		        return true;
 		        
@@ -1030,14 +1032,17 @@ private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
 						
 							descuento_prod = p.getPrecio_cliente_final().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
 							mnt = mnt.add(p.getPrecio_cliente_final().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							break;
 							
 						case 1:
 							descuento_prod = p.getPrecio_mayorista().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
 							mnt = mnt.add(p.getPrecio_mayorista().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							break;
 							
 						case 2:
 							descuento_prod = p.getPrecio_distribuidor().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
 							mnt = mnt.add(p.getPrecio_distribuidor().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+							break;
 							
 					}
 					}
