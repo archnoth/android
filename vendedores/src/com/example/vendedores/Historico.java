@@ -8,11 +8,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
@@ -116,11 +118,22 @@ public class Historico extends Activity {
 		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(nr,new IntentFilter("notificacion"));
-		
-		RespuestasAsincronasReceiver ra=new RespuestasAsincronasReceiver();
-		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ra,new IntentFilter("respuestaAsincrona"));
-		
+
 		return true;
 
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		
+			case R.id.notificacion:
+				Intent notificaciones= new Intent(getApplicationContext(),Notificaciones.class);
+		    	startActivity(notificaciones);
+		    	return true;
+				
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 }

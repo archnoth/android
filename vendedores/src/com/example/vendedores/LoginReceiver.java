@@ -31,6 +31,7 @@ public class LoginReceiver extends BroadcastReceiver{
 			text.setVisibility(View.VISIBLE);
 			Intent loginIntent = new Intent(context,ListadoClientes.class);
 			loginIntent.putExtra("deviceIsRegistered",intent.getBooleanExtra("deviceIsRegistered",false));
+			loginIntent.putExtra("desdeLogin", true);
 			loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	        context.startActivity(loginIntent);
 		}

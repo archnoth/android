@@ -220,7 +220,7 @@ public class DetalleCliente extends Activity {
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-		getMenuInflater().inflate(R.menu.detalle_cliente, menu);
+		getMenuInflater().inflate(R.menu.default_menu, menu);
 		
 		menu.findItem(R.id.notificacion).setVisible(((Sistema)getApplicationContext()).getNotification());
 		notificationReceiver nr=new notificationReceiver(menu.findItem(R.id.notificacion));
@@ -241,7 +241,7 @@ public class DetalleCliente extends Activity {
 		    	return true;
 				
 			default:
-				return true;
+				return super.onOptionsItemSelected(item);
 		}
 	}
 

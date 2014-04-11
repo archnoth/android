@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutionException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
@@ -237,8 +236,7 @@ public class Factura extends Activity {
 			text_cant.setText(pv.getCantidad().toString());
 
 		}
-		tbr.setTag(R.id.sin_cargo,0);
-	    tbr.setTag(R.id.descuento,0);
+		tbr.setTag(R.id.datos_extra_producto,new DatosExtraProducto(0,0));
 		registerForContextMenu(tbr);
 	}
 
@@ -269,7 +267,6 @@ public class Factura extends Activity {
 		});
 		auto_gen.addTextChangedListener(new TextWatcher() {
 			
-			float text_size=0;
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
@@ -295,15 +292,12 @@ public class Factura extends Activity {
 
 	}
 
-
 	@Override
 	protected void onResume() {
 		super.onResume();
 
 	}
 	
-	
-
 	private void ActualizarFilaFactura(TableRow row, Boolean sumar) {
 		try {
 			 AutoCompleteTextView auto = (AutoCompleteTextView) row.getChildAt(2);
@@ -314,21 +308,22 @@ public class Factura extends Activity {
 			   BigDecimal descuento_contado_monto=BigDecimal.ZERO;
 			   if (!sumar) signo = -1;
 			   BigDecimal precio_uso = BigDecimal.ZERO;
-			      if((Integer)row.getTag(R.id.sin_cargo)==0){
-			       switch (((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo()) {
-			        case 0:
-			          precio_uso =  (diccionarioProductos.get(codigo)).getPrecio_cliente_final();
-			        case 1:
-			          precio_uso = (diccionarioProductos.get(codigo)).getPrecio_mayorista();
-			        case 2:
-			          precio_uso = (diccionarioProductos.get(codigo)).getPrecio_distribuidor();
-			       }
-			      }
+		       switch (((Cliente) getIntent().getExtras().getParcelable("cliente")).getTipo()) {
+		        case 0:
+		          precio_uso =  (diccionarioProductos.get(codigo)).getPrecio_cliente_final();
+		          break;
+		        case 1:
+		          precio_uso = (diccionarioProductos.get(codigo)).getPrecio_mayorista();
+		          break;
+		        case 2:
+		          precio_uso = (diccionarioProductos.get(codigo)).getPrecio_distribuidor();
+		          break;
+		       }
 			      
 			      precio_uso = precio_uso.multiply(new BigDecimal(cant.getText().toString().replaceAll("\\s+", ""))); 
 			      this.monto_factura_sin_descuento = this.monto_factura_sin_descuento.add(new BigDecimal(signo).multiply(precio_uso));
 			      BigDecimal descuento = BigDecimal.ZERO;
-			      descuento = precio_uso.multiply(new BigDecimal(row.getTag(R.id.descuento).toString()).divide(new BigDecimal("100.0")));
+			      descuento = precio_uso.multiply(new BigDecimal(getDatosExtraProducto(row).getDescuento()).divide(new BigDecimal("100.0")));
 			     
 			     if (descuento_contado_porcentaje !=0 && tipo==0) {
 			         descuento_contado_monto = precio_uso.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
@@ -402,7 +397,7 @@ public class Factura extends Activity {
 						.equals(codigo)) {
 					
 						nueva_venta.getProductos().add(
-								new ProductoVenta((Producto) auto.getAdapter().getItem(j), Integer.parseInt(cant.getText().toString().replaceAll("\\s+", "")),(Integer)tr.getTag(R.id.descuento),(Integer)tr.getTag(R.id.sin_cargo)));
+								new ProductoVenta((Producto) auto.getAdapter().getItem(j), Integer.parseInt(cant.getText().toString().replaceAll("\\s+", "")),getDatosExtraProducto(tr).getDescuento(),getDatosExtraProducto(tr).getSin_costo()));
 				}
 			}
 
@@ -559,7 +554,7 @@ public class Factura extends Activity {
 	    MenuInflater inflater = getMenuInflater();
 	    context_view=v;
 	    inflater.inflate(R.menu.factura_floating_context, menu);
-	    
+	    menu.findItem(R.id.sin_costo).setChecked(getDatosExtraProducto(context_view).getSin_costo() == 1);
 	}
 	
 	@Override
@@ -588,9 +583,15 @@ public class Factura extends Activity {
 				        .setPositiveButton("Aceptar",
 				                new DialogInterface.OnClickListener() {
 				                    public void onClick(DialogInterface dialog, int id) {
-				                    	descuento_producto = Integer.parseInt(((EditText)vista.findViewById(R.id.input_descuento_editText)).getText().toString());
+				                    	try{
+				                    		descuento_producto = Integer.parseInt(((EditText)vista.findViewById(R.id.input_descuento_editText)).getText().toString());
+				                    	}catch(NumberFormatException e){
+				                    		if (((EditText)vista.findViewById(R.id.input_descuento_editText)).getText().toString().equals("")) {
+				                    			descuento_producto = 0;
+				                    		}
+				                    	}
 				                    	ActualizarFilaFactura((TableRow)context_view, false);
-				                    	context_view.setTag(R.id.descuento,descuento_producto);
+				                    	getDatosExtraProducto(context_view).setDescuento(descuento_producto);
 				                    	ActualizarFilaFactura((TableRow)context_view, true);
 				                    }
 				                });
@@ -602,12 +603,12 @@ public class Factura extends Activity {
 	            if (item.isChecked()){
 	            	item.setChecked(false);
 	            	ActualizarFilaFactura((TableRow)context_view, true);
-	            	context_view.setTag(R.id.sin_cargo,0);
+	            	getDatosExtraProducto(context_view).setSin_costo(0);
 	            }
 	            else{
 	            	item.setChecked(true);
 	            	ActualizarFilaFactura((TableRow)context_view, false);
-	            	context_view.setTag(R.id.sin_cargo,1);
+	            	getDatosExtraProducto(context_view).setSin_costo(1);
 	            }
 	        	
 	        	//aca tengo que asociar al producto venta esta variable
@@ -616,7 +617,33 @@ public class Factura extends Activity {
 	            return super.onContextItemSelected(item);
 	    }
 	}
+
+private DatosExtraProducto getDatosExtraProducto(View v){
+	return ((DatosExtraProducto)v.getTag(R.id.datos_extra_producto));
+}
 	
+private class DatosExtraProducto {
+	private int descuento;
+	private int sin_costo;
+	
+	public DatosExtraProducto(int descuento, int sin_costo) {
+		this.descuento = descuento;
+		this.sin_costo = sin_costo;
+	}
+	
+	public int getDescuento() {
+		return descuento;
+	}
+	public void setDescuento(int descuento) {
+		this.descuento = descuento;
+	}
+	public int getSin_costo() {
+		return sin_costo;
+	}
+	public void setSin_costo(int sin_costo) {
+		this.sin_costo = sin_costo;
+	}
+}
 
 
 private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {

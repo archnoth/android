@@ -20,6 +20,17 @@ public class Sistema extends Application{
 	private HashMap<Integer, Double> hitorialCompras= new HashMap<Integer, Double>();
 	private Venta ultima_venta=null;
 	
+	public void clear() {
+		usu = null;
+		notification = false;
+		descuento_contado = 0;
+		lista_productos= new ArrayList<Producto>();
+		total_productos = 0;
+		registration_id = "";
+		hitorialCompras= new HashMap<Integer, Double>();
+		ultima_venta=null;
+	}
+	
 	public Usuario getUsu() {
 		return usu;
 	}
