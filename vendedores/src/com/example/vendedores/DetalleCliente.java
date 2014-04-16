@@ -215,7 +215,7 @@ public class DetalleCliente extends Activity {
 		CargarHistoricoReceiver historicoReceiver=new CargarHistoricoReceiver((Button)findViewById(R.id.btn_historico));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(historicoReceiver,new IntentFilter("historico"));
 		
-		//limpio los historicos por las dudas de que venga desde otro cliente
+		//limpio la ultima venta por las dudas de que venga desde otro cliente
 		((Sistema)getApplicationContext()).setUltima_venta(null);		
 		//escucho los al servicio ultimaVenta
 		CargarUltimaVentaReceiver ultVentaReceiver=new CargarUltimaVentaReceiver((Button)findViewById(R.id.btn_repetir_venta));

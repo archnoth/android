@@ -32,19 +32,22 @@ public class ServicioCargaProductos extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intento) {
 		boolean retry = true;
-		for(int i = 0; i < 3 && retry; i++) {
-			try{
-				retry = cargaProductos();
-			} catch (SocketTimeoutException e) 
-	        {
-	             retry = true;
-	        }
-	        catch (ConnectTimeoutException e)
-	        {
-	        	 retry = true;
-	        }catch(Exception e){
-	        	retry = false;
-	        }
+		if(((Sistema)getApplicationContext()).getLista_productos().size()== 0)
+		{
+			for(int i = 0; i < 3 && retry; i++) {
+				try{
+					retry = cargaProductos();
+				} catch (SocketTimeoutException e) 
+		        {
+		             retry = true;
+		        }
+		        catch (ConnectTimeoutException e)
+		        {
+		        	 retry = true;
+		        }catch(Exception e){
+		        	retry = false;
+		        }
+			}
 		}
 	}
 	
