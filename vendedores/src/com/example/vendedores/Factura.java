@@ -127,21 +127,9 @@ public class Factura extends Activity {
 		} else {
 			addRowToTableProductos(null);
 		}
-		if(tipo!=0 && tipo!=2)
-			
+		if(tipo!=0 && tipo!=2 && ((Sistema)getApplicationContext()).getSaldo_cliente()!=null )	
 		{
 			saldo_cliente=new BigDecimal(((Sistema)getApplicationContext()).getSaldo_cliente()).setScale(2, RoundingMode.HALF_UP);
-			//SaldoCliente thread_saldo=new SaldoCliente();//llamo al consultar saldo;
-			//AsyncTask<JSONObject, Void, String> async_method = thread_saldo.execute(rut_cliente);
-//			try {
-//				saldo_cliente=new BigDecimal(async_method.get());
-//			} catch (InterruptedException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			} catch (ExecutionException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
 
 			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
 			switch(tipo){
@@ -656,64 +644,7 @@ private class DatosExtraProducto {
 }
 
 
-private class SaldoCliente extends AsyncTask<JSONObject, Void, String> {
-
-	protected String getASCIIContentFromEntity(HttpEntity entity)
-			throws IllegalStateException, IOException {
-		InputStream in = entity.getContent();
-		StringBuffer out = new StringBuffer();
-		int n = 1;
-		while (n > 0) {
-			byte[] b = new byte[4096];
-			n = in.read(b);
-			if (n > 0)
-				out.append(new String(b, 0, n));
-		}
-		return out.toString();
-	}
-	
-	@Override
-	protected String doInBackground(JSONObject... params) {
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpContext localContext = new BasicHttpContext();
-		HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/clientes/saldo/?key="+usuario.getKey());
-		// Execute HTTP Post Request
-		String text = null;
-		try {
-			StringEntity se = new StringEntity(params[0].toString(), "UTF8");
-			se.setContentType("application/json");
-			httpPost.setEntity(se);
-			HttpResponse response = httpClient.execute(httpPost,
-					localContext);
-			HttpEntity entity = response.getEntity();
-
-			text = getASCIIContentFromEntity(entity);
-			
-
-		} catch (Exception e) {
-		}
-		if (text != null) {
-
-			JSONObject jsonObject;
-			try {
-				jsonObject = new JSONObject(text);
-
-				text=jsonObject.getString("saldo");
-
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-		}
-		return text;
-	}
-
-	
-	
-}
-
-
-	private class PostNuevaVenta extends AsyncTask<String, Void, String> {
+private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 
 		protected String getASCIIContentFromEntity(HttpEntity entity)
 				throws IllegalStateException, IOException {
