@@ -21,6 +21,7 @@ public class Sistema extends Application{
 	private Venta ultima_venta=null;
 	private int device_width;
 	private int device_height;
+	private Double saldo_cliente;
 	
 	public void clear() {
 		usu = null;
@@ -111,6 +112,14 @@ public class Sistema extends Application{
 
 	public void setDevice_height(int device_height) {
 		this.device_height = device_height;
+	}
+
+	public Double getSaldo_cliente() {
+		return saldo_cliente;
+	}
+
+	public void setSaldo_cliente(Double saldo_cliente) {
+		this.saldo_cliente = saldo_cliente;
 	}
 	
 }

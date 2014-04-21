@@ -31,6 +31,9 @@ import com.google.gson.Gson;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
@@ -89,6 +92,7 @@ public class VisitaActivity extends Activity  {
 		final EditText descripcion=(EditText)findViewById(R.id.editTextVisitaDEscripcion);
 		ArrayAdapter<String> adapter=  new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item, lista) ;
 		auto.setAdapter(adapter);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		
 		Button b=(Button)findViewById(R.id.btn_RegistrarVisita);
 		b.setOnClickListener(new OnClickListener() {
@@ -114,9 +118,30 @@ public class VisitaActivity extends Activity  {
 						// obtengo la respuesta asincrona
 						String respuesta = (String) async.get();
 						JSONObject json = new JSONObject(respuesta);
-						Toast.makeText(VisitaActivity.this,respuesta,10).show();
+						
+						if(json.getString("response").equals("Visita creada"))
+						{
+							builder.setMessage("Visita creada").setTitle("Visita");
+							// 3. Get the AlertDialog from create()
+							AlertDialog dialog = builder.create();
+							dialog.setOnDismissListener(new OnDismissListener() {
+								@Override
+								public void onDismiss(DialogInterface dialog) {
+									
+									Intent lista_clientes = new Intent(getApplicationContext(),ListadoClientes.class);
+									startActivity(lista_clientes);		
+								}
+							});
+							dialog.show();
+						}
+						else
+						{	builder.setMessage("Error visita no creada").setTitle("Visita");
+							AlertDialog dialog = builder.create();
+							dialog.show();
+						}
 						((Button)v).setActivated(false);
 						findViewById(R.id.ProgressBarVisita).setVisibility(View.INVISIBLE);
+						
 					}
 				  catch(Exception e)
 				  {
@@ -263,6 +288,7 @@ private class PostNuevaVisita extends AsyncTask <String, Void, String > {
 	
 
 }
+
 
 
 

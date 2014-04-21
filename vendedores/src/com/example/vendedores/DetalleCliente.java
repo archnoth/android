@@ -220,6 +220,7 @@ public class DetalleCliente extends Activity {
 		//escucho los al servicio ultimaVenta
 		CargarUltimaVentaReceiver ultVentaReceiver=new CargarUltimaVentaReceiver((Button)findViewById(R.id.btn_repetir_venta));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ultVentaReceiver,new IntentFilter("ultimaVenta"));
+		
 				
 		
 	}
@@ -269,6 +270,9 @@ public class DetalleCliente extends Activity {
 		startService(servicio_historico);
 		
 		
+		Intent servicio_saldo= new Intent(this, ServicioSaldoCliente.class);
+		servicio_saldo.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+		startService(servicio_saldo);
 		
 	}
 	

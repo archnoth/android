@@ -3,6 +3,7 @@ package com.example.vendedores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -85,6 +86,17 @@ public class Factura extends Activity {
 	private BigDecimal saldo_cliente=new BigDecimal("0.00");
 	private Venta  ultima_venta;
 	
+	
+	
+	public BigDecimal getSaldoCliente()
+	{
+		return this.saldo_cliente;
+	}
+	
+	public void setSaldoCliente(BigDecimal saldo)
+	{
+		this.saldo_cliente=saldo;
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -92,6 +104,10 @@ public class Factura extends Activity {
 		setContentView(R.layout.activity_factura);
 		ActionBar actionBar = getActionBar();
 	    actionBar.setDisplayHomeAsUpEnabled(true);
+	    
+	    CargarSaldoClienteReceiver saldoReceiver=new CargarSaldoClienteReceiver();
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(saldoReceiver,new IntentFilter("saldo_cliente"));
+		
 	    
 	    usuario = ((Sistema)getApplicationContext()).getUsu();
 	    cliente = ((Cliente)getIntent().getExtras().getParcelable("cliente"));
@@ -112,25 +128,20 @@ public class Factura extends Activity {
 			addRowToTableProductos(null);
 		}
 		if(tipo!=0 && tipo!=2)
+			
 		{
-			JSONObject rut_cliente = null;
-			try {
-				rut_cliente = new JSONObject("{rut:+"+cliente.getRut()+"}");
-			} catch (JSONException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-			SaldoCliente thread_saldo=new SaldoCliente();//llamo al consultar saldo;
-			AsyncTask<JSONObject, Void, String> async_method = thread_saldo.execute(rut_cliente);
-			try {
-				saldo_cliente=new BigDecimal(async_method.get());
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (ExecutionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			saldo_cliente=new BigDecimal(((Sistema)getApplicationContext()).getSaldo_cliente()).setScale(2, RoundingMode.HALF_UP);
+			//SaldoCliente thread_saldo=new SaldoCliente();//llamo al consultar saldo;
+			//AsyncTask<JSONObject, Void, String> async_method = thread_saldo.execute(rut_cliente);
+//			try {
+//				saldo_cliente=new BigDecimal(async_method.get());
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (ExecutionException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
 
 			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
 			switch(tipo){
