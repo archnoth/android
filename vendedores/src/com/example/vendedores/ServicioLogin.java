@@ -7,11 +7,13 @@ import java.util.HashMap;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
@@ -23,7 +25,10 @@ import com.example.dominio.Usuario;
 import com.google.gson.Gson;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -91,7 +96,7 @@ public class ServicioLogin extends IntentService {
   
   private boolean login() throws Exception
   {
-		 HttpClient httpClient = new DefaultHttpClient();
+		 DefaultHttpClient httpClient = new DefaultHttpClient();
 		 HttpContext localContext = new BasicHttpContext();
          HttpPost httpPost = new HttpPost("http://ventas.jm-ga.com/api/login/");
          
@@ -110,13 +115,16 @@ public class ServicioLogin extends IntentService {
         	 se.setContentEncoding("UTF-8");
         	 se.setContentType("application/json");
         	 httpPost.setEntity(se);
-        	 HttpResponse response = httpClient.execute(httpPost, localContext);
-        	 HttpEntity entity = response.getEntity();
-               
-        	 results = getASCIIContentFromEntity(entity);
-               
+        	 ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+		     NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		     if (networkInfo != null && networkInfo.isConnected()) {
+		    	 HttpResponse response = httpClient.execute(httpPost, localContext);
+		    	 HttpEntity entity = response.getEntity();
+	        	 results = getASCIIContentFromEntity(entity);
+		     }      	 
          } catch (Exception e) {
-        	 return true;
+        	 error = "NO SE PUDO ESTABLECER UNA CONEXION";
+        	 throw e;
          }
 		if (results!=null) {			
 			JSONObject jsonObject;
@@ -170,6 +178,9 @@ public class ServicioLogin extends IntentService {
 				error = results;
 				throw e;
 			}	
+		} else {
+			error = "NO SE PUDO ESTABLECER UNA CONEXION";
+			return true;
 		}
 		logueado = true;
 		return false;

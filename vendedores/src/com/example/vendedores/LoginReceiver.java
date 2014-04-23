@@ -36,6 +36,7 @@ public class LoginReceiver extends BroadcastReceiver{
 	        context.startActivity(loginIntent);
 		}
 		else Toast.makeText(context, intent.getStringExtra("error"), Toast.LENGTH_LONG).show();
+		this.progressBar.setVisibility(View.INVISIBLE);
 		this.boton.setActivated(false);
 		this.boton.setClickable(true);
 	}
