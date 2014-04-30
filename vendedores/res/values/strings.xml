@@ -10,7 +10,7 @@
     <string name="title_activity_detalle_cliente">DetalleCliente</string>
     <string name="title_activity_factura">Factura</string>
     <string name="autocomplete_producto">Producto</string>
-    <string name="btn_text_registrar_venta">Registrar nueva venta</string>
+    <string name="btn_text_registrar_venta">Transacciones</string>
     <string name="btn_text_repetir_venta">Repetir última venta</string>
     <string name="title_activity_ventas_historico">VentasHistorico</string>
     <string name="text_btn_historico">Ver datos historicos</string>

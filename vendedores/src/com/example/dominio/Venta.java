@@ -136,6 +136,24 @@ public Venta[] newArray(int size) {
 
 
 
+ public Venta(){};
+@Override
+public boolean equals(Object other){
+	
+	    Venta o=(Venta)other;
+		if (o == null) return false;
+		if (o== this) return true;
+		if (!(o instanceof Venta))return false;
+		
+		return this.getFecha().get(Calendar.YEAR) == o.getFecha().get(Calendar.YEAR)
+		&& this.getFecha().get(Calendar.MONTH) == o.getFecha().get(Calendar.MONTH)
+		&& this.getFecha().get(Calendar.DAY_OF_MONTH) == o.getFecha().get(Calendar.DAY_OF_MONTH)
+		&& this.getFecha().get(Calendar.HOUR_OF_DAY) == o.getFecha().get(Calendar.HOUR_OF_DAY)
+		&& this.getFecha().get(Calendar.MINUTE) == o.getFecha().get(Calendar.MINUTE)  
+		&& this.getFecha().get(Calendar.SECOND) == o.getFecha().get(Calendar.SECOND)
+		&& this.getCliente().equals(o.getCliente()); 
+	
+	}
 
 }
 

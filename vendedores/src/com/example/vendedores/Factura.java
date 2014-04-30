@@ -4,29 +4,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.example.dominio.Cliente;
 import com.example.dominio.Producto;
 import com.example.dominio.ProductoVenta;
@@ -405,8 +398,7 @@ public class Factura extends Activity {
 		if (error==null) {
 			json = new JSONObject();
 			gson = new Gson();
-			venta_original = new Venta(nueva_venta.getUsuario(),
-					nueva_venta.getCliente(), nueva_venta.getFecha(),
+			venta_original = new Venta(nueva_venta.getUsuario(),nueva_venta.getCliente(), nueva_venta.getFecha(),
 					nueva_venta.getMonto(), nueva_venta.getTipo(),monto_factura_sin_descuento.doubleValue());
 			venta_original.setProductos(nueva_venta.getProductos());
 
@@ -753,8 +745,7 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 
 	public void VentaRecursiva() throws JSONException {
 		
-		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass())
-				.toString(); // venta tentativa espera confirmacion
+		String dataString = gson.toJson(nueva_venta, nueva_venta.getClass()).toString(); // venta tentativa espera confirmacion
 		JSONObject aux_fecha = new JSONObject(dataString); // venta tentativa
 															// espera
 															// confirmacion
@@ -779,275 +770,212 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 			// obtengo la respuesta asincrona
 			String respuesta = (String) async.get();
 			json = new JSONObject(respuesta);
-
-			// si se creo la venta
-			if (json.getString("response").toString()
-					.equalsIgnoreCase("Venta creada")) {
-				Calendar fecha_venta_registrada = Calendar.getInstance();
-				fecha_venta_registrada.set(Calendar.YEAR, Integer
-						.parseInt(((JSONObject) json.get("fecha"))
-								.getString("year")));
-				fecha_venta_registrada.set(Calendar.MONTH, Integer
-						.parseInt(((JSONObject) json.get("fecha"))
-								.getString("month")) - 1);
-				fecha_venta_registrada.set(Calendar.DAY_OF_MONTH, Integer
-						.parseInt(((JSONObject) json.get("fecha"))
-								.getString("dayOfMonth")));
-				fecha_venta_registrada.set(Calendar.HOUR_OF_DAY, Integer
-						.parseInt(((JSONObject) json.get("fecha"))
-								.getString("hourOfDay")));
-				fecha_venta_registrada.set(Calendar.MINUTE, Integer
-						.parseInt(((JSONObject) json.get("fecha"))
-								.getString("minute")));
-				fecha_venta_registrada.set(Calendar.SECOND, Integer
-						.parseInt(((JSONObject) json.get("fecha"))
-								.getString("second")));
-
-				// JSONObject
-				// cliente_venta_creada=((JSONObject)(json.get("cliente")));
-
-				// si la venta no es igual a la que envie originalmente,
-				// entonces llamo a venta tentativa!!!!
-				if (!(venta_original.getMonto() == Double.parseDouble(json
-						.getString("monto").toString())
-						&& venta_original
-								.getCliente()
-								.getRut()
-								.equalsIgnoreCase(json.getString("rut_cliente"))
-						&& venta_original
-								.getCliente()
-								.getNombre()
-								.equalsIgnoreCase(
-										json.getString("nombre_cliente"))
-						&& venta_original.getFecha().get(Calendar.YEAR) == fecha_venta_registrada
-								.get(Calendar.YEAR)
-						&& venta_original.getFecha().get(Calendar.MONTH) == fecha_venta_registrada
-								.get(Calendar.MONTH)
-						&& venta_original.getFecha().get(Calendar.DAY_OF_MONTH) == fecha_venta_registrada
-								.get(Calendar.DAY_OF_MONTH)
-						&& venta_original.getFecha().get(Calendar.HOUR_OF_DAY) == fecha_venta_registrada
-								.get(Calendar.HOUR_OF_DAY)
-						&& venta_original.getFecha().get(Calendar.MINUTE) == fecha_venta_registrada
-								.get(Calendar.MINUTE) && venta_original
-						.getFecha().get(Calendar.SECOND) == fecha_venta_registrada
-						.get(Calendar.SECOND))) {
-
-					// llamo a crear venta tentativa con nueva_venta
-					dataString = gson.toJson(venta_original,
-							venta_original.getClass()).toString();
-					JSONObject aux = new JSONObject(dataString); // venta
-																	// tentativa
-																	// espera
-																	// confirmacion
-					aux.put("venta_id", json.getString("venta_id"));
-					aux.put("monto", json.getString("monto"));
-					JSONObject fecha = (JSONObject) aux.get("fecha");
-					try {
-						Integer month = (Integer) fecha.get("month");
-						month = month + 1;
-						fecha.put("month", month);
-					} catch (JSONException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					PostNuevaVentaTentativa thred_venta_tentativa = new PostNuevaVentaTentativa();// llamo
-																									// un
-																									// proceso
-																									// en
-																									// backgroud
-																									// para
-																									// realizar
-																									// la
-																									// venta
-					// inicia el proceso de vender
-					AsyncTask<String, Void, String> th_async_tentativa = thred_venta_tentativa.execute(aux.toString());
-					// falta controlar errores de las ventas tentativas segun la
-					// respuesta del server para la venta tentativa
-				}
-				findViewById(R.id.progressFacturaLayout).setVisibility(
-						View.INVISIBLE);
-				((Button)findViewById(R.id.Facturar)).setActivated(false);
-				String mensaje = "Venta exitosa!";
-				DecimalFormat formatter = new DecimalFormat("##0.0######");
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage("Su pedido se proceso correctamente.\n"
-						+ "Para el cliente :"
-						+ nueva_venta.getCliente().getNombre()
-						+ "\n  Con un monto de :"
-						+ formatter.format(this.nueva_venta.getMonto())
-						+ "\n ¿Desea agregar notas sobre este Pedido?");
-				builder.setTitle(mensaje)
-						.setCancelable(false)
-						.setNegativeButton("Cancelar",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										findViewById(R.id.scrollViewVenta)
-												.setFocusable(true);
-										dialog.cancel();
-										Intent loc = new Intent(
-												getApplicationContext(),
-												DetalleCliente.class);
-										loc.putExtra(
-												"cliente",
-												getIntent().getExtras()
-														.getParcelable(
-																"cliente"));
-										loc.putExtra(
-												"usuario",
-												getIntent().getExtras()
-														.getParcelable(
-																"usuario"));
-										startActivity(loc);
-
-									}
-								})
-						.setPositiveButton("Aceptar",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										try {
-											findViewById(R.id.scrollViewVenta)
-													.setFocusable(true);
-											// Toast.LENGTH_LONG).show();
-											Intent loc = new Intent(
-													getApplicationContext(),
-													NotaActivity.class);
-											loc.putExtra(
-													"usuario",
-													getIntent().getExtras()
-															.getParcelable(
-																	"usuario"));
-											loc.putExtra(
-													"cliente",
-													getIntent().getExtras()
-															.getParcelable(
-																	"cliente"));
-											loc.putExtra("venta_id",
-													json.getString("venta_id"));
-											startActivity(loc);
-										} catch (Exception e) {
-										}
-									}
-								});
-				AlertDialog alert = builder.create();
-				alert.show();
-
-			}
-			if (json.getString("response").toString()
-					.equalsIgnoreCase("Stock insuficiente")) {
-
-				String prod_a_mostrar = "";
-
-				JSONObject ventaObj = ((JSONObject) json.get("venta"));
-				BigDecimal mnt = BigDecimal.ZERO;
-				// sino llamo nuevamente al proceso de vender con nueva_venta
-				// arreglada
-
-				ArrayList<ProductoVenta> nuevaListaProductos = new ArrayList<ProductoVenta>();
-				JSONArray productos_nueva_venta = (JSONArray) ventaObj
-						.get("productos");
-				for (int i = 0; i < productos_nueva_venta.length(); i++) {
-					String codigo = ((JSONObject) productos_nueva_venta.get(i))
-							.get("codigo").toString();
-					Producto p = diccionarioProductos.get(codigo);
-					int cant = Integer
-							.parseInt(((JSONObject) productos_nueva_venta
-									.get(i)).get("cantidad").toString());
-					int descuento = Integer
-							.parseInt(((JSONObject) productos_nueva_venta
-									.get(i)).get("descuento").toString());
-					int sin_costo = Integer
-							.parseInt(((JSONObject) productos_nueva_venta
-									.get(i)).get("sin_costo").toString());
-					
-					ProductoVenta pv = new ProductoVenta(p, cant,descuento,sin_costo);
-					
-					if(sin_costo!=1)
-					{
-						
-						BigDecimal descuento_prod =BigDecimal.ZERO;
-					
-						switch (nueva_venta.getCliente().getTipo()) {
-						case 0:
-						
-							descuento_prod = p.getPrecio_cliente_final().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
-							mnt = mnt.add(p.getPrecio_cliente_final().subtract(descuento_prod).multiply(new BigDecimal(cant)));
-							break;
-							
-						case 1:
-							descuento_prod = p.getPrecio_mayorista().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
-							mnt = mnt.add(p.getPrecio_mayorista().subtract(descuento_prod).multiply(new BigDecimal(cant)));
-							break;
-							
-						case 2:
-							descuento_prod = p.getPrecio_distribuidor().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
-							mnt = mnt.add(p.getPrecio_distribuidor().subtract(descuento_prod).multiply(new BigDecimal(cant)));
-							break;
-							
-					}
-					}
-					nuevaListaProductos.add(pv);
-					prod_a_mostrar = "Producto :" + prod_a_mostrar
-							+ pv.getProducto().getNombre() + "\nCodigo :"
-							+ pv.getProducto().getCodigo() + "\nCantidad :"
-							+ pv.getCantidad().toString() + "\n";
-				}
-
-				nueva_venta.setProductos(nuevaListaProductos);
-				
-				if (descuento_contado_porcentaje != 0 && tipo==0) {
-					BigDecimal descuento_contado_monto= mnt.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
-					mnt = mnt.subtract(descuento_contado_monto) ;
-					nueva_venta.setMonto(mnt.doubleValue());
-				} else {
-					nueva_venta.setMonto(mnt.doubleValue());
-				}
-				findViewById(R.id.progressFacturaLayout).setVisibility(
-						View.INVISIBLE);
-				((Button)findViewById(R.id.Facturar)).setActivated(false);
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(
-						this.getApplicationContext(),
-						R.layout.lista_productos_venta,
-						nueva_venta.getProductos());
-				builder.setAdapter(adaptador_venta_modificada, null);
-				DecimalFormat formatter = new DecimalFormat("##0.0######");
-				builder.setTitle(
-						"Desea Realizar la siguiente venta por un total de :"
-								+ formatter.format(this.nueva_venta.getMonto())
-								+ "?")
-						.setCancelable(false)
-						.setNegativeButton("Cancelar",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										findViewById(R.id.scrollViewVenta)
-												.setFocusable(true);
-										dialog.cancel();
-									}
-								})
-						.setPositiveButton("Aceptar",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										try {
-											VentaRecursiva();
-										} catch (Exception e) {
-										}
-									}
-								});
-				AlertDialog alert = builder.create();
-				alert.show();
-
-			}
+			int tipo_respuesta=0;
+			if(json.getString("response").toString().equalsIgnoreCase("Venta creada"))
+				tipo_respuesta=1;
+			if(json.getString("response").toString().equalsIgnoreCase("Stock insuficiente"))
+				tipo_respuesta=2;
 			if(json.getString("response").toString().equalsIgnoreCase("Devolucion creada"))
-			{
-				findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
-				((Button)findViewById(R.id.Facturar)).setActivated(false);
-				Toast.makeText(Factura.this,"devolucion creada ", Toast.LENGTH_LONG).show();
+				tipo_respuesta=3;
+			// si se creo la venta
+			
+			switch (tipo_respuesta) {
+				case 1:
+					Calendar fecha_venta_registrada = Calendar.getInstance();
+					fecha_venta_registrada.set(Calendar.YEAR, Integer.parseInt(((JSONObject) json.get("fecha")).getString("year")));
+					fecha_venta_registrada.set(Calendar.MONTH, Integer.parseInt(((JSONObject) json.get("fecha")).getString("month")) - 1);
+					fecha_venta_registrada.set(Calendar.DAY_OF_MONTH, Integer.parseInt(((JSONObject) json.get("fecha"))	.getString("dayOfMonth")));
+					fecha_venta_registrada.set(Calendar.HOUR_OF_DAY, Integer.parseInt(((JSONObject) json.get("fecha")).getString("hourOfDay")));
+					fecha_venta_registrada.set(Calendar.MINUTE, Integer	.parseInt(((JSONObject) json.get("fecha")).getString("minute")));
+					fecha_venta_registrada.set(Calendar.SECOND, Integer	.parseInt(((JSONObject) json.get("fecha")).getString("second")));
+	
+					// si la venta no es igual a la que envie originalmente, entonces llamo a venta tentativa!!!!
+					
+					nueva_venta.setFecha(fecha_venta_registrada);
+					if (!(venta_original.equals(nueva_venta))){
+	
+						// llamo a crear venta tentativa con nueva_venta.
+						
+						dataString = gson.toJson(venta_original,venta_original.getClass()).toString();
+						JSONObject aux = new JSONObject(dataString); // venta  tentativa // espera	// confirmacion
+						aux.put("venta_id", json.getString("transaccion_id"));
+						aux.put("monto", json.getString("monto"));
+						JSONObject fecha = (JSONObject) aux.get("fecha");
+						try {
+							Integer month = (Integer) fecha.get("month");
+							month = month + 1;
+							fecha.put("month", month);
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						PostNuevaVentaTentativa thred_venta_tentativa = new PostNuevaVentaTentativa();// llamo un proceso
+																										// en
+																										// backgroud
+																										// para
+																										// realizar
+																										// la
+																										// venta tentativa esto deberia ser un proceso!!!
+						// inicia el proceso de vender
+						AsyncTask<String, Void, String> th_async_tentativa = thred_venta_tentativa.execute(aux.toString());
+						break;
+						// falta controlar errores de las ventas tentativas segun la
+						// respuesta del server para la venta tentativa
+					}
+					findViewById(R.id.progressFacturaLayout).setVisibility(	View.INVISIBLE);
+					((Button)findViewById(R.id.Facturar)).setActivated(false);
+					
+					String mensaje = "Venta exitosa!";
+					DecimalFormat formatter = new DecimalFormat("##0.0######");
+	
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setMessage("Su pedido se proceso correctamente.\n"
+							+ "Para el cliente :"+ nueva_venta.getCliente().getNombre()	+ "\n  Con un monto de :"
+							+ formatter.format(this.nueva_venta.getMonto())+ "\n ¿Desea agregar notas sobre este Pedido?");
+					builder.setTitle(mensaje).setCancelable(false).setNegativeButton("Cancelar",
+									new DialogInterface.OnClickListener() {
+										
+						public void onClick(DialogInterface dialog,	int id) {
+								findViewById(R.id.scrollViewVenta).setFocusable(true);
+								dialog.cancel();
+								Intent loc = new Intent(getApplicationContext(),DetalleCliente.class);
+								loc.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+								loc.putExtra("usuario",usuario);
+								startActivity(loc);
+	
+										}
+									})
+							
+									.setPositiveButton("Aceptar",new DialogInterface.OnClickListener() {
+										
+										public void onClick(DialogInterface dialog,	int id) {
+											try {
+												findViewById(R.id.scrollViewVenta).setFocusable(true);
+												// Toast.LENGTH_LONG).show();
+												Intent loc = new Intent(getApplicationContext(),NotaActivity.class);
+												loc.putExtra("usuario",	usuario);
+												loc.putExtra("cliente",	getIntent().getExtras().getParcelable("cliente"));
+												loc.putExtra("venta_id",json.getString("transaccion_id"));
+												startActivity(loc);
+												
+											} catch (Exception e) {
+											}
+										}
+									});
+					AlertDialog alert = builder.create();
+					alert.show();
+					break;
+				case 2:	
+			
+
+					String prod_a_mostrar = "";
+	
+					JSONObject ventaObj = ((JSONObject) json.get("venta"));
+					BigDecimal mnt = BigDecimal.ZERO;
+					// sino llamo nuevamente al proceso de vender con nueva_venta arreglada
+	
+					ArrayList<ProductoVenta> nuevaListaProductos = new ArrayList<ProductoVenta>();
+					JSONArray productos_nueva_venta = (JSONArray) ventaObj.get("productos");
+					
+					for (int i = 0; i < productos_nueva_venta.length(); i++) {
+						
+						String codigo = ((JSONObject) productos_nueva_venta.get(i)).get("codigo").toString();
+						Producto p = diccionarioProductos.get(codigo);
+						int cant = Integer.parseInt(((JSONObject) productos_nueva_venta.get(i)).get("cantidad").toString());
+						int descuento = Integer.parseInt(((JSONObject) productos_nueva_venta.get(i)).get("descuento").toString());
+						int sin_costo = Integer.parseInt(((JSONObject) productos_nueva_venta.get(i)).get("sin_costo").toString());
+						
+						ProductoVenta pv = new ProductoVenta(p, cant,descuento,sin_costo);
+						
+						if(sin_costo!=1)
+						{
+							
+							BigDecimal descuento_prod =BigDecimal.ZERO;
+						
+							switch (nueva_venta.getCliente().getTipo()) {
+							case 0:
+							
+								descuento_prod = p.getPrecio_cliente_final().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
+								mnt = mnt.add(p.getPrecio_cliente_final().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+								break;
+								
+							case 1:
+								descuento_prod = p.getPrecio_mayorista().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
+								mnt = mnt.add(p.getPrecio_mayorista().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+								break;
+								
+							case 2:
+								descuento_prod = p.getPrecio_distribuidor().multiply(new BigDecimal(descuento).divide(new BigDecimal(100)));
+								mnt = mnt.add(p.getPrecio_distribuidor().subtract(descuento_prod).multiply(new BigDecimal(cant)));
+								break;
+								
+						}
+						}
+						nuevaListaProductos.add(pv);
+						prod_a_mostrar = "Producto :" + prod_a_mostrar
+								+ pv.getProducto().getNombre() + "\nCodigo :"
+								+ pv.getProducto().getCodigo() + "\nCantidad :"
+								+ pv.getCantidad().toString() + "\n";
+					}
+	
+					nueva_venta.setProductos(nuevaListaProductos);
+					
+					if (descuento_contado_porcentaje != 0 && tipo==0) {
+						BigDecimal descuento_contado_monto= mnt.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
+						mnt = mnt.subtract(descuento_contado_monto) ;
+						nueva_venta.setMonto(mnt.doubleValue());
+					} else {
+						nueva_venta.setMonto(mnt.doubleValue());
+					}
+					findViewById(R.id.progressFacturaLayout).setVisibility(
+							View.INVISIBLE);
+					((Button)findViewById(R.id.Facturar)).setActivated(false);
+					AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+					ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(
+							this.getApplicationContext(),
+							R.layout.lista_productos_venta,
+							nueva_venta.getProductos());
+					builder2.setAdapter(adaptador_venta_modificada, null);
+					DecimalFormat formatter2 = new DecimalFormat("##0.0######");
+					builder2.setTitle(
+							"Desea Realizar la siguiente venta por un total de :"
+									+ formatter2.format(this.nueva_venta.getMonto())
+									+ "?")
+							.setCancelable(false)
+							.setNegativeButton("Cancelar",
+									new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog,int id) {
+											
+											findViewById(R.id.scrollViewVenta).setFocusable(true);
+											dialog.cancel();
+											
+										}
+									})
+							.setPositiveButton("Aceptar",
+									new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog,
+												int id) {
+											try {
+												VentaRecursiva();
+												
+											} catch (Exception e) {
+											}
+										}
+									});
+					AlertDialog alert2 = builder2.create();
+					alert2.show();
+					break;
+				case 3:
 				
+					findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
+					((Button)findViewById(R.id.Facturar)).setActivated(false);
+					Toast.makeText(Factura.this,"devolucion creada ", Toast.LENGTH_LONG).show();
+					break;
+				default:
+					findViewById(R.id.progressFacturaLayout).setVisibility(View.INVISIBLE);
+					((Button)findViewById(R.id.Facturar)).setActivated(false);
+					Toast.makeText(Factura.this,json.getString("response").toString()+"Intente nuevamente mas tarde!", Toast.LENGTH_LONG).show();
+					break;
 			}
 
 		} catch (Exception e) {
