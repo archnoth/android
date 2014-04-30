@@ -143,10 +143,6 @@ public class ListadoClientes extends Activity {
 		getIntent().putExtra("desdeLogin", false);
 	}
 	
-	
-	
-	
-	
 private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 
 	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
@@ -275,12 +271,6 @@ private class LongRunningGetIO extends AsyncTask <Void, Void, List<Cliente> > {
 		}
 		
 		 
-	
-		
-		
-
-	
-	
 private void set_lista_clientesAdapter(ArrayAdapter<Cliente> adaptador_lista)
 	{
 		listaClientes.setAdapter(adaptador_lista);

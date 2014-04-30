@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -669,20 +670,22 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 				StringEntity se = new StringEntity(params[0].toString(), "UTF8");
 				se.setContentType("application/json");
 				httpPost.setEntity(se);
-				se.setContentType("application/json");
-				httpPost.setEntity(se);
 				HttpResponse response = httpClient.execute(httpPost,
 						localContext);
 				HttpEntity entity = response.getEntity();
 
 				text = getASCIIContentFromEntity(entity);
-				return text;
+				//return text;
 
 			} catch (Exception e) {
+				HashMap<String, String> h = new HashMap<String, String>();
+				h.put("response", "Error en la venta");
+				h.put("error", e.toString());
+				text = h.toString();
 			}
-			// return text;
+			return text;
 
-			return null;
+			//return null;
 		}
 
 		@Override
@@ -770,6 +773,7 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 			// obtengo la respuesta asincrona
 			String respuesta = (String) async.get();
 			json = new JSONObject(respuesta);
+
 			int tipo_respuesta=0;
 			if(json.getString("response").toString().equalsIgnoreCase("Venta creada"))
 				tipo_respuesta=1;
@@ -809,12 +813,15 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
+
 						PostNuevaVentaTentativa thred_venta_tentativa = new PostNuevaVentaTentativa();// llamo un proceso
+
 																										// en
 																										// backgroud
 																										// para
 																										// realizar
 																										// la
+
 																										// venta tentativa esto deberia ser un proceso!!!
 						// inicia el proceso de vender
 						AsyncTask<String, Void, String> th_async_tentativa = thred_venta_tentativa.execute(aux.toString());
@@ -825,11 +832,13 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 					findViewById(R.id.progressFacturaLayout).setVisibility(	View.INVISIBLE);
 					((Button)findViewById(R.id.Facturar)).setActivated(false);
 					
+
 					String mensaje = "Venta exitosa!";
 					DecimalFormat formatter = new DecimalFormat("##0.0######");
 	
 					AlertDialog.Builder builder = new AlertDialog.Builder(this);
 					builder.setMessage("Su pedido se proceso correctamente.\n"
+
 							+ "Para el cliente :"+ nueva_venta.getCliente().getNombre()	+ "\n  Con un monto de :"
 							+ formatter.format(this.nueva_venta.getMonto())+ "\n ¿Desea agregar notas sobre este Pedido?");
 					builder.setTitle(mensaje).setCancelable(false).setNegativeButton("Cancelar",
@@ -858,20 +867,24 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 												loc.putExtra("venta_id",json.getString("transaccion_id"));
 												startActivity(loc);
 												
+
 											} catch (Exception e) {
 											}
 										}
 									});
 					AlertDialog alert = builder.create();
 					alert.show();
+
 					break;
 				case 2:	
 			
+
 
 					String prod_a_mostrar = "";
 	
 					JSONObject ventaObj = ((JSONObject) json.get("venta"));
 					BigDecimal mnt = BigDecimal.ZERO;
+
 					// sino llamo nuevamente al proceso de vender con nueva_venta arreglada
 	
 					ArrayList<ProductoVenta> nuevaListaProductos = new ArrayList<ProductoVenta>();
@@ -887,6 +900,7 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 						
 						ProductoVenta pv = new ProductoVenta(p, cant,descuento,sin_costo);
 						
+
 						if(sin_costo!=1)
 						{
 							
@@ -930,20 +944,25 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 					findViewById(R.id.progressFacturaLayout).setVisibility(
 							View.INVISIBLE);
 					((Button)findViewById(R.id.Facturar)).setActivated(false);
+
 					AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+
 					ArrayAdapter<ProductoVenta> adaptador_venta_modificada = new ArrayAdapter<ProductoVenta>(
 							this.getApplicationContext(),
 							R.layout.lista_productos_venta,
 							nueva_venta.getProductos());
+
 					builder2.setAdapter(adaptador_venta_modificada, null);
 					DecimalFormat formatter2 = new DecimalFormat("##0.0######");
 					builder2.setTitle(
 							"Desea Realizar la siguiente venta por un total de :"
 									+ formatter2.format(this.nueva_venta.getMonto())
+
 									+ "?")
 							.setCancelable(false)
 							.setNegativeButton("Cancelar",
 									new DialogInterface.OnClickListener() {
+
 										public void onClick(DialogInterface dialog,int id) {
 											
 											findViewById(R.id.scrollViewVenta).setFocusable(true);
@@ -957,7 +976,7 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 												int id) {
 											try {
 												VentaRecursiva();
-												
+
 											} catch (Exception e) {
 											}
 										}
@@ -977,6 +996,7 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 					Toast.makeText(Factura.this,json.getString("response").toString()+"Intente nuevamente mas tarde!", Toast.LENGTH_LONG).show();
 					break;
 			}
+
 
 		} catch (Exception e) {
 			System.out.print(e.getMessage());
