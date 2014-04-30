@@ -11,7 +11,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -100,6 +102,21 @@ public class EleccionFactura extends Activity {
 		   
 	  
 	   });
+	final Button rep_ultima_venta=(Button)findViewById(R.id.btn_repetir_venta);
+	rep_ultima_venta.setOnClickListener(new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			((Button)findViewById(R.id.btn_repetir_venta)).setActivated(true);
+			
+	    	Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
+			fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+			fac_intent.putExtra("tipo",((Sistema)getApplicationContext()).getUltima_venta().getTipo());
+			fac_intent.putExtra("ultima_venta", true);
+		    startActivity(fac_intent);
+			
+		}
+	});
 	
 	final TextView textoCagaProd = (TextView)findViewById(R.id.progressText);  
 	textoCagaProd.addTextChangedListener(new TextWatcher() {
@@ -116,6 +133,16 @@ public class EleccionFactura extends Activity {
 			checkearProductos();	
 		}
 	});
+	
+	
+	
+	//limpio la ultima venta por las dudas de que venga desde otro cliente
+	((Sistema)getApplicationContext()).setUltima_venta(null);		
+	//escucho los al servicio ultimaVenta
+	CargarUltimaVentaReceiver ultVentaReceiver=new CargarUltimaVentaReceiver((Button)findViewById(R.id.btn_repetir_venta));
+	LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ultVentaReceiver,new IntentFilter("ultimaVenta"));
+	
+	
 	
 	}//onCreate
 	

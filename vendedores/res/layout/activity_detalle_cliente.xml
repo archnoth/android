@@ -371,32 +371,17 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/btn_repetir_venta"
+        android:id="@+id/btn_nueva_venta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_historico"
         android:layout_alignParentLeft="true"
-        android:onClick="to_factura_activity_con_venta"
-        android:text="@string/btn_text_repetir_venta"
-        android:background="@drawable/button_style"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="20sp" 
-        android:layout_marginBottom="5sp"
-        android:enabled="false"/>
-
-    <Button
-        android:id="@+id/btn_nueva_venta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_repetir_venta"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="5sp"
         android:background="@drawable/button_style"
         android:onClick="to_factura_activity"
         android:text="@string/btn_text_registrar_venta"
         android:textAlignment="center"
         android:textColor="#ffffff"
+        android:layout_marginBottom="5sp"
         android:textSize="20sp" />
 
 </RelativeLayout>

@@ -215,11 +215,7 @@ public class DetalleCliente extends Activity {
 		CargarHistoricoReceiver historicoReceiver=new CargarHistoricoReceiver((Button)findViewById(R.id.btn_historico));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(historicoReceiver,new IntentFilter("historico"));
 		
-		//limpio la ultima venta por las dudas de que venga desde otro cliente
-		((Sistema)getApplicationContext()).setUltima_venta(null);		
-		//escucho los al servicio ultimaVenta
-		CargarUltimaVentaReceiver ultVentaReceiver=new CargarUltimaVentaReceiver((Button)findViewById(R.id.btn_repetir_venta));
-		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ultVentaReceiver,new IntentFilter("ultimaVenta"));
+		
 		
 				
 		
@@ -256,7 +252,6 @@ public class DetalleCliente extends Activity {
 	protected void onResume(){
 		super.onResume();
 		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.INVISIBLE);
-		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(false);
 		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(false);
 		((Button)findViewById(R.id.btn_historico)).setActivated(false);
 		
@@ -285,17 +280,6 @@ public class DetalleCliente extends Activity {
 	    startActivity(fac_intent);
 	}
 	
-	public void to_factura_activity_con_venta(View view){
-			
-		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(true);
-		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.VISIBLE);
-    	Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
-		fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-		fac_intent.putExtra("tipo",((Sistema)getApplicationContext()).getUltima_venta().getTipo());
-		fac_intent.putExtra("ultima_venta", true);
-	    startActivity(fac_intent);
-      
-	}
 	
 	
 	public void to_historico_activity(View view){
