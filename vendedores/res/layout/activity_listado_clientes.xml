@@ -51,23 +51,9 @@
             android:layout_marginTop="55dp"
             android:id="@+id/ViewListaVendedores"
             android:layout_width="wrap_content"
-            android:layout_height="400dp" >
+            android:layout_height="match_parent" >
         </ListView>
         
-   
-
-    <Button
-        android:id="@+id/btn_clientes_sin_visitar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/linearLayout1"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/button_style"
-        android:onClick="clientes_sin_visitar"
-        android:text="@string/text_btn_clientes_sin_visitar"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
 
   
 </RelativeLayout>

@@ -1,10 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_clientes_sin_visitar"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/text_btn_clientes_sin_visitar"/>
+    
+    <item
+        android:id="@+id/action_action_todos_los_clientes"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/text_ver_todos_los_clientes"/>
+    
+    
     
      <item android:id="@+id/notificacion"
           android:icon="@drawable/ic_action_notificacion"

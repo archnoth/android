@@ -74,7 +74,8 @@
 					    android:layout_width="150dp"
 					    android:layout_height="match_parent"
 					    android:background="@color/white"
-					    android:text="Nombre:" />
+					    android:text="Nombre:" 
+					    android:textSize="16sp"/>
 					    
                     <TextView
                         android:id="@+id/editTextNombreCliente"
@@ -82,7 +83,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                        android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -97,7 +99,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="RUT:" />
+                        android:text="RUT:" 
+                        android:textSize="16sp"/>
 					    
                     <TextView
                         android:id="@+id/editTextRutCliente"
@@ -105,7 +108,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                        android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -120,7 +124,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Direccion:" />
+                        android:text="Direccion:" 
+                        android:textSize="16sp"/>
 					    
                     <TextView
                         android:id="@+id/editDireccionCliente"
@@ -128,7 +133,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:background="@color/white" 
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                        android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -143,7 +149,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Tel:" />
+                        android:text="Tel:" 
+                        android:textSize="16sp"/>
 					    
                     <TextView
                         android:id="@+id/editTelCliente"
@@ -151,7 +158,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                        android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -166,7 +174,8 @@
 					    android:layout_width="150dp"
 					    android:layout_height="match_parent"
 					    android:background="@color/white"
-					    android:text="Tel2:" />
+					    android:text="Tel2:" 
+					    android:textSize="16sp"/>
 					    
                     <TextView
                         android:id="@+id/editTel2Cliente"
@@ -174,7 +183,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp" />
+                        android:layout_marginLeft="1dp" 
+                        android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -189,7 +199,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Cel:" />
+                        android:text="Cel:" 
+                         android:textSize="16sp"/>
 					    
                     <TextView
                         android:id="@+id/editCelularCliente"
@@ -197,7 +208,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                         android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -206,13 +218,15 @@
                     android:layout_height="wrap_content" 
                     android:layout_marginTop="7dp"
 					android:background="@color/blue"
-                    android:padding="1dp">
+                    android:padding="1dp"
+                    >
 
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Email:" />
+                        android:text="Email:" 
+                         android:textSize="16sp"/>
 					    
                     <TextView
                         android:id="@+id/editEmailCliente"
@@ -220,7 +234,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                         android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -235,7 +250,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Web:" />
+                        android:text="Web:"
+                         android:textSize="16sp" />
 					    
                     <TextView
                         android:id="@+id/editWebCliente"
@@ -243,7 +259,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                         android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -258,7 +275,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Dirección de entrega:" />
+                        android:text="Dirección de entrega:"
+                         android:textSize="16sp" />
 					    
                     <TextView
                         android:id="@+id/editLugarEntrega"
@@ -266,7 +284,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                         android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -281,7 +300,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Día de entrega:" />
+                        android:text="Día de entrega:"
+                         android:textSize="16sp" />
 					    
                     <TextView
                         android:id="@+id/editDia_de_entregaCliente"
@@ -289,7 +309,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false" 
                         android:background="@color/white"
-                        android:layout_marginLeft="1dp"/>
+                        android:layout_marginLeft="1dp"
+                         android:textSize="16sp"/>
                 </TableRow>
 
                 <TableRow
@@ -304,7 +325,8 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:background="@color/white"
-                        android:text="Hora de entrega:" />
+                        android:text="Hora de entrega:" 
+                         android:textSize="16sp"/>
 					
                     <RelativeLayout 
                         android:layout_width="match_parent"

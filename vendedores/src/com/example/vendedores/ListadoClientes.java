@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -63,42 +65,6 @@ public class ListadoClientes extends Activity {
 		buscador.setDropDownHeight(0);
 		buscador.setTextColor(Color.LTGRAY);
 		
-		final Button b = (Button) findViewById(R.id.btn_clientes_sin_visitar);
-		   b.setOnClickListener(new View.OnClickListener() {
-		   public void onClick(View v) {
-		    	if(ver_todos)
-		    	{
-		    		((Button)v).setActivated(true);
-		    		try {
-		    			
-		    			LongRunningGetIO thred=new LongRunningGetIO();
-		    			AsyncTask <Void, Void, List<Cliente> >  async=thred.execute();
-		    			adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , (ArrayList<Cliente>)async.get());
-		    			set_lista_clientesAdapter(adaptador_lista);
-		    			ver_todos=false;
-		    			b.setText("Ver todos los clientes");
-		    			AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		    			buscador.setAdapter(adaptador_lista);
-		    			buscador.setDropDownHeight(0);
-		    			buscador.setTextColor(Color.LTGRAY);
-		    			
-		    		}
-		    		catch(Exception e){};
-		    		
-		    	}
-		    	else
-		    	{
-		    		((Button)v).setActivated(false);
-		    		adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
-		    		set_lista_clientesAdapter(adaptador_lista);
-		    		ver_todos=true;
-		    		b.setText("Ver clientes sin visitar");		
-		    		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
-		    		buscador.setAdapter(adaptador_lista);
-		    		buscador.setDropDownHeight(0);
-		    		buscador.setTextColor(Color.LTGRAY);
-		    	}
-		    }});
 
 	}
 	
@@ -122,7 +88,9 @@ public class ListadoClientes extends Activity {
 		
 	}
 	public boolean onOptionsItemSelected(MenuItem item)
-		{
+	{
+		AutoCompleteTextView buscador = (AutoCompleteTextView)findViewById(R.id.buscador_vendedores);
+		
 			switch (item.getItemId()) {
 			
 				case R.id.notificacion:
@@ -130,6 +98,36 @@ public class ListadoClientes extends Activity {
 			    	startActivity(notificaciones);
 			    	return true;
 					
+				case R.id.action_clientes_sin_visitar:
+					
+					LongRunningGetIO thred=new LongRunningGetIO();
+	    			AsyncTask <Void, Void, List<Cliente> >  async=thred.execute();
+				try {
+					adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , (ArrayList<Cliente>)async.get());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    			set_lista_clientesAdapter(adaptador_lista);
+	    			ver_todos=false;
+	    			buscador.setAdapter(adaptador_lista);
+	    			buscador.setDropDownHeight(0);
+	    			buscador.setTextColor(Color.LTGRAY);
+	    			
+					return true;	
+					
+				case R.id.action_action_todos_los_clientes:
+					adaptador_lista = new ClienteAdapter(getApplicationContext(), R.layout.cliente_adapter , usuario.getListaClientes());
+		    		set_lista_clientesAdapter(adaptador_lista);
+		    		ver_todos=true;
+		    		buscador.setAdapter(adaptador_lista);
+		    		buscador.setDropDownHeight(0);
+		    		buscador.setTextColor(Color.LTGRAY);
+					return true;
+	
 				default:
 					return true;
 			}

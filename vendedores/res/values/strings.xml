@@ -54,6 +54,7 @@
 	<string name="carga_de_productos">carga de productos 0%</string>
 	
 	<string name="text_btn_enviar_factura">Enviar</string>
+	<string name="text_ver_todos_los_clientes">Ver todos los Clientes</string>
 	
 	
 </resources>
