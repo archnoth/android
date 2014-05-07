@@ -51,10 +51,9 @@ public class ServicioCargarUltimaVenta extends IntentService {
 	protected void onHandleIntent(Intent intento) {
 		Cliente cliente=intento.getParcelableExtra("cliente");
 		((Sistema)getApplicationContext()).setUltima_venta(cargarUltimaVenta(cliente));
-		if(((Sistema)getApplicationContext()).getUltima_venta()!=null){
 			Intent ultima_venta=new Intent("ultimaVenta");
 			LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ultima_venta);
-		}
+		
 	}
 	
 	

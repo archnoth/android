@@ -60,7 +60,7 @@ public class Notificaciones extends Activity {
 			onPostExecute(respuesta);
 			
 		}catch(Exception e){}
-		
+	
 		setContentView(R.layout.activity_listado_mensajes);
 		listaMensajes=(ListView)findViewById(R.id.ViewListaMensajes);
 		MensajeAdapter adaptador_lista = new MensajeAdapter(this.getApplicationContext(), R.layout.mensajes_adapter,((Sistema)getApplicationContext()).getUsu().getListaMensajes());
@@ -98,6 +98,7 @@ public class Notificaciones extends Activity {
 		
 		try {
 			JSONObject jsonObject = new JSONObject(results);
+			JSONObject jsonMeta = jsonObject.getJSONObject("meta");
 			String jsonMensajes=jsonObject.getString("mensajes");
 			JSONArray jarray = new JSONArray(jsonMensajes);
 			Usuario usu=((Sistema)getApplicationContext()).getUsu();
@@ -111,9 +112,10 @@ public class Notificaciones extends Activity {
 				Producto p= new Producto();
 				p.setCodigo(dict_producto.getString("codigo"));
 				p.setNombre(dict_producto.getString("nombre"));
-				c.setRut(dict_cliente.getString("rut"));
+				c.setRut(dict_cliente.getString("persona_id"));
 				
 				ArrayList<Cliente> list=usu.getListaClientes();
+				
 				for(int j =0; j<list.size();j++)
 				{
 					if( list.get(j).equals(c))
@@ -123,15 +125,16 @@ public class Notificaciones extends Activity {
 					}
 					
 				}
-				Mensaje m = new Mensaje(c,p,dic_mensaje.getInt("cantidad"),Calendar.getInstance(),dic_mensaje.getBoolean("recibido")); 
-				m.setId_mensajeVendedor(dic_mensaje.getInt("id"));
-				m.setMensaje(dic_mensaje.getString("mensaje"));
-				usu.getListaMensajes().add(m);
+				try{
+					Mensaje m = new Mensaje(c,p,dic_mensaje.getInt("cantidad"),Calendar.getInstance(),dic_mensaje.getBoolean("recibido")); 
+					m.setId_mensajeVendedor(dic_mensaje.getInt("id"));
+					m.setMensaje(dic_mensaje.getString("mensaje"));
+					usu.getListaMensajes().add(m);
+				}catch(Exception e){}
 			}
 			Intent notification=new Intent("notificacion");
+			notification.putExtra("mensajes_sin_leer", jsonMeta.getInt("total_count")!=0);
 			LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(notification);
-			//Log.i("LOG LISTA MENSAJES",usu.getListaMensajes().toString());
-			//((Sistema)getApplicationContext()).setNotification(true);
 			
 		
 			

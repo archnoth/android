@@ -88,6 +88,7 @@ public class ServicioMensajes extends IntentService  {
 			
 			try {
 				JSONObject jsonObject = new JSONObject(results);
+				JSONObject jsonMeta = jsonObject.getJSONObject("meta");
 				String jsonClientes=jsonObject.getString("mensajes");
 				JSONArray jarray = new JSONArray(jsonClientes);
 				Usuario usu=((Sistema)getApplicationContext()).getUsu();
@@ -100,9 +101,10 @@ public class ServicioMensajes extends IntentService  {
 					Producto p= new Producto();
 					p.setCodigo(dict_producto.getString("codigo"));
 					p.setNombre(dict_producto.getString("nombre"));
-					c.setRut(dict_cliente.getString("rut"));
+					c.setRut(dict_cliente.getString("persona_id"));
 					
 					ArrayList<Cliente> list=usu.getListaClientes();
+					
 					for(int j =0; j<list.size();j++)
 					{
 						if( list.get(j).equals(c))
@@ -120,8 +122,8 @@ public class ServicioMensajes extends IntentService  {
 					}catch(Exception e){}
 				}
 				Intent notification=new Intent("notificacion");
+				notification.putExtra("mensajes_sin_leer", jsonMeta.getInt("total_count")!=0);
 				LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(notification);
-				
 				
 			
 				

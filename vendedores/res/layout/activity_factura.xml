@@ -87,7 +87,7 @@
                 android:layout_below="@+id/SaldoTag"
                 android:background="@drawable/button_style"
                 android:onClick="Facturar"
-                android:text="@string/btn_text_registrar_venta"
+                android:text="@string/text_btn_enviar_factura"
                 android:textAlignment="center"
                 android:textColor="#ffffff"
                 android:textSize="20sp" />

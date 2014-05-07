@@ -208,8 +208,7 @@ public class DetalleCliente extends Activity {
 		else hora_entrega_desde.setVisibility(View.GONE);
 		if(cliente.getHora_de_entrega_hasta()!=null)hora_entrega_hasta.setText(cliente.getHora_de_entrega_hasta().get(Calendar.HOUR_OF_DAY) + ":" + cliente.getHora_de_entrega_hasta().get(Calendar.MINUTE) + "hs.");
 	
-		//limpio los historicos por las dudas de que venga desde otro cliente
-		((Sistema)getApplicationContext()).getHitorialCompras().clear();
+		
 		
 		//escucho los al servicio historico
 		CargarHistoricoReceiver historicoReceiver=new CargarHistoricoReceiver((Button)findViewById(R.id.btn_historico));
@@ -254,12 +253,10 @@ public class DetalleCliente extends Activity {
 		((ProgressBar)findViewById(R.id.progressText)).setVisibility(View.INVISIBLE);
 		((Button)findViewById(R.id.btn_nueva_venta)).setActivated(false);
 		((Button)findViewById(R.id.btn_historico)).setActivated(false);
-		
-		
-		Intent servicio_ultima_venta = new Intent(this, ServicioCargarUltimaVenta.class);
-		servicio_ultima_venta.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
-		startService(servicio_ultima_venta);
-		
+
+		//limpio los historicos por las dudas de que venga desde otro cliente
+		((Button)findViewById(R.id.btn_historico)).setEnabled(false);
+		((Sistema)getApplicationContext()).getHitorialCompras().clear();
 		Intent servicio_historico = new Intent(this, ServicioCargarHistorico.class);
 		servicio_historico.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 		startService(servicio_historico);

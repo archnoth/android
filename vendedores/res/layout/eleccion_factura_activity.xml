@@ -126,12 +126,13 @@
 
     <TextView
         android:id="@+id/titulo_eleccion_facura"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/progressText"
+        android:layout_centerHorizontal="true"
         app:layout_gravity="center_horizontal|top"
         android:text="@string/titulo_eleccion_facura"
+        android:textAlignment="center"
         android:textSize="20sp" />
 
 </RelativeLayout>

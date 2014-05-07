@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -31,6 +32,11 @@ public class EleccionFactura extends Activity {
 	    CargaDatosReceiver productosReceiver=new CargaDatosReceiver((TextView)findViewById(R.id.progressText));
 		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(productosReceiver,new IntentFilter("cargaProductos"));
 	    
+			
+		//escucho los al servicio ultimaVenta
+		CargarUltimaVentaReceiver ultVentaReceiver=new CargarUltimaVentaReceiver((Button)findViewById(R.id.btn_repetir_venta));
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ultVentaReceiver,new IntentFilter("ultimaVenta"));
+		
 		checkearProductos();
 	    
 	//buttons listeners
@@ -105,9 +111,10 @@ public class EleccionFactura extends Activity {
 	final Button rep_ultima_venta=(Button)findViewById(R.id.btn_repetir_venta);
 	rep_ultima_venta.setOnClickListener(new OnClickListener() {
 		
-		@Override
+		
 		public void onClick(View v) {
-			((Button)findViewById(R.id.btn_repetir_venta)).setActivated(true);
+			
+			((Button)v).setActivated(true);
 			
 	    	Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
@@ -135,15 +142,6 @@ public class EleccionFactura extends Activity {
 	});
 	
 	
-	
-	//limpio la ultima venta por las dudas de que venga desde otro cliente
-	((Sistema)getApplicationContext()).setUltima_venta(null);		
-	//escucho los al servicio ultimaVenta
-	CargarUltimaVentaReceiver ultVentaReceiver=new CargarUltimaVentaReceiver((Button)findViewById(R.id.btn_repetir_venta));
-	LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ultVentaReceiver,new IntentFilter("ultimaVenta"));
-	
-	
-	
 	}//onCreate
 	
 	@Override
@@ -154,7 +152,17 @@ public class EleccionFactura extends Activity {
 		((Button)findViewById(R.id.btn_visita)).setActivated(false);
 		((Button)findViewById(R.id.btn_nota_contado)).setActivated(false);
 		((Button)findViewById(R.id.btn_nota_credito)).setActivated(false);
+		((Button)findViewById(R.id.btn_repetir_venta)).setActivated(false);
+		
+		
 		checkearProductos();
+		
+		//limpio la ultima venta por las dudas de que venga desde otro cliente
+		((Button)findViewById(R.id.btn_repetir_venta)).setEnabled(false);	
+		((Sistema)getApplicationContext()).setUltima_venta(null);	
+		Intent servicio_ultima_venta = new Intent(this, ServicioCargarUltimaVenta.class);
+		servicio_ultima_venta.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
+		startService(servicio_ultima_venta);
 	}
 	
 	@Override

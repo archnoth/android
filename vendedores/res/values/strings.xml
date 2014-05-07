@@ -53,5 +53,7 @@
 	<string name="notificaciones">Notificaciones</string>
 	<string name="carga_de_productos">carga de productos 0%</string>
 	
+	<string name="text_btn_enviar_factura">Enviar</string>
+	
 	
 </resources>

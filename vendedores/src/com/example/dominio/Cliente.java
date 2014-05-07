@@ -81,11 +81,11 @@ public class Cliente implements Parcelable{
 		
 	}
 	
-	
+	@Override
 	 public boolean equals(Object obj) {
 		
 		 try {
-			 return this.rut.equals(((Cliente)obj).getRut())&&this.nombre.equals(((Cliente)obj).getNombre());
+			 return this.rut.equals(((Cliente)obj).getRut());
 		} catch (Exception e) {
 	
 		}
