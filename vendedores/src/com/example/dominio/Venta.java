@@ -30,8 +30,6 @@ public class Venta implements Parcelable{
 	 this.setLista_notas(new ArrayList<Nota>());
 	 this.tipo=tipo;
 	 this.setMonto_sin_descuentos(monto_sin_descuentos);
-	 
-	 
  } 
  
  public Cliente getCliente() {
@@ -142,7 +140,7 @@ public boolean equals(Object other){
 	
 	    Venta o=(Venta)other;
 		if (o == null) return false;
-		if (o== this) return true;
+		if (o == this) return true;
 		if (!(o instanceof Venta))return false;
 		
 		return this.getFecha().get(Calendar.YEAR) == o.getFecha().get(Calendar.YEAR)
@@ -151,7 +149,9 @@ public boolean equals(Object other){
 		&& this.getFecha().get(Calendar.HOUR_OF_DAY) == o.getFecha().get(Calendar.HOUR_OF_DAY)
 		&& this.getFecha().get(Calendar.MINUTE) == o.getFecha().get(Calendar.MINUTE)  
 		&& this.getFecha().get(Calendar.SECOND) == o.getFecha().get(Calendar.SECOND)
-		&& this.getCliente().equals(o.getCliente()); 
+		&& this.getCliente().equals(o.getCliente())
+		&& this.getProductos().equals(o.getProductos())
+		&& this.usuario.equals(o.getUsuario()); 
 	
 	}
 

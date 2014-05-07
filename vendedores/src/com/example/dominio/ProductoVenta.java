@@ -1,7 +1,5 @@
 package com.example.dominio;
 
-import java.util.Calendar;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,9 +17,6 @@ public class ProductoVenta  implements Parcelable{
 		this.cantidad=cant;
 		this.descuento=descuento;
 		this.sin_costo=sin_costo;
-		
-		
-		
 	}
 	
 	public Producto getProducto() {
@@ -77,8 +72,7 @@ public class ProductoVenta  implements Parcelable{
 		this.cantidad=in.readInt();
 		this.descuento=in.readInt();
 		this.sin_costo=in.readInt();
-		
-		
+
 	}
 
 	public Integer getDescuento() {
@@ -95,6 +89,18 @@ public class ProductoVenta  implements Parcelable{
 
 	public void setSin_costo(Integer sin_costo) {
 		this.sin_costo = sin_costo;
+	}
+	
+	@Override
+	public boolean equals(Object other){
+		ProductoVenta o=(ProductoVenta)other;
+		if (o == null) return false;
+		if (o == this) return true;
+		if (!(o instanceof ProductoVenta))return false;
+		return (producto.equals(o.getProducto()) 
+				&& cantidad == o.getCantidad() 
+				&& descuento == o.getDescuento() 
+				&& sin_costo == o.getSin_costo());
 	}
 	
 }

@@ -46,7 +46,7 @@ public class Cliente implements Parcelable{
 		this.setLatitud_entrega(latitud_entrega);
 		this.setLongitud_entrega(longitud_entrega);
 		
-		if(dia_entrega!=null&&dia_entrega!="")
+		if(!dia_entrega.equals("null")&&dia_entrega!=null&&!dia_entrega.equals(""))
 			this.dia_de_entrega=Integer.parseInt(dia_entrega);
 		else this.dia_de_entrega=null;
 		
