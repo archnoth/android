@@ -37,6 +37,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -72,7 +73,7 @@ public class Factura extends Activity {
 	private JSONObject json;
 	private Gson gson;
 	private int descuento_contado_porcentaje=0;
-	private int tipo;
+	private int modo_pago;
 	private int descuento_producto = 0;
 	private Menu menu;
 	private View context_view;
@@ -106,7 +107,7 @@ public class Factura extends Activity {
 	    usuario = ((Sistema)getApplicationContext()).getUsu();
 	    cliente = ((Cliente)getIntent().getExtras().getParcelable("cliente"));
 		descuento_contado_porcentaje = ((Sistema)getApplicationContext()).getDescuento_contado();
-		tipo=getIntent().getExtras().getInt("tipo");
+		modo_pago=getIntent().getExtras().getInt("modo_pago");
 		lista_productos = ((Sistema)getApplicationContext()).getLista_productos();
 		if (lista_productos.size()>0){
 			diccionarioProductos = new HashMap<String, Producto>();
@@ -121,12 +122,12 @@ public class Factura extends Activity {
 		} else {
 			addRowToTableProductos(null);
 		}
-		if(tipo!=0 && tipo!=2 && ((Sistema)getApplicationContext()).getSaldo_cliente()!=null )	
+		if(modo_pago!=0 && ((Sistema)getApplicationContext()).getSaldo_cliente()!=null )	
 		{
 			saldo_cliente=new BigDecimal(((Sistema)getApplicationContext()).getSaldo_cliente()).setScale(2, RoundingMode.HALF_UP);
 
 			EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
-			switch(tipo){
+			switch(getIntent().getExtras().getInt("tipo")){
 				case 1:
 					saldo_value.setText(saldo_cliente.add(monto_factura).toString());
 					break;
@@ -315,7 +316,7 @@ public class Factura extends Activity {
 			      BigDecimal descuento = BigDecimal.ZERO;
 			      descuento = precio_uso.multiply(new BigDecimal(getDatosExtraProducto(row).getDescuento()).divide(new BigDecimal("100.0")));
 			     
-			     if (descuento_contado_porcentaje !=0 && tipo==0) {
+			     if (descuento_contado_porcentaje !=0 && modo_pago==0 && getIntent().getExtras().getInt("tipo")<2) {
 			         descuento_contado_monto = precio_uso.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal("100.0")));
 			   }
 			   BigDecimal descuento_cliente = BigDecimal.ZERO;
@@ -328,10 +329,10 @@ public class Factura extends Activity {
 			   this.monto_factura = this.monto_factura.add(new BigDecimal(signo).multiply(precio_uso));
 			   EditText monto_value = (EditText) (findViewById(R.id.MontoValue));
 			   monto_value.setText(monto_factura.toString());
-			   if(tipo!=0&&tipo!=2)
+			   if(modo_pago!=0)
 			   {
 				   EditText saldo_value = (EditText) (findViewById(R.id.SaldoValue));
-				   switch(tipo){
+				   switch(getIntent().getExtras().getInt("tipo")){
 					case 1:
 						saldo_value.setText(saldo_cliente.add(monto_factura).toString());
 						break;
@@ -354,7 +355,7 @@ public class Factura extends Activity {
 		Calendar fecha = Calendar.getInstance();
 		//Double monto = 0.0;
 		TableLayout tbl = (TableLayout) this.findViewById(R.id.tablaProductos);
-		nueva_venta = new Venta(usuario, cliente, fecha, monto_factura.doubleValue(), tipo,monto_factura_sin_descuento.doubleValue());
+		nueva_venta = new Venta(usuario, cliente, fecha, monto_factura.doubleValue(), modo_pago,monto_factura_sin_descuento.doubleValue());
 
 		for (int i = 0; i < tbl.getChildCount();) {
 			TableRow tr = (TableRow) tbl.getChildAt(i);
@@ -460,7 +461,7 @@ public class Factura extends Activity {
 		}
 		
 		this.menu = menu;
-		if(tipo==0){
+		if(modo_pago==0){
 			menu.findItem(R.id.contado_radio_button).setChecked(true);
 			menu.findItem(R.id.credito_radio_button).setChecked(false);
 		}
@@ -488,7 +489,7 @@ public class Factura extends Activity {
 					BigDecimal descuento_contado_monto = monto_factura_sin_descuento.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
 					monto_factura = monto_factura.subtract(descuento_contado_monto);
 		    	}
-				tipo=0;
+				modo_pago=0;
 				item.setChecked(true);
 	            this.menu.findItem(R.id.credito_radio_button).setChecked(false);
 	            monto_value = (EditText) (findViewById(R.id.MontoValue));
@@ -507,7 +508,7 @@ public class Factura extends Activity {
 		    		BigDecimal descuento_contado_monto = monto_factura_sin_descuento.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
 					monto_factura = monto_factura.add(descuento_contado_monto);	
 	    		}
-		    	tipo=1;
+		    	modo_pago=1;
 		    	item.setChecked(true);
 		    	this.menu.findItem(R.id.contado_radio_button).setChecked(false);
 		    	monto_value = (EditText) (findViewById(R.id.MontoValue));
@@ -531,6 +532,11 @@ public class Factura extends Activity {
 		    	startActivity(notificaciones);
 		    	return true;	
 		    	
+		    	// Respond to the action bar's Up/Home button
+		    case android.R.id.home:
+		        NavUtils.navigateUpFromSameTask(this);
+		        return true;
+		        
 		    default:
 		    	
 	            return super.onOptionsItemSelected(item); 
@@ -934,7 +940,7 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 	
 					nueva_venta.setProductos(nuevaListaProductos);
 					
-					if (descuento_contado_porcentaje != 0 && tipo==0) {
+					if (descuento_contado_porcentaje != 0 && modo_pago==0) {
 						BigDecimal descuento_contado_monto= mnt.multiply(new BigDecimal(descuento_contado_porcentaje).divide(new BigDecimal(100)));
 						mnt = mnt.subtract(descuento_contado_monto) ;
 						nueva_venta.setMonto(mnt.doubleValue());
@@ -1017,7 +1023,7 @@ private class PostNuevaVenta extends AsyncTask<String, Void, String> {
 		
 		this.monto_factura_sin_descuento=new BigDecimal(ultima_venta.getMonto_sin_descuentos().toString());
 		this.monto_factura =new BigDecimal(ultima_venta.getMonto().toString());
-		this.tipo=ultima_venta.getTipo();
+		this.modo_pago=ultima_venta.getTipo();
 
 	}
 

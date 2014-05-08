@@ -32,6 +32,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -241,6 +242,11 @@ public class DetalleCliente extends Activity {
 		    	startActivity(notificaciones);
 		    	return true;
 				
+		    	// Respond to the action bar's Up/Home button
+		    case android.R.id.home:
+		        NavUtils.navigateUpFromSameTask(this);
+		        return true;
+		        
 			default:
 				return super.onOptionsItemSelected(item);
 		}

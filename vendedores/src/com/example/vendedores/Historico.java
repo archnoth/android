@@ -6,6 +6,7 @@ import java.util.Random;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -132,6 +133,11 @@ public class Historico extends Activity {
 		    	startActivity(notificaciones);
 		    	return true;
 				
+		    	// Respond to the action bar's Up/Home button
+		    case android.R.id.home:
+		        NavUtils.navigateUpFromSameTask(this);
+		        return true;
+		        
 			default:
 				return super.onOptionsItemSelected(item);
 		}

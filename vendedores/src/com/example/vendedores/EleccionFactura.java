@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,6 +50,7 @@ public class EleccionFactura extends Activity {
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",0);
+			   fac_intent.putExtra("modo_pago",0);
 			   startActivity(fac_intent);
 		   }
 	   });
@@ -61,6 +63,7 @@ public class EleccionFactura extends Activity {
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",1);
+			   fac_intent.putExtra("modo_pago",1);
 			   startActivity(fac_intent);
 		   }
 	   });
@@ -73,6 +76,7 @@ public class EleccionFactura extends Activity {
 			   Intent fac_intent = new Intent(getApplicationContext(),Factura.class); 
 			   fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 			   fac_intent.putExtra("tipo",3);
+			   fac_intent.putExtra("modo_pago",1);
 			   startActivity(fac_intent);
 		   
 		   }
@@ -87,6 +91,7 @@ public class EleccionFactura extends Activity {
 			    Intent fac_intent = new Intent(getApplicationContext(),Factura.class);  
 				fac_intent.putExtra("cliente",getIntent().getExtras().getParcelable("cliente"));
 				fac_intent.putExtra("tipo",2);
+				fac_intent.putExtra("modo_pago",0);
 				startActivity(fac_intent);
 		   
 		   }
@@ -185,6 +190,11 @@ public class EleccionFactura extends Activity {
 		    	startActivity(notificaciones);
 		    	return true;
 				
+		    	// Respond to the action bar's Up/Home button
+		    case android.R.id.home:
+		        NavUtils.navigateUpFromSameTask(this);
+		        return true;
+		        
 			default:
 				return super.onOptionsItemSelected(item);
 		}

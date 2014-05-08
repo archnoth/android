@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,10 +82,8 @@ public class VisitaActivity extends Activity  {
 		try {
 			 lista = (ArrayList<String>)async.get();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (ExecutionException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -127,9 +126,7 @@ public class VisitaActivity extends Activity  {
 							dialog.setOnDismissListener(new OnDismissListener() {
 								@Override
 								public void onDismiss(DialogInterface dialog) {
-									
-									Intent lista_clientes = new Intent(getApplicationContext(),ListadoClientes.class);
-									startActivity(lista_clientes);		
+									NavUtils.navigateUpFromSameTask(getParent());
 								}
 							});
 							dialog.show();
@@ -173,6 +170,11 @@ public class VisitaActivity extends Activity  {
 		    	startActivity(notificaciones);
 		    	return true;
 				
+		    	// Respond to the action bar's Up/Home button
+		    case android.R.id.home:
+		        NavUtils.navigateUpFromSameTask(this);
+		        return true;
+		        
 			default:
 				return super.onOptionsItemSelected(item);
 		}
