@@ -18,10 +18,10 @@ public class Cliente implements Parcelable{
 	private String celular;
 	private String email;
 	private String web;
-	private String latitud;
-	private String longitud;
-	private String latitud_entrega;
-	private String longitud_entrega;
+	private String latitud=null;
+	private String longitud=null;
+	private String latitud_entrega=null;
+	private String longitud_entrega=null;
 	private String url_imagen;
 	private Integer dia_de_entrega=null;//
 	private Calendar hora_de_entrega_desde=Calendar.getInstance();//
@@ -46,7 +46,24 @@ public class Cliente implements Parcelable{
 		this.setLatitud_entrega(latitud_entrega);
 		this.setLongitud_entrega(longitud_entrega);
 		
-		if(!dia_entrega.equals("null")&&dia_entrega!=null&&!dia_entrega.equals(""))
+		
+		if(!latitud.equals("null")&&latitud!=null&&!dia_entrega.equals(""))
+			this.latitud=latitud;
+		else this.latitud=null;	
+		
+		if(!longitud.equals("null")&& longitud!=null&&!longitud.equals(""))
+			this.longitud=longitud;
+		else this.longitud=null;	
+		
+		if(!latitud_entrega.equals("null")&& latitud_entrega!=null)
+			this.latitud_entrega=latitud_entrega;
+		else this.latitud_entrega=null;	
+		
+		if(!longitud_entrega.equals("null") && longitud_entrega!=null)
+			this.latitud_entrega=latitud;
+		else this.latitud_entrega=null;	
+		
+		if(!dia_entrega.equals("null")&&dia_entrega!=null && !dia_entrega.equals(""))
 			this.dia_de_entrega=Integer.parseInt(dia_entrega);
 		else this.dia_de_entrega=null;
 		

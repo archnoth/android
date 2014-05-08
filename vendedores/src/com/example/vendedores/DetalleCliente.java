@@ -81,9 +81,10 @@ public class DetalleCliente extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					if (cliente.getLatitud()!=null & cliente.getLatitud()!=null)
+					Cliente cliente=getIntent().getExtras().getParcelable("cliente");
+					if (cliente.getLatitud()!= null & cliente.getLongitud()!= null)
 					{
-						Uri location = Uri.parse("geo:"+cliente.getLatitud()+","+cliente.getLongitud()+"?z=14"); // z param is zoom level
+						Uri location = Uri.parse("geo:"+cliente.getLatitud()+","+cliente.getLongitud()+"?q="+cliente.getLatitud()+","+cliente.getLongitud()+"("+cliente.getNombre()+")"+"&z=14"); // z param is zoom level
 						Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
 						startActivity(mapIntent);
 					}
@@ -193,7 +194,7 @@ public class DetalleCliente extends Activity {
 				public void onClick(View v) {
 					if (cliente.getLatitud_entrega()!=null & cliente.getLongitud_entrega()!=null)
 					{
-						Uri location = Uri.parse("geo:"+cliente.getLatitud_entrega()+","+cliente.getLongitud_entrega()+"?z=14"); // z param is zoom level
+						Uri location = Uri.parse("geo:"+cliente.getLatitud_entrega()+","+cliente.getLongitud_entrega()+"?q="+cliente.getLatitud_entrega()+","+cliente.getLongitud_entrega()+"&z=14"); // z param is zoom level
 						Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
 						startActivity(mapIntent);
 					}
