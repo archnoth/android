@@ -15,13 +15,15 @@ public class notificationReceiver extends BroadcastReceiver{
 		
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if(intent.getBooleanExtra("mensajes_sin_leer",true)){
-			mi.setVisible(true);
-			((Sistema)context).setNotification(true);
-		}else{
-			((Sistema)context).setNotification(false);
-			mi.setVisible(false);
-			}
+		try{
+			if(intent.getBooleanExtra("mensajes_sin_leer",true)){
+				mi.setVisible(true);
+				((Sistema)context).setNotification(true);
+			}else{
+				((Sistema)context).setNotification(false);
+				mi.setVisible(false);
+				}
+		}catch(Exception e){}
 	}
 
 }
