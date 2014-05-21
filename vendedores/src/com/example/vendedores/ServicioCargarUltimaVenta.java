@@ -97,7 +97,7 @@ public class ServicioCargarUltimaVenta extends IntentService {
 					fecha_venta_registrada.set(Calendar.MINUTE,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("minute")));
 					fecha_venta_registrada.set(Calendar.SECOND,Integer.parseInt(((JSONObject)jsonObject.get("fecha")).getString("second")));
 					
-					venta=new Venta(sys.getUsu(),cliente,fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()),Integer.parseInt(jsonObject.get("tipo").toString()),Double.parseDouble(jsonObject.get("precio_sin_descuento").toString()));
+					venta=new Venta(sys.getUsu(),cliente,fecha_venta_registrada,Double.parseDouble(jsonObject.get("precio").toString()),Integer.parseInt(jsonObject.get("tipo_pago").toString()),Double.parseDouble(jsonObject.get("precio_sin_descuento").toString()));
 					
 					JSONArray jarray =(JSONArray)jsonObject.get("productos");
 					lista= new ArrayList<ProductoVenta>();
