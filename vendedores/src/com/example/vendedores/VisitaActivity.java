@@ -126,7 +126,7 @@ public class VisitaActivity extends Activity  {
 							dialog.setOnDismissListener(new OnDismissListener() {
 								@Override
 								public void onDismiss(DialogInterface dialog) {
-									NavUtils.navigateUpFromSameTask(getParent());
+									irAactividadPrevia();
 								}
 							});
 							dialog.show();
@@ -150,6 +150,10 @@ public class VisitaActivity extends Activity  {
 			});
 		
 		
+	}
+	
+	public void irAactividadPrevia(){
+	 this.finish();
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
