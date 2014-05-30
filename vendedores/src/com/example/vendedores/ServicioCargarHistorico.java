@@ -74,12 +74,17 @@ public class ServicioCargarHistorico extends IntentService {
 						JSONArray jarray =new JSONArray(text);
 						for(int i=0;i<jarray.length();i++){
 							JSONArray aux =(JSONArray)jarray.get(i);
-							((Sistema)getApplicationContext()).getHitorialCompras().put(Integer.parseInt(aux.get(0).toString()), Double.parseDouble(aux.get(1).toString()));
+							String codigo=aux.get(0).toString();
+							Double porcentaje=Double.parseDouble(aux.get(1).toString());
+							((Sistema)getApplicationContext()).getHitorialCompras().put(codigo, porcentaje);
 						}
 					}
 						
 				}
-		  }catch(Exception e){}
+		  }catch(Exception e)
+		  {
+			  e.printStackTrace();
+		  }
 	  }
 
 

@@ -25,7 +25,7 @@ public class Historico extends Activity {
 	
 	
 	
-	private HashMap<Integer, Double> producto_porcentaje;
+	private HashMap<String, Double> producto_porcentaje;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,10 +35,10 @@ public class Historico extends Activity {
 		ActionBar actionBar = getActionBar();
 	    actionBar.setDisplayHomeAsUpEnabled(true);
 		producto_porcentaje=((Sistema)getApplicationContext()).getHitorialCompras();
-		Iterator<Integer> iterador = producto_porcentaje.keySet().iterator();
+		Iterator<String> iterador = producto_porcentaje.keySet().iterator();
 		Double mayor=0.0;
 		while(iterador.hasNext()){ 
-		   Integer codigo = iterador.next();
+		   String codigo = iterador.next();
 		   if(producto_porcentaje.get(codigo) > mayor){
 			    mayor = producto_porcentaje.get(codigo);
 		   }
@@ -49,7 +49,7 @@ public class Historico extends Activity {
 		 Random id_generator = new Random();
 		 while(iterador.hasNext())
 		 {
-		   Integer codigo = iterador.next();
+		   String codigo = iterador.next();
 		   RelativeLayout barra=new RelativeLayout(getApplicationContext());
 		   RelativeLayout.LayoutParams layoutParams= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		   barra.setLayoutParams(layoutParams);

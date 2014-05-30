@@ -17,7 +17,7 @@ public class Sistema extends Application{
 	private ArrayList<Producto> lista_productos= new ArrayList<Producto>();
 	private Integer total_productos = 0;
 	private String registration_id = "";
-	private HashMap<Integer, Double> hitorialCompras= new HashMap<Integer, Double>();
+	private HashMap<String, Double> hitorialCompras= new HashMap<String, Double>();
 	private Venta ultima_venta=null;
 	private int device_width;
 	private int device_height;
@@ -30,7 +30,7 @@ public class Sistema extends Application{
 		lista_productos= new ArrayList<Producto>();
 		total_productos = 0;
 		registration_id = "";
-		hitorialCompras= new HashMap<Integer, Double>();
+		hitorialCompras= new HashMap<String, Double>();
 		ultima_venta=null;
 	}
 	
@@ -82,11 +82,11 @@ public class Sistema extends Application{
 		this.registration_id = registration_id;
 	}
 	
-	public HashMap<Integer, Double> getHitorialCompras() {
+	public HashMap<String, Double> getHitorialCompras() {
 		return hitorialCompras;
 	}
 
-	public void setHitorialCompras(HashMap<Integer, Double> hitorialCompras) {
+	public void setHitorialCompras(HashMap<String, Double> hitorialCompras) {
 		this.hitorialCompras = hitorialCompras;
 	}
 
